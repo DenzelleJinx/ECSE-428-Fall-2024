@@ -1,0 +1,77 @@
+class User
+{
+  // Deactivated makes every post Hidden, User can log back in and reactivate it
+  // Suspended is done by an Administrator, has to be unsuspended by Administrator
+  // Optionally, can only have Suspended
+  enum AccountStatus {Pending, Active, Suspended, Deactivated, Denied};
+  unique Integer id;
+  unique String username;
+  unique String email;
+  String password;
+  AccountStatus status;
+  Float rating;
+}
+
+class Student
+{
+  isA User;
+  * interestedStudents -> * Listing favoritedListings;
+  // Roommate matching system..?
+}
+
+
+class Landlord
+{
+  isA User;
+  Integer phoneNumber;
+  1 poster -- * Listing properties;
+}
+
+class Administrator
+{
+  isA User;
+}
+
+class Listing
+{
+  String title;
+  String description;
+  Address address;
+  Integer monthlyPrice; // If Landlords want a different payment plan, they can specify the specifics in the description
+  1 listing -> 0..10 Image propertyImages;
+  Float propertyRating;
+  Integer bedrooms;
+  Integer bathrooms;
+  enum PropertyType {Studio, Dorm, Condo, Apartment, House}
+  PropertyType propertyType;
+  Integer squareFootage;
+  Bool wheelchairAccessible;
+  Bool hidden;
+}
+
+class Sublet
+{
+  isA Listing;
+  * housing -- 1 Student subletter;
+  1 sublet -> 0..10 Image subletImages;
+  * propertySublet -- 1 Landlord supervisingLandlord;
+}
+
+// Optionally address is just a string
+// Could use some Google Maps integration or something
+class Address
+{
+  String city;
+  String postalCode;
+  String street;
+  Integer streetNumber;
+  Integer apartmentNumber;
+}
+
+// Don't implement image uploads
+class Image
+{
+  String url;
+}
+
+// class Comment, would have associations many to 1 with students and landlords and listings and sublets
