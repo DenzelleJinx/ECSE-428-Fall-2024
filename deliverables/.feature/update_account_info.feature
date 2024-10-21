@@ -39,11 +39,3 @@ Scenario: Update Password (Error Flow: Incorrect Current Password)
     And the user attempts to update their password but enters an incorrect current password
     Then the password is not updated
     And the user is shown an error message stating "Incorrect current password"
-
-# Not sure if emails should be allowed to be changed.
-Scenario: Update Email Address (Error Flow: Email Already in Use)
-    Given the user is logged in
-    When the user navigates to the account settings
-    And the user tries to update their email address to one that is already registered
-    Then the email is not updated
-    And the user is shown an error message stating "This email address is already in use"
