@@ -4,7 +4,6 @@ import HouseIt.app.model.Address;
 import HouseIt.app.model.Image;
 import HouseIt.app.model.Landlord;
 import HouseIt.app.model.Student;
-import HouseIt.app.model.Listing;
 import HouseIt.app.model.Listing.PropertyType;
 import HouseIt.app.model.Sublet;
 
@@ -13,7 +12,7 @@ import java.util.List;
 import org.springframework.data.repository.CrudRepository;
 
 public interface SubletRepository extends CrudRepository<Sublet, Integer> {
-    List<Sublet> findSubletbyPoster(Landlord poster)
+    List<Sublet> findSubletbyPoster(Landlord poster);
 
     List<Sublet> findSubletBySubletter(Student subletter);
 
