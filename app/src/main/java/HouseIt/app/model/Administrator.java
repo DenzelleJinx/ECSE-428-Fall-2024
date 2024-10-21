@@ -2,10 +2,11 @@ package HouseIt.app.model;
 /*PLEASE DO NOT EDIT THIS CODE*/
 /*This code was generated using the UMPLE 1.35.0.7523.c616a4dce modeling language!*/
 
-
-import java.util.*;
+import javax.persistence.Entity;
 
 // line 30 "Umplesrc"
+
+@Entity
 public class Administrator extends User
 {
 

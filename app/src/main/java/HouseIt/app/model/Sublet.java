@@ -2,10 +2,14 @@ package HouseIt.app.model;
 /*PLEASE DO NOT EDIT THIS CODE*/
 /*This code was generated using the UMPLE 1.35.0.7523.c616a4dce modeling language!*/
 
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import java.util.*;
 
 // line 52 "Umplesrc"
+@Entity
 public class Sublet extends Listing
 {
 
@@ -42,6 +46,7 @@ public class Sublet extends Listing
   // INTERFACE
   //------------------------
   /* Code from template association_GetOne */
+  @ManyToOne(optional = false)
   public Student getSubletter()
   {
     return subletter;
@@ -53,6 +58,7 @@ public class Sublet extends Listing
     return aSubletImage;
   }
 
+  @OneToMany()
   public List<Image> getSubletImages()
   {
     List<Image> newSubletImages = Collections.unmodifiableList(subletImages);
@@ -77,6 +83,7 @@ public class Sublet extends Listing
     return index;
   }
   /* Code from template association_GetOne */
+  @ManyToOne(optional = false)
   public Landlord getSupervisingLandlord()
   {
     return supervisingLandlord;

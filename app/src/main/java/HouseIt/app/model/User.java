@@ -2,10 +2,15 @@ package HouseIt.app.model;
 /*PLEASE DO NOT EDIT THIS CODE*/
 /*This code was generated using the UMPLE 1.35.0.7523.c616a4dce modeling language!*/
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 
 import java.util.*;
 
 // line 1 "Umplesrc"
+@MappedSuperclass
 public class User
 {
 
@@ -32,6 +37,7 @@ public class User
   private String username;
   private String email;
   private String password;
+  @Enumerated(EnumType.STRING)
   private AccountStatus status;
   private float rating;
 
@@ -143,6 +149,7 @@ public class User
     return wasSet;
   }
 
+  @Id
   public int getId()
   {
     return id;

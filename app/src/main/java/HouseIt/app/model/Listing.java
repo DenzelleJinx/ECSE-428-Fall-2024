@@ -2,10 +2,17 @@ package HouseIt.app.model;
 /*PLEASE DO NOT EDIT THIS CODE*/
 /*This code was generated using the UMPLE 1.35.0.7523.c616a4dce modeling language!*/
 
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 import java.util.*;
 
 // line 35 "Umplesrc"
+@Entity
 public class Listing
 {
 
@@ -27,6 +34,7 @@ public class Listing
   private float propertyRating;
   private int bedrooms;
   private int bathrooms;
+  @Enumerated(EnumType.STRING)
   private PropertyType propertyType;
   private int squareFootage;
   private Boolean wheelchairAccessible;
@@ -163,6 +171,7 @@ public class Listing
     return description;
   }
 
+  @OneToOne(optional = true)
   public Address getAddress()
   {
     return address;
@@ -217,6 +226,7 @@ public class Listing
     return aPropertyImage;
   }
 
+  @OneToMany()
   public List<Image> getPropertyImages()
   {
     List<Image> newPropertyImages = Collections.unmodifiableList(propertyImages);
@@ -241,6 +251,7 @@ public class Listing
     return index;
   }
   /* Code from template association_GetOne */
+  @ManyToOne(optional = false)
   public Landlord getPoster()
   {
     return poster;

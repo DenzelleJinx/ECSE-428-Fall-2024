@@ -2,10 +2,13 @@ package HouseIt.app.model;
 /*PLEASE DO NOT EDIT THIS CODE*/
 /*This code was generated using the UMPLE 1.35.0.7523.c616a4dce modeling language!*/
 
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 
 import java.util.*;
 
 // line 15 "Umplesrc"
+@Entity
 public class Student extends User
 {
 
@@ -38,6 +41,7 @@ public class Student extends User
     return aFavoritedListing;
   }
 
+  @OneToMany()
   public List<Listing> getFavoritedListings()
   {
     List<Listing> newFavoritedListings = Collections.unmodifiableList(favoritedListings);
@@ -68,6 +72,7 @@ public class Student extends User
     return aHousing;
   }
 
+  @OneToMany(mappedBy = "subletter")
   public List<Sublet> getHousing()
   {
     List<Sublet> newHousing = Collections.unmodifiableList(housing);
