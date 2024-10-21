@@ -1,4 +1,3 @@
-# I'm assuming only landlords can update listings
 Feature: Updating a Listing
     As a registered landlord user
     I want to be able to update listing information
