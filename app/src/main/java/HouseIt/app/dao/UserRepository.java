@@ -6,15 +6,15 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface UserRepository extends CrudRepository<User, Integer> {
 
-    User findUserByID(int Id);
+    User findUserByID(int id);
 
-    User findUserByUsername(String Username);
+    User findUserByUsername(String username);
 
-    User findUserByEmail(String Email);
+    User findUserByEmail(String email);
 
     User findUserByPassword(String password);
 
-    User findUserByStatus(String Status);
+    User findUserByStatus(String status);
 
-    User findUserByRating(float Rating);
+    User findUserByRating(float rating);
 }

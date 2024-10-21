@@ -9,16 +9,16 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface StudentRepository extends CrudRepository<Student, Integer> {
 
-    Student findStudentByID(String Id);
+    Student findStudentByID(String id);
 
-    Student findStudentByUsername(String Username);
+    Student findStudentByUsername(String username);
 
-    Student findStudentByEmail(String Email);
+    Student findStudentByEmail(String email);
 
     List<Student> findStudentByPassword(String password);
 
-    List<Student> findStudentByStatus(AccountStatus Status);
+    List<Student> findStudentByStatus(AccountStatus status);
 
-    List<Student> findStudentByRating(float Rating);
+    List<Student> findStudentByRating(float rating);
 
 }

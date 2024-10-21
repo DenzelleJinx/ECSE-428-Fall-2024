@@ -11,16 +11,16 @@ public interface LandlordRepository extends CrudRepository<Landlord, Integer> {
 
     Landlord findLandlordByPhoneNumber(String phoneNumber);
 
-    Landlord findLandlordByID(String Id);
+    Landlord findLandlordByID(String id);
 
-    Landlord findLandlordByUsername(String Username);
+    Landlord findLandlordByUsername(String username);
 
-    Landlord findLandlordByEmail(String Email);
+    Landlord findLandlordByEmail(String email);
 
     List<Landlord> findLandlordByPassword(String password);
 
-    List<Landlord> findLandlordByStatus(AccountStatus Status);
+    List<Landlord> findLandlordByStatus(AccountStatus status);
 
-    List<Landlord> findLandlordByRating(float Rating);
+    List<Landlord> findLandlordByRating(float rating);
 
 }

@@ -9,16 +9,16 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface AdministratorRepository extends CrudRepository<Administrator, Integer> {
 
-    Administrator findAdministratorByID(String Id);
+    Administrator findAdministratorByID(String id);
 
-    Administrator findAdministratorByUsername(String Username);
+    Administrator findAdministratorByUsername(String username);
 
-    Administrator findAdministratorByEmail(String Email);
+    Administrator findAdministratorByEmail(String email);
     
     Administrator findAdministratorByPassword(String password);
 
-    List<Administrator> findAdministratorByStatus(AccountStatus Status);
+    List<Administrator> findAdministratorByStatus(AccountStatus status);
 
-    List<Administrator> findAdministratorByRating(float Rating);
+    List<Administrator> findAdministratorByRating(float rating);
 
 }
