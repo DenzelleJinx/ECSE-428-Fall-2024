@@ -1,3 +1,93 @@
+//%% NEW FILE Utilities BEGINS HERE %%
+
+/*PLEASE DO NOT EDIT THIS CODE*/
+/*This code was generated using the UMPLE 1.35.0.7523.c616a4dce modeling language!*/
+
+
+
+// line 91 "model.ump"
+// line 152 "model.ump"
+public class Utilities
+{
+
+  //------------------------
+  // MEMBER VARIABLES
+  //------------------------
+
+  //Utilities Attributes
+  private float waterCost;
+  private float electricityCost;
+  private float heatingCost;
+
+  //------------------------
+  // CONSTRUCTOR
+  //------------------------
+
+  public Utilities(float aWaterCost, float aElectricityCost, float aHeatingCost)
+  {
+    waterCost = aWaterCost;
+    electricityCost = aElectricityCost;
+    heatingCost = aHeatingCost;
+  }
+
+  //------------------------
+  // INTERFACE
+  //------------------------
+
+  public boolean setWaterCost(float aWaterCost)
+  {
+    boolean wasSet = false;
+    waterCost = aWaterCost;
+    wasSet = true;
+    return wasSet;
+  }
+
+  public boolean setElectricityCost(float aElectricityCost)
+  {
+    boolean wasSet = false;
+    electricityCost = aElectricityCost;
+    wasSet = true;
+    return wasSet;
+  }
+
+  public boolean setHeatingCost(float aHeatingCost)
+  {
+    boolean wasSet = false;
+    heatingCost = aHeatingCost;
+    wasSet = true;
+    return wasSet;
+  }
+
+  public float getWaterCost()
+  {
+    return waterCost;
+  }
+
+  public float getElectricityCost()
+  {
+    return electricityCost;
+  }
+
+  public float getHeatingCost()
+  {
+    return heatingCost;
+  }
+
+  public void delete()
+  {}
+
+
+  public String toString()
+  {
+    return super.toString() + "["+
+            "waterCost" + ":" + getWaterCost()+ "," +
+            "electricityCost" + ":" + getElectricityCost()+ "," +
+            "heatingCost" + ":" + getHeatingCost()+ "]";
+  }
+}
+
+
+
 //%% NEW FILE User BEGINS HERE %%
 
 /*PLEASE DO NOT EDIT THIS CODE*/
@@ -7,7 +97,7 @@
 import java.util.*;
 
 // line 2 "model.ump"
-// line 82 "model.ump"
+// line 101 "model.ump"
 public class User
 {
 
@@ -236,7 +326,7 @@ public class User
 import java.util.*;
 
 // line 31 "model.ump"
-// line 99 "model.ump"
+// line 118 "model.ump"
 public class Administrator extends User
 {
 
@@ -277,8 +367,8 @@ public class Administrator extends User
  * Optionally address is just a string
  * Could use some Google Maps integration or something
  */
-// line 63 "model.ump"
-// line 110 "model.ump"
+// line 64 "model.ump"
+// line 129 "model.ump"
 public class Address
 {
 
@@ -401,7 +491,7 @@ public class Address
 import java.util.*;
 
 // line 36 "model.ump"
-// line 104 "model.ump"
+// line 123 "model.ump"
 public class Listing
 {
 
@@ -427,16 +517,19 @@ public class Listing
   private int squareFootage;
   private Bool wheelchairAccessible;
   private Bool hidden;
+  private Bool smokingAllowed;
 
   //Listing Associations
   private List<Image> propertyImages;
   private Landlord poster;
+  private Amenities amenitiesOffered;
+  private Utilities utilitiesCosts;
 
   //------------------------
   // CONSTRUCTOR
   //------------------------
 
-  public Listing(String aTitle, String aDescription, Address aAddress, int aMonthlyPrice, float aPropertyRating, int aBedrooms, int aBathrooms, PropertyType aPropertyType, int aSquareFootage, Bool aWheelchairAccessible, Bool aHidden, Landlord aPoster)
+  public Listing(String aTitle, String aDescription, Address aAddress, int aMonthlyPrice, float aPropertyRating, int aBedrooms, int aBathrooms, PropertyType aPropertyType, int aSquareFootage, Bool aWheelchairAccessible, Bool aHidden, Bool aSmokingAllowed, Landlord aPoster, Amenities aAmenitiesOffered)
   {
     title = aTitle;
     description = aDescription;
@@ -449,11 +542,16 @@ public class Listing
     squareFootage = aSquareFootage;
     wheelchairAccessible = aWheelchairAccessible;
     hidden = aHidden;
+    smokingAllowed = aSmokingAllowed;
     propertyImages = new ArrayList<Image>();
     boolean didAddPoster = setPoster(aPoster);
     if (!didAddPoster)
     {
       throw new RuntimeException("Unable to create property due to poster. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
+    }
+    if (!setAmenitiesOffered(aAmenitiesOffered))
+    {
+      throw new RuntimeException("Unable to create Listing due to aAmenitiesOffered. See https://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
     }
   }
 
@@ -549,6 +647,14 @@ public class Listing
     return wasSet;
   }
 
+  public boolean setSmokingAllowed(Bool aSmokingAllowed)
+  {
+    boolean wasSet = false;
+    smokingAllowed = aSmokingAllowed;
+    wasSet = true;
+    return wasSet;
+  }
+
   public String getTitle()
   {
     return title;
@@ -606,6 +712,11 @@ public class Listing
   {
     return hidden;
   }
+
+  public Bool getSmokingAllowed()
+  {
+    return smokingAllowed;
+  }
   /* Code from template association_GetMany */
   public Image getPropertyImage(int index)
   {
@@ -640,6 +751,22 @@ public class Listing
   public Landlord getPoster()
   {
     return poster;
+  }
+  /* Code from template association_GetOne */
+  public Amenities getAmenitiesOffered()
+  {
+    return amenitiesOffered;
+  }
+  /* Code from template association_GetOne */
+  public Utilities getUtilitiesCosts()
+  {
+    return utilitiesCosts;
+  }
+
+  public boolean hasUtilitiesCosts()
+  {
+    boolean has = utilitiesCosts != null;
+    return has;
   }
   /* Code from template association_MinimumNumberOfMethod */
   public static int minimumNumberOfPropertyImages()
@@ -700,7 +827,7 @@ public class Listing
   }
   /* Code from template association_AddIndexControlFunctions */
   public boolean addPropertyImageAt(Image aPropertyImage, int index)
-  {  
+  {
     boolean wasAdded = false;
     if(addPropertyImage(aPropertyImage))
     {
@@ -723,8 +850,8 @@ public class Listing
       propertyImages.remove(aPropertyImage);
       propertyImages.add(index, aPropertyImage);
       wasAdded = true;
-    } 
-    else 
+    }
+    else
     {
       wasAdded = addPropertyImageAt(aPropertyImage, index);
     }
@@ -749,6 +876,25 @@ public class Listing
     wasSet = true;
     return wasSet;
   }
+  /* Code from template association_SetUnidirectionalOne */
+  public boolean setAmenitiesOffered(Amenities aNewAmenitiesOffered)
+  {
+    boolean wasSet = false;
+    if (aNewAmenitiesOffered != null)
+    {
+      amenitiesOffered = aNewAmenitiesOffered;
+      wasSet = true;
+    }
+    return wasSet;
+  }
+  /* Code from template association_SetUnidirectionalOptionalOne */
+  public boolean setUtilitiesCosts(Utilities aNewUtilitiesCosts)
+  {
+    boolean wasSet = false;
+    utilitiesCosts = aNewUtilitiesCosts;
+    wasSet = true;
+    return wasSet;
+  }
 
   public void delete()
   {
@@ -759,6 +905,8 @@ public class Listing
     {
       placeholderPoster.removeProperty(this);
     }
+    amenitiesOffered = null;
+    utilitiesCosts = null;
   }
 
 
@@ -776,7 +924,10 @@ public class Listing
             "  " + "propertyType" + "=" + (getPropertyType() != null ? !getPropertyType().equals(this)  ? getPropertyType().toString().replaceAll("  ","    ") : "this" : "null") + System.getProperties().getProperty("line.separator") +
             "  " + "wheelchairAccessible" + "=" + (getWheelchairAccessible() != null ? !getWheelchairAccessible().equals(this)  ? getWheelchairAccessible().toString().replaceAll("  ","    ") : "this" : "null") + System.getProperties().getProperty("line.separator") +
             "  " + "hidden" + "=" + (getHidden() != null ? !getHidden().equals(this)  ? getHidden().toString().replaceAll("  ","    ") : "this" : "null") + System.getProperties().getProperty("line.separator") +
-            "  " + "poster = "+(getPoster()!=null?Integer.toHexString(System.identityHashCode(getPoster())):"null");
+            "  " + "smokingAllowed" + "=" + (getSmokingAllowed() != null ? !getSmokingAllowed().equals(this)  ? getSmokingAllowed().toString().replaceAll("  ","    ") : "this" : "null") + System.getProperties().getProperty("line.separator") +
+            "  " + "poster = "+(getPoster()!=null?Integer.toHexString(System.identityHashCode(getPoster())):"null") + System.getProperties().getProperty("line.separator") +
+            "  " + "amenitiesOffered = "+(getAmenitiesOffered()!=null?Integer.toHexString(System.identityHashCode(getAmenitiesOffered())):"null") + System.getProperties().getProperty("line.separator") +
+            "  " + "utilitiesCosts = "+(getUtilitiesCosts()!=null?Integer.toHexString(System.identityHashCode(getUtilitiesCosts())):"null");
   }
 }
 
@@ -790,8 +941,8 @@ public class Listing
 
 import java.util.*;
 
-// line 53 "model.ump"
-// line 120 "model.ump"
+// line 54 "model.ump"
+// line 139 "model.ump"
 public class Sublet extends Listing
 {
 
@@ -808,9 +959,9 @@ public class Sublet extends Listing
   // CONSTRUCTOR
   //------------------------
 
-  public Sublet(String aTitle, String aDescription, Address aAddress, int aMonthlyPrice, float aPropertyRating, int aBedrooms, int aBathrooms, PropertyType aPropertyType, int aSquareFootage, Bool aWheelchairAccessible, Bool aHidden, Landlord aPoster, Student aSubletter, Landlord aSupervisingLandlord)
+  public Sublet(String aTitle, String aDescription, Address aAddress, int aMonthlyPrice, float aPropertyRating, int aBedrooms, int aBathrooms, PropertyType aPropertyType, int aSquareFootage, Bool aWheelchairAccessible, Bool aHidden, Bool aSmokingAllowed, Landlord aPoster, Amenities aAmenitiesOffered, Student aSubletter, Landlord aSupervisingLandlord)
   {
-    super(aTitle, aDescription, aAddress, aMonthlyPrice, aPropertyRating, aBedrooms, aBathrooms, aPropertyType, aSquareFootage, aWheelchairAccessible, aHidden, aPoster);
+    super(aTitle, aDescription, aAddress, aMonthlyPrice, aPropertyRating, aBedrooms, aBathrooms, aPropertyType, aSquareFootage, aWheelchairAccessible, aHidden, aSmokingAllowed, aPoster, aAmenitiesOffered);
     boolean didAddSubletter = setSubletter(aSubletter);
     if (!didAddSubletter)
     {
@@ -945,7 +1096,7 @@ public class Sublet extends Listing
   }
   /* Code from template association_AddIndexControlFunctions */
   public boolean addSubletImageAt(Image aSubletImage, int index)
-  {  
+  {
     boolean wasAdded = false;
     if(addSubletImage(aSubletImage))
     {
@@ -968,8 +1119,8 @@ public class Sublet extends Listing
       subletImages.remove(aSubletImage);
       subletImages.add(index, aSubletImage);
       wasAdded = true;
-    } 
-    else 
+    }
+    else
     {
       wasAdded = addSubletImageAt(aSubletImage, index);
     }
@@ -1026,7 +1177,7 @@ public class Sublet extends Listing
 import java.util.*;
 
 // line 16 "model.ump"
-// line 87 "model.ump"
+// line 106 "model.ump"
 public class Student extends User
 {
 
@@ -1139,7 +1290,7 @@ public class Student extends User
   }
   /* Code from template association_AddIndexControlFunctions */
   public boolean addFavoritedListingAt(Listing aFavoritedListing, int index)
-  {  
+  {
     boolean wasAdded = false;
     if(addFavoritedListing(aFavoritedListing))
     {
@@ -1162,8 +1313,8 @@ public class Student extends User
       favoritedListings.remove(aFavoritedListing);
       favoritedListings.add(index, aFavoritedListing);
       wasAdded = true;
-    } 
-    else 
+    }
+    else
     {
       wasAdded = addFavoritedListingAt(aFavoritedListing, index);
     }
@@ -1175,9 +1326,9 @@ public class Student extends User
     return 0;
   }
   /* Code from template association_AddManyToOne */
-  public Sublet addHousing(String aTitle, String aDescription, Address aAddress, int aMonthlyPrice, float aPropertyRating, int aBedrooms, int aBathrooms, PropertyType aPropertyType, int aSquareFootage, Bool aWheelchairAccessible, Bool aHidden, Landlord aPoster, Landlord aSupervisingLandlord)
+  public Sublet addHousing(String aTitle, String aDescription, Address aAddress, int aMonthlyPrice, float aPropertyRating, int aBedrooms, int aBathrooms, PropertyType aPropertyType, int aSquareFootage, Bool aWheelchairAccessible, Bool aHidden, Bool aSmokingAllowed, Landlord aPoster, Amenities aAmenitiesOffered, Landlord aSupervisingLandlord)
   {
-    return new Sublet(aTitle, aDescription, aAddress, aMonthlyPrice, aPropertyRating, aBedrooms, aBathrooms, aPropertyType, aSquareFootage, aWheelchairAccessible, aHidden, aPoster, this, aSupervisingLandlord);
+    return new Sublet(aTitle, aDescription, aAddress, aMonthlyPrice, aPropertyRating, aBedrooms, aBathrooms, aPropertyType, aSquareFootage, aWheelchairAccessible, aHidden, aSmokingAllowed, aPoster, aAmenitiesOffered, this, aSupervisingLandlord);
   }
 
   public boolean addHousing(Sublet aHousing)
@@ -1211,7 +1362,7 @@ public class Student extends User
   }
   /* Code from template association_AddIndexControlFunctions */
   public boolean addHousingAt(Sublet aHousing, int index)
-  {  
+  {
     boolean wasAdded = false;
     if(addHousing(aHousing))
     {
@@ -1234,8 +1385,8 @@ public class Student extends User
       housing.remove(aHousing);
       housing.add(index, aHousing);
       wasAdded = true;
-    } 
-    else 
+    }
+    else
     {
       wasAdded = addHousingAt(aHousing, index);
     }
@@ -1267,8 +1418,8 @@ public class Student extends User
 /**
  * Don't implement image uploads
  */
-// line 73 "model.ump"
-// line 115 "model.ump"
+// line 74 "model.ump"
+// line 134 "model.ump"
 public class Image
 {
 
@@ -1327,7 +1478,7 @@ public class Image
 import java.util.*;
 
 // line 24 "model.ump"
-// line 93 "model.ump"
+// line 112 "model.ump"
 public class Landlord extends User
 {
 
@@ -1436,9 +1587,9 @@ public class Landlord extends User
     return 0;
   }
   /* Code from template association_AddManyToOne */
-  public Listing addProperty(String aTitle, String aDescription, Address aAddress, int aMonthlyPrice, float aPropertyRating, int aBedrooms, int aBathrooms, Listing.PropertyType aPropertyType, int aSquareFootage, Bool aWheelchairAccessible, Bool aHidden)
+  public Listing addProperty(String aTitle, String aDescription, Address aAddress, int aMonthlyPrice, float aPropertyRating, int aBedrooms, int aBathrooms, Listing.PropertyType aPropertyType, int aSquareFootage, Bool aWheelchairAccessible, Bool aHidden, Bool aSmokingAllowed, Amenities aAmenitiesOffered)
   {
-    return new Listing(aTitle, aDescription, aAddress, aMonthlyPrice, aPropertyRating, aBedrooms, aBathrooms, aPropertyType, aSquareFootage, aWheelchairAccessible, aHidden, this);
+    return new Listing(aTitle, aDescription, aAddress, aMonthlyPrice, aPropertyRating, aBedrooms, aBathrooms, aPropertyType, aSquareFootage, aWheelchairAccessible, aHidden, aSmokingAllowed, this, aAmenitiesOffered);
   }
 
   public boolean addProperty(Listing aProperty)
@@ -1472,7 +1623,7 @@ public class Landlord extends User
   }
   /* Code from template association_AddIndexControlFunctions */
   public boolean addPropertyAt(Listing aProperty, int index)
-  {  
+  {
     boolean wasAdded = false;
     if(addProperty(aProperty))
     {
@@ -1495,8 +1646,8 @@ public class Landlord extends User
       properties.remove(aProperty);
       properties.add(index, aProperty);
       wasAdded = true;
-    } 
-    else 
+    }
+    else
     {
       wasAdded = addPropertyAt(aProperty, index);
     }
@@ -1508,9 +1659,9 @@ public class Landlord extends User
     return 0;
   }
   /* Code from template association_AddManyToOne */
-  public Sublet addPropertySublet(String aTitle, String aDescription, Address aAddress, int aMonthlyPrice, float aPropertyRating, int aBedrooms, int aBathrooms, PropertyType aPropertyType, int aSquareFootage, Bool aWheelchairAccessible, Bool aHidden, Landlord aPoster, Student aSubletter)
+  public Sublet addPropertySublet(String aTitle, String aDescription, Address aAddress, int aMonthlyPrice, float aPropertyRating, int aBedrooms, int aBathrooms, PropertyType aPropertyType, int aSquareFootage, Bool aWheelchairAccessible, Bool aHidden, Bool aSmokingAllowed, Landlord aPoster, Amenities aAmenitiesOffered, Student aSubletter)
   {
-    return new Sublet(aTitle, aDescription, aAddress, aMonthlyPrice, aPropertyRating, aBedrooms, aBathrooms, aPropertyType, aSquareFootage, aWheelchairAccessible, aHidden, aPoster, aSubletter, this);
+    return new Sublet(aTitle, aDescription, aAddress, aMonthlyPrice, aPropertyRating, aBedrooms, aBathrooms, aPropertyType, aSquareFootage, aWheelchairAccessible, aHidden, aSmokingAllowed, aPoster, aAmenitiesOffered, aSubletter, this);
   }
 
   public boolean addPropertySublet(Sublet aPropertySublet)
@@ -1544,7 +1695,7 @@ public class Landlord extends User
   }
   /* Code from template association_AddIndexControlFunctions */
   public boolean addPropertySubletAt(Sublet aPropertySublet, int index)
-  {  
+  {
     boolean wasAdded = false;
     if(addPropertySublet(aPropertySublet))
     {
@@ -1567,8 +1718,8 @@ public class Landlord extends User
       propertySublet.remove(aPropertySublet);
       propertySublet.add(index, aPropertySublet);
       wasAdded = true;
-    } 
-    else 
+    }
+    else
     {
       wasAdded = addPropertySubletAt(aPropertySublet, index);
     }
@@ -1595,5 +1746,130 @@ public class Landlord extends User
   {
     return super.toString() + "["+
             "phoneNumber" + ":" + getPhoneNumber()+ "]";
+  }
+}
+
+
+
+//%% NEW FILE Amenities BEGINS HERE %%
+
+/*PLEASE DO NOT EDIT THIS CODE*/
+/*This code was generated using the UMPLE 1.35.0.7523.c616a4dce modeling language!*/
+
+
+
+/**
+ * class Comment, would have associations many to 1 with students and landlords and listings and sublets
+ */
+// line 81 "model.ump"
+// line 147 "model.ump"
+public class Amenities
+{
+
+  //------------------------
+  // MEMBER VARIABLES
+  //------------------------
+
+  //Amenities Attributes
+  private Bool gym;
+  private Bool laundry;
+  private Bool petsAllowed;
+  private Bool parking;
+  private Bool internetInclued;
+
+  //------------------------
+  // CONSTRUCTOR
+  //------------------------
+
+  public Amenities(Bool aGym, Bool aLaundry, Bool aPetsAllowed, Bool aParking, Bool aInternetInclued)
+  {
+    gym = aGym;
+    laundry = aLaundry;
+    petsAllowed = aPetsAllowed;
+    parking = aParking;
+    internetInclued = aInternetInclued;
+  }
+
+  //------------------------
+  // INTERFACE
+  //------------------------
+
+  public boolean setGym(Bool aGym)
+  {
+    boolean wasSet = false;
+    gym = aGym;
+    wasSet = true;
+    return wasSet;
+  }
+
+  public boolean setLaundry(Bool aLaundry)
+  {
+    boolean wasSet = false;
+    laundry = aLaundry;
+    wasSet = true;
+    return wasSet;
+  }
+
+  public boolean setPetsAllowed(Bool aPetsAllowed)
+  {
+    boolean wasSet = false;
+    petsAllowed = aPetsAllowed;
+    wasSet = true;
+    return wasSet;
+  }
+
+  public boolean setParking(Bool aParking)
+  {
+    boolean wasSet = false;
+    parking = aParking;
+    wasSet = true;
+    return wasSet;
+  }
+
+  public boolean setInternetInclued(Bool aInternetInclued)
+  {
+    boolean wasSet = false;
+    internetInclued = aInternetInclued;
+    wasSet = true;
+    return wasSet;
+  }
+
+  public Bool getGym()
+  {
+    return gym;
+  }
+
+  public Bool getLaundry()
+  {
+    return laundry;
+  }
+
+  public Bool getPetsAllowed()
+  {
+    return petsAllowed;
+  }
+
+  public Bool getParking()
+  {
+    return parking;
+  }
+
+  public Bool getInternetInclued()
+  {
+    return internetInclued;
+  }
+
+  public void delete()
+  {}
+
+
+  public String toString()
+  {
+    return super.toString() + "["+ "]" + System.getProperties().getProperty("line.separator") +
+            "  " + "gym" + "=" + (getGym() != null ? !getGym().equals(this)  ? getGym().toString().replaceAll("  ","    ") : "this" : "null") + System.getProperties().getProperty("line.separator") +
+            "  " + "laundry" + "=" + (getLaundry() != null ? !getLaundry().equals(this)  ? getLaundry().toString().replaceAll("  ","    ") : "this" : "null") + System.getProperties().getProperty("line.separator") +
+            "  " + "petsAllowed" + "=" + (getPetsAllowed() != null ? !getPetsAllowed().equals(this)  ? getPetsAllowed().toString().replaceAll("  ","    ") : "this" : "null") + System.getProperties().getProperty("line.separator") +
+            "  " + "parking" + "=" + (getParking() != null ? !getParking().equals(this)  ? getParking().toString().replaceAll("  ","    ") : "this" : "null") + System.getProperties().getProperty("line.separator") +
+            "  " + "internetInclued" + "=" + (getInternetInclued() != null ? !getInternetInclued().equals(this)  ? getInternetInclued().toString().replaceAll("  ","    ") : "this" : "null");
   }
 }
