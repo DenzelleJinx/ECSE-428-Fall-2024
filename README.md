@@ -3,4 +3,7 @@ This is a GitHub repository for the semester long group project
 
 
 # Class Diagram
-![image](https://github.com/user-attachments/assets/25cb30e4-ee8b-4c5c-b790-af46e74bd84f)
+
+![image](https://github.com/user-attachments/assets/bcbcbb06-c586-4512-8998-e3e4d6fd28ef)
+
+The umple model can be found here: https://cruise.umple.org/umpleonline/umple.php?model=241019ez83rx4xdal#genArea
