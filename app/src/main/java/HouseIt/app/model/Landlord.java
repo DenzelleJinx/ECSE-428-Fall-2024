@@ -119,9 +119,9 @@ public class Landlord extends User
     return 0;
   }
   /* Code from template association_AddManyToOne */
-  public Listing addProperty(String aTitle, String aDescription, Address aAddress, int aMonthlyPrice, float aPropertyRating, int aBedrooms, int aBathrooms, Listing.PropertyType aPropertyType, int aSquareFootage, boolean aWheelchairAccessible, boolean aHidden)
+  public Listing addProperty(String aTitle, String aDescription, Address aAddress, int aMonthlyPrice, float aPropertyRating, int aBedrooms, int aBathrooms, Listing.PropertyType aPropertyType, int aSquareFootage, Boolean aWheelchairAccessible, Boolean aHidden, Boolean aSmokingAllowed, Amenities aAmenitiesOffered)
   {
-    return new Listing(aTitle, aDescription, aAddress, aMonthlyPrice, aPropertyRating, aBedrooms, aBathrooms, aPropertyType, aSquareFootage, aWheelchairAccessible, aHidden, this);
+    return new Listing(aTitle, aDescription, aAddress, aMonthlyPrice, aPropertyRating, aBedrooms, aBathrooms, aPropertyType, aSquareFootage, aWheelchairAccessible, aHidden, aSmokingAllowed, this, aAmenitiesOffered);
   }
 
   public boolean addProperty(Listing aProperty)
@@ -191,9 +191,9 @@ public class Landlord extends User
     return 0;
   }
   /* Code from template association_AddManyToOne */
-  public Sublet addPropertySublet(String aTitle, String aDescription, Address aAddress, int aMonthlyPrice, float aPropertyRating, int aBedrooms, int aBathrooms, Listing.PropertyType aPropertyType, int aSquareFootage, boolean aWheelchairAccessible, boolean aHidden, Landlord aPoster, Student aSubletter)
+  public Sublet addPropertySublet(String aTitle, String aDescription, Address aAddress, int aMonthlyPrice, float aPropertyRating, int aBedrooms, int aBathrooms, Listing.PropertyType aPropertyType, int aSquareFootage, Boolean aWheelchairAccessible, Boolean aHidden, Boolean aSmokingAllowed, Landlord aPoster, Amenities aAmenitiesOffered, Student aSubletter)
   {
-    return new Sublet(aTitle, aDescription, aAddress, aMonthlyPrice, aPropertyRating, aBedrooms, aBathrooms, aPropertyType, aSquareFootage, aWheelchairAccessible, aHidden, aPoster, aSubletter, this);
+    return new Sublet(aTitle, aDescription, aAddress, aMonthlyPrice, aPropertyRating, aBedrooms, aBathrooms, aPropertyType, aSquareFootage, aWheelchairAccessible, aHidden, aSmokingAllowed, aPoster, aAmenitiesOffered, aSubletter, this);
   }
 
   public boolean addPropertySublet(Sublet aPropertySublet)

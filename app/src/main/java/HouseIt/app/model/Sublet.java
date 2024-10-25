@@ -26,9 +26,9 @@ public class Sublet extends Listing
   // CONSTRUCTOR
   //------------------------
 
-  public Sublet(String aTitle, String aDescription, Address aAddress, int aMonthlyPrice, float aPropertyRating, int aBedrooms, int aBathrooms, PropertyType aPropertyType, int aSquareFootage, Boolean aWheelchairAccessible, Boolean aHidden, Landlord aPoster, Student aSubletter, Landlord aSupervisingLandlord)
+  public Sublet(String aTitle, String aDescription, Address aAddress, int aMonthlyPrice, float aPropertyRating, int aBedrooms, int aBathrooms, PropertyType aPropertyType, int aSquareFootage, Boolean aWheelchairAccessible, Boolean aHidden, Boolean aSmokingAllowed, Landlord aPoster, Amenities aAmenitiesOffered, Student aSubletter, Landlord aSupervisingLandlord)
   {
-    super(aTitle, aDescription, aAddress, aMonthlyPrice, aPropertyRating, aBedrooms, aBathrooms, aPropertyType, aSquareFootage, aWheelchairAccessible, aHidden, aPoster);
+    super(aTitle, aDescription, aAddress, aMonthlyPrice, aPropertyRating, aBedrooms, aBathrooms, aPropertyType, aSquareFootage, aWheelchairAccessible, aHidden, aSmokingAllowed, aPoster, aAmenitiesOffered);
     boolean didAddSubletter = setSubletter(aSubletter);
     if (!didAddSubletter)
     {

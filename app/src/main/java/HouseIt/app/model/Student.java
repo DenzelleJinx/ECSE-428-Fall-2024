@@ -159,9 +159,9 @@ public class Student extends User
     return 0;
   }
   /* Code from template association_AddManyToOne */
-  public Sublet addHousing(String aTitle, String aDescription, Address aAddress, int aMonthlyPrice, float aPropertyRating, int aBedrooms, int aBathrooms, Listing.PropertyType aPropertyType, int aSquareFootage, Boolean aWheelchairAccessible, Boolean aHidden, Landlord aPoster, Landlord aSupervisingLandlord)
+  public Sublet addHousing(String aTitle, String aDescription, Address aAddress, int aMonthlyPrice, float aPropertyRating, int aBedrooms, int aBathrooms, Listing.PropertyType aPropertyType, int aSquareFootage, Boolean aWheelchairAccessible, Boolean aHidden, Boolean aSmokingAllowed, Landlord aPoster, Amenities aAmenitiesOffered, Landlord aSupervisingLandlord)
   {
-    return new Sublet(aTitle, aDescription, aAddress, aMonthlyPrice, aPropertyRating, aBedrooms, aBathrooms, aPropertyType, aSquareFootage, aWheelchairAccessible, aHidden, aPoster, this, aSupervisingLandlord);
+    return new Sublet(aTitle, aDescription, aAddress, aMonthlyPrice, aPropertyRating, aBedrooms, aBathrooms, aPropertyType, aSquareFootage, aWheelchairAccessible, aHidden, aSmokingAllowed, aPoster, aAmenitiesOffered, this, aSupervisingLandlord);
   }
 
   public boolean addHousing(Sublet aHousing)
