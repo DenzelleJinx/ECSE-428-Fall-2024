@@ -1,13 +1,13 @@
 # ECSE-428-Fall-2024
 This is a GitHub repository for the semester long group project
 
-# Class Diagram
+## Class Diagram
 
 ![image](https://github.com/user-attachments/assets/bcbcbb06-c586-4512-8998-e3e4d6fd28ef)
 
 The umple model can be found here: https://cruise.umple.org/umpleonline/umple.php?model=241019ez83rx4xdal#genArea
 
-# Setup
+## Setup
 
 - install [jdk 17](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
 
@@ -20,5 +20,7 @@ The umple model can be found here: https://cruise.umple.org/umpleonline/umple.ph
         - execute command `CREATE DATABASE house_it;`
         - execute command `\l` to confirm db was created succesfully
 
-- go in `ECSE-428-Fall-2024\HouseIt-Backend`
-- run `gradle build`
+## Testing
+
+- run `./gradlew clean build` in `ECSE-428-Fall-2024\HouseIt-Backend`
+    - this will build the project and run the configured tests
