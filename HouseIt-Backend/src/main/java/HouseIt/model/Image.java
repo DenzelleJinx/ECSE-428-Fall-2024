@@ -1,53 +1,59 @@
 package HouseIt.model;
 
-import java.util.Objects;
-
 /*PLEASE DO NOT EDIT THIS CODE*/
 /*This code was generated using the UMPLE 1.35.0.7523.c616a4dce modeling language!*/
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
 
-// line 2 "model.ump"
-// line 84 "model.ump"
+/**
+ * Don't implement image uploads
+ */
+// line 70 "model.ump"
+// line 130 "model.ump"
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
-public abstract class PersonRole
+public class Image
 {
 
   //------------------------
   // MEMBER VARIABLES
   //------------------------
 
-  //PersonRole Attributes
+  //Image Attributes
   @Id
   @GeneratedValue
   private int id;
-  private String accountStatus;
+  private String url;
 
   //------------------------
   // CONSTRUCTOR
   //------------------------
 
-  public PersonRole() {}
-
-  public PersonRole(int aId, String aAccountStatus)
+  public Image() {}
+  // do not use this constructor
+  public Image(int aId, String aUrl)
   {
     id = aId;
-    accountStatus = aAccountStatus;
+    url = aUrl;
   }
 
   //------------------------
   // INTERFACE
   //------------------------
 
-  public boolean setAccountStatus(String aAccountStatus)
+  public boolean setId(int aId)
   {
     boolean wasSet = false;
-    accountStatus = aAccountStatus;
+    id = aId;
+    wasSet = true;
+    return wasSet;
+  }
+
+  public boolean setUrl(String aUrl)
+  {
+    boolean wasSet = false;
+    url = aUrl;
     wasSet = true;
     return wasSet;
   }
@@ -57,9 +63,9 @@ public abstract class PersonRole
     return id;
   }
 
-  public String getAccountStatus()
+  public String getUrl()
   {
-    return accountStatus;
+    return url;
   }
 
   public void delete()
@@ -70,12 +76,6 @@ public abstract class PersonRole
   {
     return super.toString() + "["+
             "id" + ":" + getId()+ "," +
-            "accountStatus" + ":" + getAccountStatus()+ "]";
-  }
-
-  @Override
-  public int hashCode()
-  {
-    return Objects.hash(id, accountStatus);
+            "url" + ":" + getUrl()+ "]";
   }
 }

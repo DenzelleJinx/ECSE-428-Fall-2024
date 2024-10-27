@@ -1,63 +1,95 @@
-class PersonRole
+class User
 {
-  abstract;
-  int id;
-  String accountStatus;
-  // account status one of:
-  // active
-  // disabled
-}
-
-class Person {
-  String firstName;
-  String lastName;
+  // Deactivated makes every post Hidden, User can log back in and reactivate it
+  // Suspended is done by an Administrator, has to be unsuspended by Administrator
+  // Optionally, can only have Suspended
+  enum AccountStatus {Pending, Active, Suspended, Deactivated, Denied};
+  unique Integer id;
+  unique String username;
   unique String email;
-  String phoneNumber;
   String password;
+  AccountStatus status;
+  Float rating;
 }
 
-association {
-  0..1 Person person ->  1 PersonRole personRoles;
+class Student
+{
+  isA User;
+  1 interestedStudents -> * Listing favoritedListings;
+  1 subletter -> * Listing subletListings;
+  // Roommate matching system..?
 }
 
-class Admin {
-  isA PersonRole;
+
+class Landlord
+{
+  isA User;
+  Integer phoneNumber;
+  1 poster -> * Listing properties;
 }
 
-class Landlord {
-  isA PersonRole;
-  String landlordAccountStatus;
-  // landlord account status one of:
-  // pending
-  // approved
-  // disapproved
+class Administrator
+{
+  isA User;
 }
 
-class Renter {
-  isA PersonRole;
-}
-
-class Posting {
-  String address;
-  int bedrooms;
-  int bathrooms;
-  int floors;
-}
-
-class Picture {
+class Listing
+{
+  Integer id;
   String title;
+  String description;
+  // Address address;
+  Integer monthlyPrice; // If Landlords want a different payment plan, they can specify the specifics in the description
+  1 listing -> 0..10 Image propertyImages;
+  1 listing -> 1 Address address;
+  Float propertyRating;
+  Integer bedrooms;
+  Integer bathrooms;
+  enum PropertyType {Studio, Dorm, Condo, Apartment, House}
+  PropertyType propertyType;
+  Integer squareFootage;
+  boolean wheelchairAccessible;
+  boolean hidden;
+  boolean smokingAllowed;
+}
+
+// Optionally address is just a string
+// Could use some Google Maps integration or something
+class Address
+{
+  Integer id;
+  String city;
+  String postalCode;
+  String street;
+  String streetNumber;
+  String apartmentNumber;
+}
+
+// Don't implement image uploads
+class Image
+{
+  Integer id;
   String url;
 }
 
-association {
-  1 Posting posting -> * Picture pictures;
+// class Comment, would have associations many to 1 with students and landlords and listings and sublets
+
+class Amenities
+{
+  Integer id;
+  boolean gym;
+  boolean laundry;
+  boolean petsAllowed;
+  boolean parking;
+  boolean internetInclued;
+  1 amenitiesOffered <- 1 Listing listingBuilding;
 }
 
-association {
-  1 Landlord landlord -> * Posting postings;
-}
-
-
-association {
-  1 Renter renter -> * Posting savedPostings;
+class Utilities
+{
+  Integer id;
+  Float waterCost;
+  Float electricityCost;
+  Float heatingCost;
+  0..1 utilitiesCosts <- 1 Listing listingInfrastructure;
 }

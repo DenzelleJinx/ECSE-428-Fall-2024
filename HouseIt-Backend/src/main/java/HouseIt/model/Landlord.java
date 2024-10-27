@@ -3,16 +3,16 @@ package HouseIt.model;
 /*PLEASE DO NOT EDIT THIS CODE*/
 /*This code was generated using the UMPLE 1.35.0.7523.c616a4dce modeling language!*/
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.FetchType;
-
 import java.util.*;
 
-// line 29 "model.ump"
-// line 94 "model.ump"
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToMany;
+
+// line 25 "model.ump"
+// line 102 "model.ump"
 @Entity
-public class Landlord extends PersonRole
+public class Landlord extends User
 {
 
   //------------------------
@@ -20,132 +20,146 @@ public class Landlord extends PersonRole
   //------------------------
 
   //Landlord Attributes
-  private String landlordAccountStatus;
+  private String phoneNumber;
 
   //Landlord Associations
   @OneToMany(fetch = FetchType.EAGER)
-  private List<Posting> postings;
+  private List<Listing> properties;
 
   //------------------------
   // CONSTRUCTOR
   //------------------------
 
-  public Landlord() {}
-
-  public Landlord(int aId, String aAccountStatus, String aLandlordAccountStatus)
+  public Landlord()
   {
-    super(aId, aAccountStatus);
-    landlordAccountStatus = aLandlordAccountStatus;
-    postings = new ArrayList<Posting>();
+    super();
+    properties = new ArrayList<Listing>();
+  }
+  // do not use this constructor
+  public Landlord(int aId, String aUsername, String aEmail, String aPassword, AccountStatus aStatus, float aRating, String aPhoneNumber)
+  {
+    super(aUsername, aEmail, aPassword, aStatus, aRating);
+    phoneNumber = aPhoneNumber;
+    properties = new ArrayList<Listing>();
   }
 
   //------------------------
   // INTERFACE
   //------------------------
 
-  public boolean setLandlordAccountStatus(String aLandlordAccountStatus)
+  public boolean setPhoneNumber(String aPhoneNumber)
   {
     boolean wasSet = false;
-    landlordAccountStatus = aLandlordAccountStatus;
+    phoneNumber = aPhoneNumber;
     wasSet = true;
     return wasSet;
   }
 
-  public String getLandlordAccountStatus()
+  public String getPhoneNumber()
   {
-    return landlordAccountStatus;
+    return phoneNumber;
   }
   /* Code from template association_GetMany */
-  public Posting getPosting(int index)
+  public Listing getProperty(int index)
   {
-    Posting aPosting = postings.get(index);
-    return aPosting;
+    Listing aProperty = properties.get(index);
+    return aProperty;
   }
 
-  public List<Posting> getPostings()
+  public List<Listing> getProperties()
   {
-    List<Posting> newPostings = Collections.unmodifiableList(postings);
-    return newPostings;
+    List<Listing> newProperties = Collections.unmodifiableList(properties);
+    return newProperties;
   }
 
-  public int numberOfPostings()
+  public int numberOfProperties()
   {
-    int number = postings.size();
+    int number = properties.size();
     return number;
   }
 
-  public boolean hasPostings()
+  public boolean hasProperties()
   {
-    boolean has = postings.size() > 0;
+    boolean has = properties.size() > 0;
     return has;
   }
 
-  public int indexOfPosting(Posting aPosting)
+  public int indexOfProperty(Listing aProperty)
   {
-    int index = postings.indexOf(aPosting);
+    int index = properties.indexOf(aProperty);
     return index;
   }
   /* Code from template association_MinimumNumberOfMethod */
-  public static int minimumNumberOfPostings()
+  public static int minimumNumberOfProperties()
   {
     return 0;
   }
-  /* Code from template association_AddUnidirectionalMany */
-  public boolean addPosting(Posting aPosting)
+  /* Code from template association_AddManyToOne */
+  // do not use
+  public Listing addProperty(String aTitle, String aDescription, int aMonthlyPrice, float aPropertyRating, int aBedrooms, int aBathrooms, Listing.PropertyType aPropertyType, int aSquareFootage, boolean aWheelchairAccessible, boolean aHidden, boolean aSmokingAllowed, Address aAddress, Amenities aAmenitiesOffered)
+  {
+    return new Listing(aTitle, aDescription, aMonthlyPrice, aPropertyRating, aBedrooms, aBathrooms, aPropertyType, aSquareFootage, aWheelchairAccessible, aHidden, aSmokingAllowed, aAddress, this, aAmenitiesOffered);
+  }
+
+  public boolean addProperty(Listing aProperty)
   {
     boolean wasAdded = false;
-    if (postings.contains(aPosting)) { return false; }
-    postings.add(aPosting);
+    if (properties.contains(aProperty)) { return false; }
+    else
+    {
+      properties.add(aProperty);
+    }
     wasAdded = true;
     return wasAdded;
   }
 
-  public boolean removePosting(Posting aPosting)
+  public boolean removeProperty(Listing aProperty)
   {
     boolean wasRemoved = false;
-    if (postings.contains(aPosting))
-    {
-      postings.remove(aPosting);
-      wasRemoved = true;
-    }
+    properties.remove(aProperty);
+    wasRemoved = true;
     return wasRemoved;
   }
   /* Code from template association_AddIndexControlFunctions */
-  public boolean addPostingAt(Posting aPosting, int index)
+  public boolean addPropertyAt(Listing aProperty, int index)
   {  
     boolean wasAdded = false;
-    if(addPosting(aPosting))
+    if(addProperty(aProperty))
     {
       if(index < 0 ) { index = 0; }
-      if(index > numberOfPostings()) { index = numberOfPostings() - 1; }
-      postings.remove(aPosting);
-      postings.add(index, aPosting);
+      if(index > numberOfProperties()) { index = numberOfProperties() - 1; }
+      properties.remove(aProperty);
+      properties.add(index, aProperty);
       wasAdded = true;
     }
     return wasAdded;
   }
 
-  public boolean addOrMovePostingAt(Posting aPosting, int index)
+  public boolean addOrMovePropertyAt(Listing aProperty, int index)
   {
     boolean wasAdded = false;
-    if(postings.contains(aPosting))
+    if(properties.contains(aProperty))
     {
       if(index < 0 ) { index = 0; }
-      if(index > numberOfPostings()) { index = numberOfPostings() - 1; }
-      postings.remove(aPosting);
-      postings.add(index, aPosting);
+      if(index > numberOfProperties()) { index = numberOfProperties() - 1; }
+      properties.remove(aProperty);
+      properties.add(index, aProperty);
       wasAdded = true;
     } 
     else 
     {
-      wasAdded = addPostingAt(aPosting, index);
+      wasAdded = addPropertyAt(aProperty, index);
     }
     return wasAdded;
   }
 
   public void delete()
   {
-    postings.clear();
+    for(int i=properties.size(); i > 0; i--)
+    {
+      Listing aProperty = properties.get(i - 1);
+      aProperty.delete();
+    }
     super.delete();
   }
 
@@ -153,12 +167,28 @@ public class Landlord extends PersonRole
   public String toString()
   {
     return super.toString() + "["+
-            "landlordAccountStatus" + ":" + getLandlordAccountStatus()+ "]";
+            "phoneNumber" + ":" + getPhoneNumber()+ "]";
   }
 
   @Override
-  public int hashCode()
-  {
-    return Objects.hash(super.hashCode(), landlordAccountStatus, postings);
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Landlord)) return false;
+    Landlord landlord = (Landlord) o;
+    if (properties.size() != landlord.properties.size()) {
+      return false;
+    }
+    for (int i = 0; i < properties.size(); i++) {
+      if (!properties.get(i).equals(landlord.properties.get(i))) {
+        return false;
+      }
+    }
+    return phoneNumber == landlord.phoneNumber &&
+            super.equals(o);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), phoneNumber, properties);
   }
 }
