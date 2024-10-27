@@ -1,6 +1,7 @@
 package HouseIt.app.dao;
 
 import HouseIt.app.model.Address;
+import HouseIt.app.model.Amenities;
 import HouseIt.app.model.Image;
 import HouseIt.app.model.Landlord;
 import HouseIt.app.model.Student;
@@ -12,14 +13,7 @@ import java.util.List;
 import org.springframework.data.repository.CrudRepository;
 
 public interface SubletRepository extends CrudRepository<Sublet, Integer> {
-    List<Sublet> findSubletbyPoster(Landlord poster);
-
-    List<Sublet> findSubletBySubletter(Student subletter);
-
-    Sublet findAddressBySubletImages(List<Image> subletImages);
-
-    Sublet findSubletBySupervisingLandlord(Landlord supervisingLandlord);
-
+    
     Sublet findSubletByTitle(String title);
 
     Sublet findSubletByDescription(String description);
@@ -41,4 +35,14 @@ public interface SubletRepository extends CrudRepository<Sublet, Integer> {
     Sublet findSubletByWheelchairAccessible(Boolean wheelchairAccessible);
 
     Sublet findSubletByHidden(Boolean hidden);
+
+    List<Sublet> findSubletbySmokingAllowed(Boolean smokingAllowed);
+
+    List<Sublet> findSubletbyPoster(Landlord poster);
+
+    List<Sublet> findSubletbyAmenitiesOffered(Amenities amenitiesOffered);
+
+    List<Sublet> findSubletBySubletter(Student subletter);
+
+    Sublet findSubletBySupervisingLandlord(Landlord supervisingLandlord);
 }

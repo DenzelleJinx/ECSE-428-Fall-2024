@@ -1,7 +1,9 @@
 package HouseIt.app.dao;
 
 import HouseIt.app.model.Address;
+import HouseIt.app.model.Amenities;
 import HouseIt.app.model.Image;
+import HouseIt.app.model.Landlord;
 import HouseIt.app.model.Listing;
 import HouseIt.app.model.Listing.PropertyType;
 
@@ -33,5 +35,9 @@ public interface ListingRepository extends CrudRepository<Listing, Integer> {
 
     List<Listing> findListingByHidden(Boolean hidden);
 
-    Listing findListingByPropertyImages(List<Image> propertyImages);
+    List<Listing> findListingBySmokingAllowed(Boolean smokingAllowed);
+
+    List<Listing> findListingByPoster(Landlord poster);
+
+    List<Listing> findListingByAmenitiesOffered(Amenities amenitiesOffered);
 }

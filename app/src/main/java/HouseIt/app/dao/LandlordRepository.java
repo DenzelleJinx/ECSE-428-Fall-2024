@@ -9,8 +9,6 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface LandlordRepository extends CrudRepository<Landlord, Integer> {
 
-    Landlord findLandlordByPhoneNumber(String phoneNumber);
-
     Landlord findLandlordByID(String id);
 
     Landlord findLandlordByUsername(String username);
@@ -23,4 +21,5 @@ public interface LandlordRepository extends CrudRepository<Landlord, Integer> {
 
     List<Landlord> findLandlordByRating(float rating);
 
+    Landlord findLandlordByPhoneNumber(String phoneNumber);
 }
