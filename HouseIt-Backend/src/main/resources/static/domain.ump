@@ -1,0 +1,63 @@
+class PersonRole
+{
+  abstract;
+  int id;
+  String accountStatus;
+  // account status one of:
+  // active
+  // disabled
+}
+
+class Person {
+  String firstName;
+  String lastName;
+  unique String email;
+  String phoneNumber;
+  String password;
+}
+
+association {
+  0..1 Person person ->  1 PersonRole personRoles;
+}
+
+class Admin {
+  isA PersonRole;
+}
+
+class Landlord {
+  isA PersonRole;
+  String landlordAccountStatus;
+  // landlord account status one of:
+  // pending
+  // approved
+  // disapproved
+}
+
+class Renter {
+  isA PersonRole;
+}
+
+class Posting {
+  String address;
+  int bedrooms;
+  int bathrooms;
+  int floors;
+}
+
+class Picture {
+  String title;
+  String url;
+}
+
+association {
+  1 Posting posting -> * Picture pictures;
+}
+
+association {
+  1 Landlord landlord -> * Posting postings;
+}
+
+
+association {
+  1 Renter renter -> * Posting savedPostings;
+}
