@@ -20,7 +20,13 @@ The umple model can be found [here](https://cruise.umple.org/umpleonline/umple.p
         - execute command `CREATE DATABASE house_it;`
         - execute command `\l` to confirm db was created succesfully
 
+- install [node.js 20.18.0](https://nodejs.org/en/download/prebuilt-installer)
+    - run `npm install` in `ECSE-428-Fall-2024\houseit-frontend`
+
+
 ## Testing
 
 - run `./gradlew clean build` in `ECSE-428-Fall-2024\HouseIt-Backend`
     - this will build the project and run the configured tests
+
+- run `npm start` in `ECSE-428-Fall-2024\houseit-frontend`
