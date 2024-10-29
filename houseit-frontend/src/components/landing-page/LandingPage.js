@@ -80,7 +80,7 @@ function LandingPage() {
                         Discover listings and connect with landlords effortlessly.
                     </Typography>
                     <StyledButton variant="contained" size="large" sx={{ m: 1 }}>
-                        Explore Listings
+                        Create Listing
                     </StyledButton>
                     <Button variant="outlined" size="large" sx={{ m: 1, color: primaryColor, borderColor: primaryColor }} onClick={handleSignUpClick}>
                         Sign Up Now
