@@ -23,6 +23,10 @@ function LandingPage() {
         navigate('/signup');
     };
 
+    const handleListingClick = () => {
+        navigate('/createlisting');
+    };
+
     return (
         <div
             style={{
@@ -79,7 +83,7 @@ function LandingPage() {
                     <Typography variant="h6" color="textSecondary" paragraph>
                         Discover listings and connect with landlords effortlessly.
                     </Typography>
-                    <StyledButton variant="contained" size="large" sx={{ m: 1 }}>
+                    <StyledButton variant="contained" size="large" sx={{ m: 1 }} onClick={handleListingClick}>
                         Create Listing
                     </StyledButton>
                     <Button variant="outlined" size="large" sx={{ m: 1, color: primaryColor, borderColor: primaryColor }} onClick={handleSignUpClick}>
