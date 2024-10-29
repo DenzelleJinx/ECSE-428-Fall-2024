@@ -18,22 +18,6 @@ function App() {
               <Route path="/createlisting" element={<CreateListing />} />
           </Routes>
       </Router>
-      // <Router>
-      //   <div>
-      //     <h1>HouseIt</h1>
-      //
-      //     {/* Navigation Links */}
-      //     <nav>
-      //       <Link to="/listing">Create Listing</Link>
-      //     </nav>
-      //
-      //     {/* Define Routes */}
-      //     <Routes>
-      //       <Route path="/" element={<SignUp />} />
-      //       <Route path="/listing" element={<ImageUpload />} />
-      //     </Routes>
-      //   </div>
-      // </Router>
   );
 }
 
