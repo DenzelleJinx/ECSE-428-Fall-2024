@@ -17,12 +17,33 @@ public class StudentService {
 
     @Transactional
     public Student createStudent(String username, String password, String email) {
+        if (username == null || username.trim().length() == 0) {
+            throw new IllegalArgumentException("Username cannot be empty.");
+        }
+        
+        if (email == null || email.trim().length() == 0) {
+            throw new IllegalArgumentException("Email cannot be empty.");
+        }
+        
+        if (!isValidMcGillEmail(email)) {
+            throw new IllegalArgumentException("Email must be a valid McGill email (format: lower.lower@mail.mcgill.ca).");
+        }
+        
+        if (password == null || password.trim().length() < 6) {
+            throw new IllegalArgumentException("Password must be at least 6 characters long");
+        }
+        
+        if (studentDAO.findStudentByEmail(email) != null) {
+            throw new IllegalArgumentException("Email already exists in the system. Please enter another email.");
+        }
+
         Student newStudent = new Student();
         newStudent.setUsername(username);
         newStudent.setEmail(email);
         newStudent.setPassword(password);
         newStudent.setStatus(AccountStatus.ACTIVE);
         newStudent.setRating(0.0f);
+
         return studentDAO.save(newStudent);
     }
 
@@ -34,47 +55,7 @@ public class StudentService {
         studentDTO.setStatus(student.getStatus());
         studentDTO.setRating(student.getRating());
         return studentDTO;
-    }
-
-        /**
- * Creates a student
- * @param id
- * @param username
- * @param email
- * @param password
- * @param status
- * @param rating
- * @return created student
- */
-@Transactional 
-public Student createStudent(int id, String username, String email, String password, AccountStatus status, float rating) {
-    if (username == null || username.trim().length() == 0) {
-        throw new IllegalArgumentException("Username cannot be empty.");
-    }
-    
-    if (email == null || email.trim().length() == 0) {
-        throw new IllegalArgumentException("Email cannot be empty.");
-    }
-    
-    if (!isValidMcGillEmail(email)) {
-        throw new IllegalArgumentException("Email must be a valid McGill email (format: lower.lower@mail.mcgill.ca).");
-    }
-    
-    if (password == null || password.trim().length() == 0) {
-        throw new IllegalArgumentException("Password cannot be empty.");
-    }
-    
-    if (findUserByEmail(email) != null) {
-        throw new IllegalArgumentException("Email already exists in the system. Please enter another email.");
-    }
-
-    Student student = new Student(id, username, email, password, status, rating);
-    
-    studentRepository.save(student);
-    
-    return student;
-}
-    
+    }    
 
     Boolean isValidMcGillEmail(String email){
         //checks if the email is of the form (lower cases).(lower cases)@mail.mcgill.ca

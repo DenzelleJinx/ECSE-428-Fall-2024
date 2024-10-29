@@ -17,6 +17,22 @@ public class LandlordService {
 
     @Transactional
     public Landlord createLandlord(String username, String password, String email, String phoneNumber) {
+        if (username == null || username.trim().length() == 0) {
+            throw new IllegalArgumentException("Username cannot be empty.");
+        }
+        
+        if (email == null || email.trim().length() == 0) {
+            throw new IllegalArgumentException("Email cannot be empty.");
+        }
+        
+        if (password == null || password.trim().length() < 6) {
+            throw new IllegalArgumentException("Password must be at least 6 characters long");
+        }
+        
+        if (landlordDAO.findLandlordByEmail(email) != null) {
+            throw new IllegalArgumentException("Email already exists in the system. Please enter another email.");
+        }
+
         Landlord newLandlord = new Landlord();
         newLandlord.setUsername(username);
         newLandlord.setPassword(password);
