@@ -46,6 +46,10 @@ public class AccountsFunctionalityStepDefinitions {
     @Before
     public void beforeScenario() {
         lastResponse = null;
+        email = "";
+        username = "";
+        password = "";
+        phone = "";
         studentDAO.deleteAll();
     }
 
@@ -56,8 +60,6 @@ public class AccountsFunctionalityStepDefinitions {
 
     @When("the user chooses to register a student account")
     public void theUserChoosesToRegisterAStudentAccount() {
-        /* var result = testRestTemplate.getForEntity("/student", Object.class); // TODO: Test if it works with controller
-        lastResponse = result; */
         isStudent = true;
     }
 
@@ -68,7 +70,16 @@ public class AccountsFunctionalityStepDefinitions {
 
     @When("the user enters their email, password, first name, last name, and phone number")
     public void theUserEntersTheirEmailPasswordUsernameAndPhoneNumber() {
-        
+        if (isStudent) {
+            email = studentEmail;
+            username = studentUsername;
+            password = studentPassword;
+        } else {
+            email = landlordEmail;
+            username = landlordUsername;
+            password = landlordPassword;
+            phone = landlordPhone;
+        }
     }
 
     @When("the user provides a picture of their face")
@@ -78,7 +89,9 @@ public class AccountsFunctionalityStepDefinitions {
 
     @When("the user enters an email that does not end with @mail.mcgill.ca or @mcgill.ca")
     public void theUserEntersAnEmailThatIsNotMcgill() {
-        // Include other information here (valid only)
+        email = studentEmailInvalid;
+        username = studentUsername;
+        password = studentPassword;
     }
 
     @When("the user does not provide a picture of their face")
