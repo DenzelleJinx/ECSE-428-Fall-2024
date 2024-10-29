@@ -18,4 +18,5 @@ public interface AddressDAO extends CrudRepository<Address, Integer> {
 
     Address findAddressByApartmentNumber(String apartmentNumber);
 
+    void deleteById(int id);
 }

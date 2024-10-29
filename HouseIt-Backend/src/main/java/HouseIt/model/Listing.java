@@ -22,7 +22,7 @@ public class Listing
   // ENUMERATIONS
   //------------------------
 
-  public enum PropertyType { Studio, Dorm, Condo, Apartment, House }
+  public enum PropertyType { STUDIO, DORM, CONDO, APARTMENT, HOUSE }
 
   //------------------------
   // MEMBER VARIABLES

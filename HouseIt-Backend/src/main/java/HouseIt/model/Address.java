@@ -52,14 +52,6 @@ public class Address
   // INTERFACE
   //------------------------
 
-  public boolean setId(int aId)
-  {
-    boolean wasSet = false;
-    id = aId;
-    wasSet = true;
-    return wasSet;
-  }
-
   public boolean setCity(String aCity)
   {
     boolean wasSet = false;

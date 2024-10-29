@@ -1,8 +1,6 @@
 package HouseIt.repository;
 
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -11,7 +9,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import HouseIt.model.User;
 import HouseIt.model.User.AccountStatus;
-
 import HouseIt.dao.UserDAO;
 
 @SpringBootTest
@@ -33,19 +30,74 @@ public class UserDAOTests {
         AccountStatus status = AccountStatus.ACTIVE;
         float rating = 5.0f;
 
-        
-        User user = new User();
-        user.setUsername(username);
-        user.setEmail(email);
-        user.setPassword(password);
-        user.setStatus(status);
-        user.setRating(rating);
-
+        User user = new User(username, email, password, status, rating);
         userDAO.save(user);
 
         User foundUser = userDAO.findUserByUsername(username);
 
         assertNotNull(foundUser);
         assertEquals(user, foundUser);
+    }
+
+    @Test
+    public void testFindUserByEmail() {
+        String username = "testUser2";
+        String email = "testUser2@email.com";
+        String password = "password2";
+        AccountStatus status = AccountStatus.PENDING;
+        float rating = 4.0f;
+
+        User user = new User(username, email, password, status, rating);
+        userDAO.save(user);
+
+        User foundUser = userDAO.findUserByEmail(email);
+
+        assertNotNull(foundUser);
+        assertEquals(user, foundUser);
+    }
+
+    @Test
+    public void testFindUserByStatus() {
+        String username = "testUser3";
+        String email = "testUser3@email.com";
+        String password = "password3";
+        AccountStatus status = AccountStatus.SUSPENDED;
+        float rating = 3.0f;
+
+        User user = new User(username, email, password, status, rating);
+        userDAO.save(user);
+
+        User foundUser = userDAO.findUserByStatus(status);
+
+        assertNotNull(foundUser);
+        assertEquals(user, foundUser);
+    }
+
+    @Test
+    public void testFindUserByNonExistentUsername() {
+        User foundUser = userDAO.findUserByUsername("nonExistentUser");
+        assertNull(foundUser);
+    }
+
+    @Test
+    public void testFindUserByNonExistentEmail() {
+        User foundUser = userDAO.findUserByEmail("nonExistent@email.com");
+        assertNull(foundUser);
+    }
+
+    @Test
+    public void testDeleteUser() {
+        String username = "deletableUser";
+        String email = "deletableUser@email.com";
+        String password = "deletePassword";
+        AccountStatus status = AccountStatus.ACTIVE;
+        float rating = 5.0f;
+
+        User user = new User(username, email, password, status, rating);
+        userDAO.save(user);
+
+        userDAO.delete(user);
+        User foundUser = userDAO.findUserByUsername(username);
+        assertNull(foundUser);
     }
 }

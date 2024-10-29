@@ -20,5 +20,4 @@ public interface StudentDAO extends CrudRepository<Student, Integer> {
     List<Student> findStudentByStatus(AccountStatus status);
 
     List<Student> findStudentByRating(float rating);
-
 }

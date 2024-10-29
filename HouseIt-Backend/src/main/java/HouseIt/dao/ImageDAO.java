@@ -10,4 +10,5 @@ public interface ImageDAO extends CrudRepository<Image, Integer> {
 
     Image findImageByUrl(String url);
 
+    void deleteById(int id);
 }

@@ -32,7 +32,7 @@ public class Amenities
   private boolean laundry;
   private boolean petsAllowed;
   private boolean parking;
-  private boolean internetInclued;
+  private boolean internetIncluded;
 
   //------------------------
   // CONSTRUCTOR
@@ -40,15 +40,13 @@ public class Amenities
 
   public Amenities() {}
 
-  // do not use this constructor
-  public Amenities(int aId, boolean aGym, boolean aLaundry, boolean aPetsAllowed, boolean aParking, boolean aInternetInclued)
+  public Amenities(boolean aGym, boolean aLaundry, boolean aPetsAllowed, boolean aParking, boolean aInternetIncluded)
   {
-    id = aId;
     gym = aGym;
     laundry = aLaundry;
     petsAllowed = aPetsAllowed;
     parking = aParking;
-    internetInclued = aInternetInclued;
+    internetIncluded = aInternetIncluded;
   }
 
   //------------------------
@@ -87,10 +85,10 @@ public class Amenities
     return wasSet;
   }
 
-  public boolean setInternetInclued(boolean aInternetInclued)
+  public boolean setInternetIncluded(boolean aInternetIncluded)
   {
     boolean wasSet = false;
-    internetInclued = aInternetInclued;
+    internetIncluded = aInternetIncluded;
     wasSet = true;
     return wasSet;
   }
@@ -120,9 +118,9 @@ public class Amenities
     return parking;
   }
 
-  public boolean getInternetInclued()
+  public boolean getInternetIncluded()
   {
-    return internetInclued;
+    return internetIncluded;
   }
 
   public void delete()
@@ -137,7 +135,7 @@ public class Amenities
             "laundry" + ":" + getLaundry()+ "," +
             "petsAllowed" + ":" + getPetsAllowed()+ "," +
             "parking" + ":" + getParking()+ "," +
-            "internetInclued" + ":" + getInternetInclued()+ "]";
+            "internetIncluded" + ":" + getInternetIncluded()+ "]";
   }
 
   @Override
@@ -149,12 +147,12 @@ public class Amenities
             laundry == amenities.laundry &&
             petsAllowed == amenities.petsAllowed &&
             parking == amenities.parking &&
-            internetInclued == amenities.internetInclued &&
+            internetIncluded == amenities.internetIncluded &&
             id == amenities.id;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, gym, laundry, petsAllowed, parking, internetInclued);
+    return Objects.hash(id, gym, laundry, petsAllowed, parking, internetIncluded);
   }
 }
