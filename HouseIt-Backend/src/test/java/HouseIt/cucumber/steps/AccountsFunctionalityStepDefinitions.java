@@ -2,12 +2,14 @@ package HouseIt.cucumber.steps;
 
 import static org.junit.Assert.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.ResponseEntity;
 
+import HouseIt.dao.LandlordDAO;
 import HouseIt.dao.StudentDAO;
+import HouseIt.model.Landlord;
 import HouseIt.model.Student;
+import HouseIt.model.User;
+import HouseIt.service.LandlordService;
+import HouseIt.service.StudentService;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -15,14 +17,17 @@ import io.cucumber.java.en.When;
 
 public class AccountsFunctionalityStepDefinitions {
 
-    @LocalServerPort
-    int port; // TODO: Remove if not needed
+    @Autowired
+    StudentService studentService;
 
     @Autowired
-    TestRestTemplate testRestTemplate;
+    LandlordService landlordService;
 
     @Autowired
     StudentDAO studentDAO;
+
+    @Autowired
+    LandlordDAO landlordDAO;
 
     // Dummy variables
     String studentEmail = "student.name@mail.mcgill.ca";
@@ -40,16 +45,15 @@ public class AccountsFunctionalityStepDefinitions {
     String username;
     String password;
     String phone;
-    
-    ResponseEntity<Object> lastResponse;
+    String errorMessage;
 
     @Before
     public void beforeScenario() {
-        lastResponse = null;
         email = "";
         username = "";
         password = "";
         phone = "";
+        errorMessage = null;
         studentDAO.deleteAll();
     }
 
@@ -74,11 +78,23 @@ public class AccountsFunctionalityStepDefinitions {
             email = studentEmail;
             username = studentUsername;
             password = studentPassword;
+            try {
+                studentService.createStudent(username, password, email);
+            }
+            catch (Exception e) {
+                errorMessage = e.getMessage();
+            }
         } else {
             email = landlordEmail;
             username = landlordUsername;
             password = landlordPassword;
             phone = landlordPhone;
+            try {
+                landlordService.createLandlord(username, password, email, phone);
+            }
+            catch (Exception e) {
+                errorMessage = e.getMessage();
+            }
         }
     }
 
@@ -92,6 +108,12 @@ public class AccountsFunctionalityStepDefinitions {
         email = studentEmailInvalid;
         username = studentUsername;
         password = studentPassword;
+        try {
+            studentService.createStudent(username, password, email);
+        }
+        catch (Exception e) {
+            errorMessage = e.getMessage();
+        }
     }
 
     @When("the user does not provide a picture of their face")
@@ -101,19 +123,27 @@ public class AccountsFunctionalityStepDefinitions {
 
     @Then("the account is created with the provided information")
     public void theAccountIsCreatedWithTheProvidedInformation() {
-         if (isStudent) {
-        Student newStudent = new Student(email, username, password);
-        studentDAO.save(newStudent);
-    } else {
-        Landlord newLandlord = new Landlord(email, username, password, phone);
-        landlordDAO.save(newLandlord);  // Assuming you have a similar DAO for landlords
+        assertNull(errorMessage);
+        if (isStudent) {
+            Student student = studentDAO.findStudentByEmail(email);
+            assertNotNull(student);
+            assertEquals(password, student.getPassword());
+            assertEquals(email, student.getEmail());
+            assertEquals(username, student.getUsername());
+        }
+        else {
+            Landlord landlord = landlordDAO.findLandlordByEmail(email);
+            assertNotNull(landlord);
+            assertEquals(password, landlord.getPassword());
+            assertEquals(email, landlord.getEmail());
+            assertEquals(username, landlord.getUsername());
+            assertEquals(phone, landlord.getPhoneNumber());
+        }
     }
-    assertEquals(lastResponse.getStatusCode(), HttpStatus.CREATED); // Assuming you set lastResponse when making HTTP request
-}
 
     @Then("the account is only activated once the user clicks the verification link sent by email")
     public void theAccountIsActivatedOnEmailVerification() {
-         boolean activated = false; // Account not activated at first
+        boolean activated = false; // Account not activated at first
         
         // Assuming a mechanism to simulate activation like clicking a link
 
@@ -123,18 +153,19 @@ public class AccountsFunctionalityStepDefinitions {
 
     @Then("the user is prompted to enter a valid email address conforming to the domain requirements")
     public void theUserIsPromptedToEnterAValidEmailAddress() {
-        assertTrue(email.endsWith("@mail.mcgill.ca") || email.endsWith("@mcgill.ca") || email.endsWith("@gmail.com"));
-        assertNotEquals(email, studentEmailInvalid);
-        
+        // This step is implemented in the frontend
     }
 
     @Then("the account is not created until a valid email is provided")
     public void theAccountIsNotCreatedUntilAValidEmailIsProvided() {
-        assertNull(studentDAO.findByEmail(studentEmailInvalid));
-        Student student = new Student(studentEmail, username, password); // Assuming correct data
-        studentDAO.save(student);
-        assertNotNull(studentDAO.findByEmail(studentEmail));
-            
+        assertNotNull(errorMessage);
+        User user;
+        if (isStudent) {
+            user = studentDAO.findStudentByEmail(studentEmail);
+        } else {
+            user = landlordDAO.findLandlordByEmail(landlordEmail);
+        }
+        assertNull(user);
     }
 
     @Then("the user is prompted to upload a picture to proceed")
@@ -142,7 +173,6 @@ public class AccountsFunctionalityStepDefinitions {
         boolean pictureUploaded = false; // Assume no picture was uploaded since no functionality yet
         pictureUploaded = true; // Simulate that the user uploaded a picture
         assertTrue(pictureUploaded);
-        
     }
 
 }
