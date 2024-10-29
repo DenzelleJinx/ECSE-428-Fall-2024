@@ -23,6 +23,12 @@ dependencies {
 	runtimeOnly 'org.postgresql:postgresql'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	testImplementation 'io.cucumber:cucumber-java:6.10.4'
+	testImplementation 'io.cucumber:cucumber-junit:6.10.4'
+	implementation 'io.cucumber:cucumber-spring:6.10.4'
+	testImplementation 'org.junit.vintage:junit-vintage-engine:5.7.2'
+	testImplementation 'com.h2database:h2:1.3.148'
 }
 
 tasks.named('test') {
