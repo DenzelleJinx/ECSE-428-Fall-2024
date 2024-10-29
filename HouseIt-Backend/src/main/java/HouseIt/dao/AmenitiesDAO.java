@@ -18,6 +18,8 @@ public interface AmenitiesDAO extends CrudRepository<Amenities, Integer> {
 
     List<Amenities> findAmenitiessByParking(Boolean parking);
 
-    List<Amenities> findAmenitiessByInternetInclued(Boolean internetInclued);
+    List<Amenities> findAmenitiessByInternetIncluded(Boolean internetInclued);
+
+    void deleteById(int id);
 
 }

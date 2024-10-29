@@ -81,7 +81,7 @@ class Amenities
   boolean laundry;
   boolean petsAllowed;
   boolean parking;
-  boolean internetInclued;
+  boolean internetIncluded;
   1 amenitiesOffered <- 1 Listing listingBuilding;
 }
 

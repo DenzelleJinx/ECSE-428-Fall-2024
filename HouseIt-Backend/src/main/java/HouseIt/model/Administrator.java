@@ -25,7 +25,6 @@ public class Administrator extends User
     super();
   }
 
-  // do not use this constructor
   public Administrator(String aUsername, String aEmail, String aPassword, AccountStatus aStatus, float aRating)
   {
     super(aUsername, aEmail, aPassword, aStatus, aRating);

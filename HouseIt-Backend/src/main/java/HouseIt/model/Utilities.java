@@ -33,7 +33,6 @@ public class Utilities
 
   public Utilities() {}
 
-  // do not use this constructor
   public Utilities(int aId, float aWaterCost, float aElectricityCost, float aHeatingCost)
   {
     id = aId;
