@@ -35,5 +35,51 @@ public class StudentService {
         studentDTO.setRating(student.getRating());
         return studentDTO;
     }
+
+        /**
+ * Creates a student
+ * @param id
+ * @param username
+ * @param email
+ * @param password
+ * @param status
+ * @param rating
+ * @return created student
+ */
+@Transactional 
+public Student createStudent(int id, String username, String email, String password, AccountStatus status, float rating) {
+    if (username == null || username.trim().length() == 0) {
+        throw new IllegalArgumentException("Username cannot be empty.");
+    }
     
+    if (email == null || email.trim().length() == 0) {
+        throw new IllegalArgumentException("Email cannot be empty.");
+    }
+    
+    if (!isValidMcGillEmail(email)) {
+        throw new IllegalArgumentException("Email must be a valid McGill email (format: lower.lower@mail.mcgill.ca).");
+    }
+    
+    if (password == null || password.trim().length() == 0) {
+        throw new IllegalArgumentException("Password cannot be empty.");
+    }
+    
+    if (findUserByEmail(email) != null) {
+        throw new IllegalArgumentException("Email already exists in the system. Please enter another email.");
+    }
+
+    Student student = new Student(id, username, email, password, status, rating);
+    
+    studentRepository.save(student);
+    
+    return student;
+}
+    
+
+    Boolean isValidMcGillEmail(String email){
+        //checks if the email is of the form (lower cases).(lower cases)@mail.mcgill.ca
+        String accountEmail = "^[a-z]+\\.[a-z]+@mail\\.mcgill\\.ca$";
+
+        return email != null && email.matches(accountEmail);
+    }
 }
