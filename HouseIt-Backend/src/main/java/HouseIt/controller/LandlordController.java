@@ -31,7 +31,7 @@ public class LandlordController {
         
         Landlord landlord = landlordService.createLandlord(username, password, email, phoneNumber);
         LandlordDTO dto = landlordService.convertToDTO(landlord);
-        return ResponseEntity.ok(dto);
+        return ResponseEntity.created(null).body(dto);
     }
     
     

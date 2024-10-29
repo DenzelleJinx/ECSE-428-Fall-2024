@@ -28,7 +28,7 @@ public class StudentController {
 
         Student student = studentService.createStudent(username, password, email);
         StudentDTO dto = studentService.convertToDTO(student);
-        return ResponseEntity.ok(dto);
+        return ResponseEntity.created(null).body(dto);
     }
     
 }
