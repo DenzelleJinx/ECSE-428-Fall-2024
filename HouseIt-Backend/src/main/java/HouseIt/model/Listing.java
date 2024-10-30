@@ -483,4 +483,9 @@ public class Listing
   public int hashCode() {
     return Objects.hash(id, title, description, monthlyPrice, propertyRating, bedrooms, bathrooms, propertyType, squareFootage, wheelchairAccessible, hidden, smokingAllowed, propertyImages.hashCode(), address.hashCode(), amenitiesOffered.hashCode(), utilitiesCosts.hashCode());
   }
+
+public void setPoster(Landlord poster) {
+    
+    throw new UnsupportedOperationException("Unimplemented method 'setPoster'");
+}
 }
