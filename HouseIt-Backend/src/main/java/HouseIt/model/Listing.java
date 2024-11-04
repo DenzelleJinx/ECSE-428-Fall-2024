@@ -107,13 +107,22 @@ public class Listing
     return wasSet;
   }
 
-  public boolean setMonthlyPrice(int aMonthlyPrice)
-  {
+  public boolean setMonthlyPrice(String aMonthlyPrice) {
     boolean wasSet = false;
-    monthlyPrice = aMonthlyPrice;
-    wasSet = true;
+    
+    try {
+        // Try to parse the String to a float
+        float price = Float.parseFloat(aMonthlyPrice);
+        monthlyPrice = price;
+        wasSet = true;
+    } catch (NumberFormatException e) {
+        // Handle the case where aMonthlyPrice is not a valid float
+        System.out.println("Invalid price format. Please enter a valid float.");
+    }
+    
     return wasSet;
   }
+
 
   public boolean setPropertyRating(float aPropertyRating)
   {
