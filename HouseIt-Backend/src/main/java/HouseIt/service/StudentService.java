@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import HouseIt.dao.StudentDAO;
-import HouseIt.dto.StudentDTO;
+import HouseIt.dto.users.StudentDTO;
 import HouseIt.model.Student;
 import HouseIt.model.User.AccountStatus;
 

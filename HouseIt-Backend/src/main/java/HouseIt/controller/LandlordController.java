@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import HouseIt.dto.LandlordDTO;
+import HouseIt.dto.users.LandlordDTO;
 import HouseIt.model.Landlord;
 import HouseIt.service.LandlordService;
 

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import HouseIt.dto.StudentDTO;
+import HouseIt.dto.users.StudentDTO;
 import HouseIt.model.Student;
 import HouseIt.service.StudentService;
 
