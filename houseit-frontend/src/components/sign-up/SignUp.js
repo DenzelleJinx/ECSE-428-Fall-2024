@@ -15,6 +15,7 @@ import Select from '@mui/material/Select';
 import mcgillLogo from '../../assets/mcgill-logo.png';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../navbar/Navbar';
+import axios from 'axios';
 
 
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -62,12 +63,11 @@ const SignUpContainer = styled(Stack)(({ theme }) => ({
 export default function SignUp(props) {
   const primaryColor = "#D50032";
   const secondaryColor = "#FFFFFF";
+
   const [accountType, setAccountType] = React.useState('');
-
-  const handleAccountTypeChange = (event) => {
-    setAccountType(event.target.value);
-  };
-
+  const [phoneNumber, setPhoneNumber] = React.useState('');
+  const [phoneNumberError, setPhoneNumberError] = React.useState(false);
+  const [phoneNumberErrorMessage, setPhoneNumberErrorMessage] = React.useState('');
   const [emailError, setEmailError] = React.useState(false);
   const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
   const [passwordError, setPasswordError] = React.useState(false);
@@ -76,6 +76,10 @@ export default function SignUp(props) {
   const [usernameErrorMessage, setUsernameErrorMessage] = React.useState('');
   const [accountTypeError, setAccountTypeError] = React.useState(false);
   const [accountTypeErrorMessage, setAccountTypeErrorMessage] = React.useState('');
+
+  const handleAccountTypeChange = (event) => {
+    setAccountType(event.target.value);
+  };
 
   const validateInputs = () => {
     const email = document.getElementById('email');
@@ -120,50 +124,55 @@ export default function SignUp(props) {
       setAccountTypeErrorMessage('');
     }
 
+    if (!accountType || (accountType.value === 'landlord' && (!phoneNumber || phoneNumber.length < 1))) {
+      setPhoneNumberError(true);
+      setPhoneNumberErrorMessage('Phone number is required for landlords.');
+      isValid = false;
+    } else {
+      setPhoneNumberError(false);
+      setPhoneNumberErrorMessage('');
+    }
+
     return isValid;
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
+
     if (!validateInputs()) {
-      return;
+        return;
     }
-  
+
     const data = new FormData(event.currentTarget);
     const payload = {
-      name: data.get('username'),
-      email: data.get('email'),
-      password: data.get('password'),
-      accountType: accountType,
+        name: data.get('username'),
+        email: data.get('email'),
+        password: data.get('password'),
+        accountType: accountType,
+        ...(accountType === 'landlord' && { phoneNumber: phoneNumber })
     };
-  
+
+    console.log(JSON.stringify(payload));
     try {
-      const response = await fetch('/authentication/signup', {
-        method: 'POST',
-        body: JSON.stringify(payload),
-      });
-  
-      if (response.ok) {
-        const result = await response.json();
-        console.log('Signup successful:', result);
-      } else {
-        const errorData = await response.json();
-        console.error('Signup error:', errorData);
-        // TODO: handle backend errors
-      }
+        const axiosClient = axios.create({
+            baseURL: "http://localhost:8080"
+        });
+        const response = await axiosClient.post('/authentication/signup', payload);
+
+        console.log('Signup successful:', response.data);
     } catch (error) {
-      console.error('Network error:', error);
+        console.error('Network error:', error.response ? error.response.data : error.message);
     }
-  };
+};
+
 
   const StyledButton = styled(Button)({
     backgroundColor: primaryColor,
     color: secondaryColor,
     '&:hover': {
-        backgroundColor: "#B00029",
+      backgroundColor: "#B00029",
     },
-});
+  });
 
   const navigate = useNavigate();
 
@@ -182,8 +191,8 @@ export default function SignUp(props) {
   return (
     <AppTheme {...props}>
       <CssBaseline enableColorScheme />
-      <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' , marginTop: "4rem"}} />
-      <Navbar />      
+      <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem', marginTop: "4rem" }} />
+      <Navbar />
       <SignUpContainer direction="column" justifyContent="space-between">
         <Card variant="outlined">
           <Typography
@@ -249,14 +258,26 @@ export default function SignUp(props) {
                 id="account-type"
                 value={accountType}
                 error={accountTypeError}
-                // helperText={accountTypeErrorMessage}
-                color={accountTypeError ? 'error' : 'primary'}
                 onChange={handleAccountTypeChange}
+                color={accountTypeError ? 'error' : 'primary'}
               >
                 <MenuItem value={"student"}>Student</MenuItem>
                 <MenuItem value={"landlord"}>Landlord</MenuItem>
               </Select>
             </FormControl>
+            {accountType === 'landlord' && (
+              <FormControl required fullWidth>
+                <FormLabel htmlFor="phone-number">Phone Number</FormLabel>
+                <TextField
+                  fullWidth
+                  id="phone-number"
+                  name="phoneNumber"
+                  placeholder="Enter phone number"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                />
+              </FormControl>
+            )}
             <Button
               type="submit"
               fullWidth
@@ -267,15 +288,9 @@ export default function SignUp(props) {
             </Button>
             <Typography sx={{ textAlign: 'center' }}>
               Already have an account?{' '}
-              <span>
-                <Link
-                  href="/material-ui/getting-started/templates/sign-in/"
-                  variant="body2"
-                  sx={{ alignSelf: 'center' }}
-                >
-                  Sign in
-                </Link>
-              </span>
+              <Link href="/material-ui/getting-started/templates/sign-in/" variant="body2">
+                Sign in
+              </Link>
             </Typography>
           </Box>
         </Card>
