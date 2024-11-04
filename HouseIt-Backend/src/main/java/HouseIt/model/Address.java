@@ -52,19 +52,27 @@ public class Address
   // INTERFACE
   //------------------------
 
-  public boolean setCity(String aCity)
+ public boolean setCity(String aCity)
   {
     boolean wasSet = false;
-    city = aCity;
+    if (aCity != "Montreal"){
+      return false
+    } else {
+      city = aCity;
+    }
     wasSet = true;
     return wasSet;
   }
 
-  public boolean setPostalCode(String aPostalCode)
-  {
+   public boolean setPostalCode(String aPostalCode) {
     boolean wasSet = false;
-    postalCode = aPostalCode;
-    wasSet = true;
+    
+    // Check if the postal code matches the required format (6 characters, A-Z or 0-9)
+    if (aPostalCode != null && aPostalCode.matches("^[A-Z0-9]{6}$")) {
+        postalCode = aPostalCode;
+        wasSet = true;
+    }
+    
     return wasSet;
   }
 
