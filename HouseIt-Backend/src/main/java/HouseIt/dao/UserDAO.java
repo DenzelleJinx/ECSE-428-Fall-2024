@@ -18,4 +18,6 @@ public interface UserDAO extends CrudRepository<User, Integer> {
     User findUserByStatus(AccountStatus status);
 
     User findUserByRating(float rating);
+
+    void deleteById(int id);
 }

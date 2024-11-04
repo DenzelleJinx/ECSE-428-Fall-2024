@@ -51,7 +51,6 @@ public class User
 
   public User() {}
 
-  // do not use this constructor
   public User(String aUsername, String aEmail, String aPassword, AccountStatus aStatus, float aRating)
   {
     password = aPassword;
@@ -174,10 +173,10 @@ public class User
     User user = (User) o;
     return id == user.id &&
             Float.compare(user.rating, rating) == 0 &&
-            Objects.equals(username, user.username) &&
-            Objects.equals(email, user.email) &&
-            Objects.equals(password, user.password) &&
-            status == user.status;
+            username.equals(user.username) &&
+            email.equals(user.email) &&
+            password.equals(user.password) &&
+            status.equals(status);
   }
 
   @Override

@@ -36,7 +36,6 @@ public class Student extends User
     subletListings = new ArrayList<Listing>();
   }
 
-  // do not use this constructor
   public Student(int aId, String aUsername, String aEmail, String aPassword, AccountStatus aStatus, float aRating)
   {
     super(aUsername, aEmail, aPassword, aStatus, aRating);

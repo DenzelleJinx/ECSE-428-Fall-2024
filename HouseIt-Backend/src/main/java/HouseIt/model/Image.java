@@ -1,5 +1,7 @@
 package HouseIt.model;
 
+import java.util.Objects;
+
 /*PLEASE DO NOT EDIT THIS CODE*/
 /*This code was generated using the UMPLE 1.35.0.7523.c616a4dce modeling language!*/
 
@@ -31,7 +33,6 @@ public class Image
   //------------------------
 
   public Image() {}
-  // do not use this constructor
   public Image(int aId, String aUrl)
   {
     id = aId;
@@ -77,5 +78,21 @@ public class Image
     return super.toString() + "["+
             "id" + ":" + getId()+ "," +
             "url" + ":" + getUrl()+ "]";
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    Image image = (Image) o;
+
+    if (id != image.id) return false;
+    return url.equals(image.url);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, url);
   }
 }

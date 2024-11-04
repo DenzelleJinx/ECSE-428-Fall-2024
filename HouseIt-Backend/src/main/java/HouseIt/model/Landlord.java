@@ -35,7 +35,6 @@ public class Landlord extends User
     super();
     properties = new ArrayList<Listing>();
   }
-  // do not use this constructor
   public Landlord(int aId, String aUsername, String aEmail, String aPassword, AccountStatus aStatus, float aRating, String aPhoneNumber)
   {
     super(aUsername, aEmail, aPassword, aStatus, aRating);
@@ -183,7 +182,7 @@ public class Landlord extends User
         return false;
       }
     }
-    return phoneNumber == landlord.phoneNumber &&
+    return phoneNumber.equals(landlord.phoneNumber) && 
             super.equals(o);
   }
 

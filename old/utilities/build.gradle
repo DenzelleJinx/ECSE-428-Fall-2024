@@ -3,7 +3,7 @@
  */
 
 plugins {
-    id 'HouseIt.java-library-conventions'
+ WITH PASS    id 'HouseIt.java-library-conventions'
 }
 
 dependencies {

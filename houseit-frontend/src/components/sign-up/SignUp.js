@@ -1,12 +1,10 @@
 import * as React from 'react';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
+import { Container, Typography, Button, Box, AppBar, Toolbar } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
 import FormLabel from '@mui/material/FormLabel';
 import FormControl from '@mui/material/FormControl';
 import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
@@ -14,6 +12,10 @@ import AppTheme from '../../shared-theme/AppTheme';
 import ColorModeSelect from '../../shared-theme/ColorModeSelect';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
+import mcgillLogo from '../../assets/mcgill-logo.png';
+import { useNavigate } from 'react-router-dom';
+import Navbar from '../navbar/Navbar';
+
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -58,6 +60,8 @@ const SignUpContainer = styled(Stack)(({ theme }) => ({
 }));
 
 export default function SignUp(props) {
+  const primaryColor = "#D50032";
+  const secondaryColor = "#FFFFFF";
   const [accountType, setAccountType] = React.useState('');
 
   const handleAccountTypeChange = (event) => {
@@ -152,12 +156,34 @@ export default function SignUp(props) {
       console.error('Network error:', error);
     }
   };
+
+  const StyledButton = styled(Button)({
+    backgroundColor: primaryColor,
+    color: secondaryColor,
+    '&:hover': {
+        backgroundColor: "#B00029",
+    },
+});
+
+  const navigate = useNavigate();
+
+  const handleSignUpClick = () => {
+      navigate('/signup');
+  };
+
+  const handleListingClick = () => {
+      navigate('/createlisting');
+  };
+  const handleLogoClick = () => {
+    navigate('/');
+  };
   
 
   return (
     <AppTheme {...props}>
       <CssBaseline enableColorScheme />
-      <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' }} />
+      <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' , marginTop: "4rem"}} />
+      <Navbar />      
       <SignUpContainer direction="column" justifyContent="space-between">
         <Card variant="outlined">
           <Typography
