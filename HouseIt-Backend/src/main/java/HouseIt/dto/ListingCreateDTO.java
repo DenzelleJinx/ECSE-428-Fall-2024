@@ -7,9 +7,13 @@ import HouseIt.model.Image;
 import HouseIt.model.Utilities;
 import HouseIt.model.Listing.PropertyType;
 
-public class ListingDTO {
+/**
+ * DTO for creating a listing. The difference with ListingDTO is that this class stores
+ * the landlord ID.
+ */
+public class ListingCreateDTO {
    
-    private int id;
+    private int landlordId;
     private String title;
     private String description;
     private int monthlyPrice;
@@ -26,13 +30,14 @@ public class ListingDTO {
     private Utilities utilitiesCosts ;
     private List<Image> propertyImages = new ArrayList<Image>();
 
-    // ID
-    public int getId() {
-        return id;
+    // Landlord ID
+    public int getLandlordId() {
+        return landlordId;
     }
-    public void setId(int id) {
-        this.id = id;
+    public void setLandlordId(int landlordId) {
+        this.landlordId = landlordId;
     }
+
     // Title
     public String getTitle() {
         return title;
