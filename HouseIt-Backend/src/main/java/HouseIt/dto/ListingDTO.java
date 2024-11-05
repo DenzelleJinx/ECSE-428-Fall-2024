@@ -1,7 +1,10 @@
 package HouseIt.dto;
 
+import java.util.*;
 import HouseIt.model.Address;
 import HouseIt.model.Amenities;
+import HouseIt.model.Image;
+import HouseIt.model.Utilities;
 import HouseIt.model.Listing.PropertyType;
 
 public class ListingDTO {
@@ -20,6 +23,8 @@ public class ListingDTO {
     private boolean smokingAllowed;
     private Address address ;
     private Amenities amenitiesOffered ;
+    private Utilities utilitiesCosts ;
+    private List<Image> propertyImages ;
 
 
     // ID
@@ -145,5 +150,60 @@ public class ListingDTO {
     public void setAmenitiesOffered(Amenities amenitiesOffered) {
         this.amenitiesOffered = amenitiesOffered;
     }
+
+    // Utilites Offered
+    public Utilities getUtilitiesCosts()
+    {
+      return utilitiesCosts;
+    }
+  
+    public boolean setUtilitiesCosts(Utilities aNewUtilitiesCosts)
+    {
+      boolean wasSet = false;
+      utilitiesCosts = aNewUtilitiesCosts;
+      wasSet = true;
+      return wasSet;
+    }
+
+     /* Code from template association_GetMany */
+ 
+
+     public List<Image> getPropertyImages() {
+        List<Image> newPropertyImages = Collections.unmodifiableList(propertyImages);
+        return newPropertyImages;
+    }
+    
+
+
+  public static int maximumNumberOfPropertyImages()
+  {
+    return 10;
+  }
+ 
+
+  public boolean setPropertyImages( Image... newPropertyImages)
+  {
+    boolean wasSet = false;
+    ArrayList<Image> verifiedPropertyImages = new ArrayList<Image>();
+    for (Image aPropertyImage : newPropertyImages)
+    {
+      if (verifiedPropertyImages.contains(aPropertyImage))
+      {
+        continue;
+      }
+      verifiedPropertyImages.add(aPropertyImage);
+    }
+
+    if (verifiedPropertyImages.size() != newPropertyImages.length || verifiedPropertyImages.size() > maximumNumberOfPropertyImages())
+    {
+      return wasSet;
+    }
+
+    propertyImages.clear();
+    propertyImages.addAll(verifiedPropertyImages);
+    wasSet = true;
+    return wasSet;
+  }
+
 }
 
