@@ -113,8 +113,7 @@ public class ListingService {
         }
 
         // Creating a new Listing object
-        ListingDAO listingDTO = new ListingDAO();
-        Listing existingListing = listingDTO.findListingById(id);
+        Listing existingListing = listingDAO.findListingById(id);
         existingListing.setTitle(title);
         existingListing.setDescription(description);
         existingListing.setMonthlyPrice(monthlyPrice);
