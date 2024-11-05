@@ -94,4 +94,47 @@ public class ListingService {
 
         return dto;
     }
+
+    public Listing updateListing(int id, String title, String description, int monthlyPrice, float propertyRating, int bedrooms, int bathrooms, 
+                                 Listing.PropertyType propertyType, int squareFootage, boolean wheelchairAccessible, boolean hidden, 
+                                 boolean smokingAllowed, Address address,  Amenities amenitiesOffered, List<Image> propertyImages, Utilities utilitiesCosts ) {
+
+        // Validation of individual parameters
+        if (title == null || title.trim().isEmpty()) {
+            throw new IllegalArgumentException("Title cannot be empty.");
+        }
+        
+        if (description == null || description.trim().isEmpty()) {
+            throw new IllegalArgumentException("Description cannot be empty.");
+        }
+        
+        if (monthlyPrice <= 0) {
+            throw new IllegalArgumentException("Monthly price must be greater than zero.");
+        }
+
+        // Creating a new Listing object
+        ListingDAO listingDAO = new ListingDAO();
+        Listing existingListing = listingDAO.findListingById(id);
+        existingListing.setTitle(title);
+        existingListing.setDescription(description);
+        existingListing.setMonthlyPrice(monthlyPrice);
+        existingListing.setPropertyRating(propertyRating);
+        existingListing.setBedrooms(bedrooms);
+        existingListing.setBathrooms(bathrooms);
+        existingListing.setPropertyType(propertyType);
+        existingListing.setSquareFootage(squareFootage);
+        existingListing.setWheelchairAccessible(wheelchairAccessible);
+        existingListing.setHidden(hidden);
+        existingListing.setSmokingAllowed(smokingAllowed);
+        existingListing.setAddress(address);
+        existingListing.setAmenitiesOffered(amenitiesOffered);
+        existingListing.setUtilitiesCosts(utilitiesCosts);
+
+        Image[] imageArray = new Image[propertyImages.size()];     // Create an array of the same size as the list
+        imageArray = propertyImages.toArray(imageArray);           // Convert the list to an array
+        existingListing.setPropertyImages(imageArray);
+        
+
+        return listingDAO.save(existingListing);
+    }
 }
