@@ -1,60 +1,66 @@
-import * as React from 'react';
-import { Container, Typography, Button, Box, AppBar, Toolbar } from '@mui/material';
-import CssBaseline from '@mui/material/CssBaseline';
-import FormLabel from '@mui/material/FormLabel';
-import FormControl from '@mui/material/FormControl';
-import Link from '@mui/material/Link';
-import TextField from '@mui/material/TextField';
-import Stack from '@mui/material/Stack';
-import MuiCard from '@mui/material/Card';
-import { styled } from '@mui/material/styles';
-import AppTheme from '../../shared-theme/AppTheme';
-import ColorModeSelect from '../../shared-theme/ColorModeSelect';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
-import mcgillLogo from '../../assets/mcgill-logo.png';
-import { useNavigate } from 'react-router-dom';
-import Navbar from '../navbar/Navbar';
-
+import * as React from "react";
+import {
+  Container,
+  Typography,
+  Button,
+  Box,
+  AppBar,
+  Toolbar,
+} from "@mui/material";
+import CssBaseline from "@mui/material/CssBaseline";
+import FormLabel from "@mui/material/FormLabel";
+import FormControl from "@mui/material/FormControl";
+import Link from "@mui/material/Link";
+import TextField from "@mui/material/TextField";
+import Stack from "@mui/material/Stack";
+import MuiCard from "@mui/material/Card";
+import { styled } from "@mui/material/styles";
+import AppTheme from "../../shared-theme/AppTheme";
+import ColorModeSelect from "../../shared-theme/ColorModeSelect";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import mcgillLogo from "../../assets/mcgill-logo.png";
+import { useNavigate } from "react-router-dom";
+import Navbar from "../navbar/Navbar";
 
 const Card = styled(MuiCard)(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  alignSelf: 'center',
-  width: '100%',
+  display: "flex",
+  flexDirection: "column",
+  alignSelf: "center",
+  width: "100%",
   padding: theme.spacing(4),
   gap: theme.spacing(2),
-  margin: 'auto',
+  margin: "auto",
   boxShadow:
-    'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
-  [theme.breakpoints.up('sm')]: {
-    width: '450px',
+    "hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px",
+  [theme.breakpoints.up("sm")]: {
+    width: "450px",
   },
-  ...theme.applyStyles('dark', {
+  ...theme.applyStyles("dark", {
     boxShadow:
-      'hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px',
+      "hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px",
   }),
 }));
 
 const SignUpContainer = styled(Stack)(({ theme }) => ({
-  height: 'calc((1 - var(--template-frame-height, 0)) * 100dvh)',
-  minHeight: '100%',
+  height: "calc((1 - var(--template-frame-height, 0)) * 100dvh)",
+  minHeight: "100%",
   padding: theme.spacing(2),
-  [theme.breakpoints.up('sm')]: {
+  [theme.breakpoints.up("sm")]: {
     padding: theme.spacing(4),
   },
-  '&::before': {
+  "&::before": {
     content: '""',
-    display: 'block',
-    position: 'absolute',
+    display: "block",
+    position: "absolute",
     zIndex: -1,
     inset: 0,
     backgroundImage:
-      'radial-gradient(ellipse at 50% 50%, hsl(210, 100%, 97%), hsl(0, 0%, 100%))',
-    backgroundRepeat: 'no-repeat',
-    ...theme.applyStyles('dark', {
+      "radial-gradient(ellipse at 50% 50%, hsl(210, 100%, 97%), hsl(0, 0%, 100%))",
+    backgroundRepeat: "no-repeat",
+    ...theme.applyStyles("dark", {
       backgroundImage:
-        'radial-gradient(at 50% 50%, hsla(210, 100%, 16%, 0.5), hsl(220, 30%, 5%))',
+        "radial-gradient(at 50% 50%, hsla(210, 100%, 16%, 0.5), hsl(220, 30%, 5%))",
     }),
   },
 }));
@@ -62,62 +68,94 @@ const SignUpContainer = styled(Stack)(({ theme }) => ({
 export default function SignUp(props) {
   const primaryColor = "#D50032";
   const secondaryColor = "#FFFFFF";
-  const [accountType, setAccountType] = React.useState('');
+  const [accountType, setAccountType] = React.useState("");
 
   const handleAccountTypeChange = (event) => {
     setAccountType(event.target.value);
   };
 
   const [emailError, setEmailError] = React.useState(false);
-  const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
+  const [emailErrorMessage, setEmailErrorMessage] = React.useState("");
   const [passwordError, setPasswordError] = React.useState(false);
-  const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
+  const [passwordErrorMessage, setPasswordErrorMessage] = React.useState("");
   const [usernameError, setUsernameError] = React.useState(false);
-  const [usernameErrorMessage, setUsernameErrorMessage] = React.useState('');
+  const [usernameErrorMessage, setUsernameErrorMessage] = React.useState("");
   const [accountTypeError, setAccountTypeError] = React.useState(false);
-  const [accountTypeErrorMessage, setAccountTypeErrorMessage] = React.useState('');
+  const [accountTypeErrorMessage, setAccountTypeErrorMessage] =
+    React.useState("");
 
   const validateInputs = () => {
-    const email = document.getElementById('email');
-    const password = document.getElementById('password');
-    const name = document.getElementById('username');
+    const email = document.getElementById("email");
+    const password = document.getElementById("password");
+    const name = document.getElementById("username");
+    const accountTypeSelect = document.getElementById("account-type");
 
     let isValid = true;
 
-    if (!email || !email.value || !/\S+@\S+\.\S+/.test(email.value)) {
-      setEmailError(true);
-      setEmailErrorMessage('Please enter a valid email address.');
-      isValid = false;
-    } else {
-      setEmailError(false);
-      setEmailErrorMessage('');
-    }
-
-    if (!password || !password.value || password.value.length < 6) {
-      setPasswordError(true);
-      setPasswordErrorMessage('Password must be at least 6 characters long.');
-      isValid = false;
-    } else {
-      setPasswordError(false);
-      setPasswordErrorMessage('');
-    }
-
+    // Check Username first
     if (!name || !name.value || name.value.length < 1) {
       setUsernameError(true);
-      setUsernameErrorMessage('Name is required.');
+      setUsernameErrorMessage("Name is required.");
       isValid = false;
     } else {
       setUsernameError(false);
-      setUsernameErrorMessage('');
+      setUsernameErrorMessage("");
     }
 
-    if (!accountType || accountType.value === '') {
+    // Check Password second
+    if (!password || !password.value || password.value.length < 6) {
+      setPasswordError(true);
+      setPasswordErrorMessage("Password must be at least 6 characters long.");
+      isValid = false;
+    } else {
+      setPasswordError(false);
+      setPasswordErrorMessage("");
+    }
+
+    // Check Account Type third
+    if (!accountType || accountType === "") {
       setAccountTypeError(true);
-      setAccountTypeErrorMessage('Account Type is required.');
+      setAccountTypeErrorMessage("Account Type is required.");
       isValid = false;
     } else {
       setAccountTypeError(false);
-      setAccountTypeErrorMessage('');
+      setAccountTypeErrorMessage("");
+    }
+
+    // If account type is "Student", validate the email format (something.something@mail.mcgill.ca)
+    if (accountType === "student") {
+      const mcgillEmailRegex =
+        /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      const mcgillSpecificEmailRegex =
+        /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.mcgill\.ca$/;
+
+      if (
+        !email ||
+        !email.value ||
+        !mcgillSpecificEmailRegex.test(email.value)
+      ) {
+        setEmailError(true);
+        setEmailErrorMessage(
+          "Please enter a valid McGill email address (e.g., FirstName.LastName@mail.mcgill.ca)."
+        );
+        isValid = false;
+      } else if (!mcgillEmailRegex.test(email.value)) {
+        setEmailError(true);
+        setEmailErrorMessage(
+          "Email must follow the correct McGill email format."
+        );
+        isValid = false;
+      } else {
+        setEmailError(false);
+        setEmailErrorMessage("");
+      }
+    } else if (!email || !email.value || !/\S+@\S+\.\S+/.test(email.value)) {
+      setEmailError(true);
+      setEmailErrorMessage("Please enter a valid email address.");
+      isValid = false;
+    } else {
+      setEmailError(false);
+      setEmailErrorMessage("");
     }
 
     return isValid;
@@ -125,78 +163,84 @@ export default function SignUp(props) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
+
     if (!validateInputs()) {
       return;
     }
-  
+
     const data = new FormData(event.currentTarget);
     const payload = {
-      name: data.get('username'),
-      email: data.get('email'),
-      password: data.get('password'),
+      name: data.get("username"),
+      email: data.get("email"),
+      password: data.get("password"),
       accountType: accountType,
     };
-  
+
     try {
-      const response = await fetch('/authentication/signup', {
-        method: 'POST',
+      const response = await fetch("/authentication/signup", {
+        method: "POST",
         body: JSON.stringify(payload),
       });
-  
+
       if (response.ok) {
         const result = await response.json();
-        console.log('Signup successful:', result);
+        console.log("Signup successful:", result);
       } else {
         const errorData = await response.json();
-        console.error('Signup error:', errorData);
+        console.error("Signup error:", errorData);
         // TODO: handle backend errors
       }
     } catch (error) {
-      console.error('Network error:', error);
+      console.error("Network error:", error);
     }
   };
 
   const StyledButton = styled(Button)({
     backgroundColor: primaryColor,
     color: secondaryColor,
-    '&:hover': {
-        backgroundColor: "#B00029",
+    "&:hover": {
+      backgroundColor: "#B00029",
     },
-});
+  });
 
   const navigate = useNavigate();
 
   const handleSignUpClick = () => {
-      navigate('/signup');
+    navigate("/signup");
   };
 
   const handleListingClick = () => {
-      navigate('/createlisting');
+    navigate("/createlisting");
   };
   const handleLogoClick = () => {
-    navigate('/');
+    navigate("/");
   };
-  
 
   return (
     <AppTheme {...props}>
       <CssBaseline enableColorScheme />
-      <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' , marginTop: "4rem"}} />
-      <Navbar />      
+      <ColorModeSelect
+        sx={{
+          position: "fixed",
+          top: "1rem",
+          right: "1rem",
+          marginTop: "4rem",
+        }}
+      />
+      <Navbar />
       <SignUpContainer direction="column" justifyContent="space-between">
         <Card variant="outlined">
           <Typography
             component="h1"
             variant="h4"
-            sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
+            sx={{ width: "100%", fontSize: "clamp(2rem, 10vw, 2.15rem)" }}
           >
             Sign up
           </Typography>
           <Box
             component="form"
             onSubmit={handleSubmit}
-            sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
+            sx={{ display: "flex", flexDirection: "column", gap: 2 }}
           >
             <FormControl required fullWidth>
               <FormLabel htmlFor="username">Username</FormLabel>
@@ -209,7 +253,7 @@ export default function SignUp(props) {
                 placeholder="username"
                 error={usernameError}
                 helperText={usernameErrorMessage}
-                color={usernameError ? 'error' : 'primary'}
+                color={usernameError ? "error" : "primary"}
               />
             </FormControl>
             <FormControl required fullWidth>
@@ -224,7 +268,7 @@ export default function SignUp(props) {
                 variant="outlined"
                 error={emailError}
                 helperText={emailErrorMessage}
-                color={emailError ? 'error' : 'primary'}
+                color={emailError ? "error" : "primary"}
               />
             </FormControl>
             <FormControl required fullWidth>
@@ -240,7 +284,7 @@ export default function SignUp(props) {
                 variant="outlined"
                 error={passwordError}
                 helperText={passwordErrorMessage}
-                color={passwordError ? 'error' : 'primary'}
+                color={passwordError ? "error" : "primary"}
               />
             </FormControl>
             <FormControl required fullWidth>
@@ -250,7 +294,7 @@ export default function SignUp(props) {
                 value={accountType}
                 error={accountTypeError}
                 // helperText={accountTypeErrorMessage}
-                color={accountTypeError ? 'error' : 'primary'}
+                color={accountTypeError ? "error" : "primary"}
                 onChange={handleAccountTypeChange}
               >
                 <MenuItem value={"student"}>Student</MenuItem>
@@ -265,13 +309,13 @@ export default function SignUp(props) {
             >
               Sign up
             </Button>
-            <Typography sx={{ textAlign: 'center' }}>
-              Already have an account?{' '}
+            <Typography sx={{ textAlign: "center" }}>
+              Already have an account?{" "}
               <span>
                 <Link
                   href="/material-ui/getting-started/templates/sign-in/"
                   variant="body2"
-                  sx={{ alignSelf: 'center' }}
+                  sx={{ alignSelf: "center" }}
                 >
                   Sign in
                 </Link>
