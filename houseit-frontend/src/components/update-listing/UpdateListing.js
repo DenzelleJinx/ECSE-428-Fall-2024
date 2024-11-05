@@ -2,11 +2,9 @@ import React from 'react';
 import {
     Box,
     Button,
-    Container,
     CssBaseline,
     FormLabel,
     FormControl,
-    Link,
     TextField,
     Typography,
     Stack,
@@ -15,8 +13,7 @@ import {
     Select,
     FormControlLabel,
     Checkbox,
-    AppBar,
-    Toolbar,
+    Card,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import AppTheme from '../../shared-theme/AppTheme';
@@ -52,7 +49,7 @@ export default function UpdateListing(props) {
     const primaryColor = "#D50032";
     const secondaryColor = "#FFFFFF";
 
-    const [lisitingType, setListingType] = React.useState('');
+    const [listingType, setListingType] = React.useState('');
 
     const handleLisitingTypeChange = (event) => {
         setListingType(event.target.value);
@@ -66,12 +63,23 @@ export default function UpdateListing(props) {
     const [bathroomsErrorMessage, setBathroomsErrorMessage] = React.useState('');
     const [titleError, setTitleError] = React.useState(false);
     const [titleErrorMessage, setTitleErrorMessage] = React.useState('');
-    const [lisitingTypeError, setListingTypeError] = React.useState(false);
+    const [listingTypeError, setListingTypeError] = React.useState(false);
     const [listingTypeErrorMessage, setListingTypeErrorMessage] = React.useState('');
     const [priceError, setPriceError] = React.useState(false);
     const [priceErrorMessage, setPriceErrorMessage] = React.useState('');
     const [squareFootageError, setSquareFootageError] = React.useState(false);
     const [squareFootageErrorMessage, setSquareFootageErrorMessage] = React.useState('');
+
+    const [apartmentError, setApartmentError] = React.useState(false);
+    const [apartmentErrorMessage, setApartmentErrorMessage] = React.useState('');
+    const [streetNumberError, setStreetNumberError] = React.useState(false);
+    const [streetNumberErrorMessage, setStreetNumberErrorMessage] = React.useState('');
+    const [streetError, setStreetError] = React.useState(false);
+    const [streetErrorMessage, setStreetErrorMessage] = React.useState('');
+    const [cityError, setCityError] = React.useState(false);
+    const [cityErrorMessage, setCityErrorMessage] = React.useState('');
+    const [postalCodeError, setPostalCodeError] = React.useState(false);
+    const [postalCodeErrorMessage, setPostalCodeErrorMessage] = React.useState('');
 
     const validateInputs = () => {
         const description = document.getElementById('Description');
@@ -80,6 +88,11 @@ export default function UpdateListing(props) {
         const title = document.getElementById('Title');
         const price = document.getElementById('Price');
         const squareFootage = document.getElementById('SquareFootage');
+        const apartment = document.getElementById('ApartmentNumber');
+        const streetNumber = document.getElementById('StreetNumber');
+        const street = document.getElementById('Street');
+        const city = document.getElementById('City');
+        const postalCode = document.getElementById('PostalCode');
 
         let isValid = true;
 
@@ -153,13 +166,66 @@ export default function UpdateListing(props) {
             setTitleErrorMessage('');
         }
 
-        if (!lisitingType || lisitingType.value === '') {
+        if (!listingType || listingType.value === '') {
             setListingTypeError(true);
             setListingTypeErrorMessage('Listing Type is required.');
             isValid = false;
         } else {
             setListingTypeError(false);
             setListingTypeErrorMessage('');
+        }
+
+        if (!apartment || !apartment.value || apartment.value < 1) {
+            setApartmentError(true);
+            setApartmentErrorMessage('The address must have a apartment number greater than 1');
+            isValid = false;
+        } else if (!isNumeric(apartment.value)){
+            setApartmentError(true);
+            setApartmentErrorMessage('The apartment number has to be an integer.');
+            isValid = false;
+        } else {
+            setApartmentError(false);
+            setApartmentErrorMessage('');
+        }
+
+        if (!streetNumber || !streetNumber.value || streetNumber.value < 1) {
+            setStreetNumberError(true);
+            setStreetNumberErrorMessage('The address must have a street number greater than 1');
+            isValid = false;
+        } else if (!isNumeric(streetNumber.value)){
+            setStreetNumberError(true);
+            setStreetNumberErrorMessage('The street number has to be an integer.');
+            isValid = false;
+        } else {
+            setStreetNumberError(false);
+            setStreetNumberErrorMessage('');
+        }
+
+        if (!street || !street.value || street.value >= 256 || street.value < 1) {
+            setStreetError(true);
+            setStreetErrorMessage('A street name needs to be between 1 and 256 characters.');
+            isValid = false;
+        } else {
+            setStreetError(false);
+            setStreetErrorMessage('');
+        }
+
+        if (!city || !city.value || city.value >= 256 || city.value < 1) {
+            setCityError(true);
+            setCityErrorMessage('A city name needs to be between 1 and 256 characters.');
+            isValid = false;
+        } else {
+            setCityError(false);
+            setCityErrorMessage('');
+        }
+
+        if (!postalCode || !postalCode.value || postalCode.value > 6 || postalCode.value <= 5) {
+            setPostalCodeError(true);
+            setPostalCodeErrorMessage('A postal code name needs to have 6 characters.');
+            isValid = false;
+        } else {
+            setPostalCodeError(false);
+            setPostalCodeErrorMessage('');
         }
 
         return isValid;
@@ -177,7 +243,7 @@ export default function UpdateListing(props) {
             name: data.get('username'),
             email: data.get('email'),
             password: data.get('password'),
-            lisitingType: lisitingType,
+            listingType: listingType,
         };
 
         try {
@@ -218,7 +284,7 @@ export default function UpdateListing(props) {
         }),
     }));
 
-    const CreateListingContainer = styled(Stack)(({ theme }) => ({
+    const UpdateListingContainer = styled(Stack)(({ theme }) => ({
         marginTop: theme.spacing(12), // Adds space at the top
         height: 'auto',
         padding: theme.spacing(2),
@@ -248,7 +314,7 @@ export default function UpdateListing(props) {
     };
 
     const handleListingClick = () => {
-        navigate('/createlisting');
+        navigate('/updatelisting');
     };
     const handleLogoClick = () => {
         navigate('/');
@@ -259,141 +325,255 @@ export default function UpdateListing(props) {
             <CssBaseline enableColorScheme />
             <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' , marginTop: "4rem"}} />
             <Navbar />
-            <CreateListingContainer direction="column" justifyContent="space-between">
-                <Card variant="outlined">
+            <UpdateListingContainer direction="column" justifyContent="space-between">
+                <Box textAlign='center'>
                     <Typography
                         component="h1"
                         variant="h4"
                         sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
                     >
-                        Create a Listing
+                        Update a Listing
                     </Typography>
-                    <Box
-                        component="form"
-                        onSubmit={handleSubmit}
-                        sx={{ display: 'flex', flexDirection: 'column', gap: 2, }} // Adjusted marginBottom
-                    >
-                        <FormControl required fullWidth>
-                            <FormLabel htmlFor="Title">Title</FormLabel>
-                            <TextField
-                                name="Title"
-                                required
-                                fullWidth
-                                id="Title"
-                                placeholder="Title"
-                                error={titleError}
-                                helperText={titleErrorMessage}
-                                color={titleError ? 'error' : 'primary'}
-                            />
-                        </FormControl>
-                        <FormControl required fullWidth>
-                            <FormLabel htmlFor="Description">Description</FormLabel>
-                            <TextField
-                                required
-                                fullWidth
-                                id="Description"
-                                placeholder="Enter description here"
-                                name="Description"
-                                autoComplete="Description"
-                                variant="outlined"
-                                error={descriptionError}
-                                helperText={descriptionErrorMessage}
-                                color={descriptionError ? 'error' : 'primary'}
-                            />
-                        </FormControl>
-                        <FormControl required fullWidth>
-                            <FormLabel htmlFor="listing-type">Listing Type</FormLabel>
-                            <Select
-                                id="lisiting-type"
-                                value={lisitingType}
-                                error={lisitingTypeError}
-                                // helperText={lisitingTypeErrorMessage}
-                                color={lisitingTypeError ? 'error' : 'primary'}
-                                onChange={handleLisitingTypeChange}
-                            >
-                                <MenuItem value={"lease"}>Original Lease</MenuItem>
-                                <MenuItem value={"sublet"}>Sublet</MenuItem>
-                            </Select>
-                        </FormControl>
-                        <FormControl required fullWidth>
-                            <FormLabel htmlFor="Bedrooms">Bedrooms</FormLabel>
-                            <TextField
-                                required
-                                fullWidth
-                                name="Bedrooms"
-                                placeholder="Number of Bedrooms"
-                                type="Bedrooms"
-                                id="Bedrooms"
-                                autoComplete="Bedrooms"
-                                variant="outlined"
-                                error={bedroomsError}
-                                helperText={bedroomsErrorMessage}
-                                color={bedroomsError ? 'error' : 'primary'}
-                            />
-                        </FormControl>
-                        <FormControl required fullWidth>
-                            <FormLabel htmlFor="Bathrooms">Bathrooms</FormLabel>
-                            <TextField
-                                required
-                                fullWidth
-                                name="Bathrooms"
-                                placeholder="Number of Bathrooms"
-                                type="Bathrooms"
-                                id="Bathrooms"
-                                autoComplete="Bathrooms"
-                                variant="outlined"
-                                error={bathroomsError}
-                                helperText={bathroomsErrorMessage}
-                                color={bathroomsError ? 'error' : 'primary'}
-                            />
-                        </FormControl>
-                        <FormControl required fullWidth>
-                            <FormLabel htmlFor="Price">Price</FormLabel>
-                            <TextField
-                                required
-                                fullWidth
-                                name="Price"
-                                placeholder="Monthly Price"
-                                type="Price"
-                                id="Price"
-                                autoComplete="Price"
-                                variant="outlined"
-                                error={priceError}
-                                helperText={priceErrorMessage}
-                                color={priceError ? 'error' : 'primary'}
-                            />
-                        </FormControl>
-                        <FormControl required fullWidth>
-                            <FormLabel htmlFor="squareFootage">SquareFootage</FormLabel>
-                            <TextField
-                                required
-                                fullWidth
-                                name="Square Footage"
-                                placeholder="Square Footage (ft^2)"
-                                type="SquareFootage"
-                                id="SquareFootage"
-                                autoComplete="SquareFootage"
-                                variant="outlined"
-                                error={squareFootageError}
-                                helperText={squareFootageErrorMessage}
-                                color={squareFootageError ? 'error' : 'primary'}
-                            />
-                        </FormControl>
-                        <FormControlLabel control={<Checkbox />} label="Wheelchair Accessible" />
-                        <FormControlLabel control={<Checkbox />} label="Smoking Allowed" />
-                        <ImageUpload fullWidth/>
-                        <Button
-                            type="createListing"
-                            fullWidth
-                            variant="contained"
-                            onClick={validateInputs}
-                            sx={{ marginBottom: 2 }} // Adjust the spacing here
+                </Box>
+                <div
+                    style={{
+                        margin: "0 25%",
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "center",
+                        border: "1px solid #000",
+                        padding: "2em",
+                    }}
+                >
+                    <Card variant="outlined">
+                        <Typography
+                            component="h2"
+                            variant="h5"
+                            sx={{ width: '100%', fontSize: 'clamp(1rem, 5vw, 1rem)' }}
                         >
-                            Create Listing
-                        </Button>
-                    </Box>
-                </Card>
-            </CreateListingContainer>
+                            Listing Info
+                        </Typography>
+                        <Box
+                            component="form"
+                            onSubmit={handleSubmit}
+                            sx={{ display: 'flex', flexDirection: 'column', gap: 2, }} // Adjusted marginBottom
+                        >
+                            <FormControl required fullWidth>
+                                <FormLabel htmlFor="Title">Title</FormLabel>
+                                <TextField
+                                    name="Title"
+                                    required
+                                    fullWidth
+                                    id="Title"
+                                    placeholder="Title"
+                                    error={titleError}
+                                    helperText={titleErrorMessage}
+                                    color={titleError ? 'error' : 'primary'}
+                                />
+                            </FormControl>
+                            <FormControl required fullWidth>
+                                <FormLabel htmlFor="Description">Description</FormLabel>
+                                <TextField
+                                    required
+                                    fullWidth
+                                    id="Description"
+                                    placeholder="Enter description here"
+                                    name="Description"
+                                    autoComplete="Description"
+                                    variant="outlined"
+                                    error={descriptionError}
+                                    helperText={descriptionErrorMessage}
+                                    color={descriptionError ? 'error' : 'primary'}
+                                />
+                            </FormControl>
+                            <FormControl required fullWidth>
+                                <FormLabel htmlFor="listing-type">Listing Type</FormLabel>
+                                <Select
+                                    id="lisiting-type"
+                                    value={listingType}
+                                    error={listingTypeError}
+                                    helperText={listingTypeErrorMessage}
+                                    color={listingTypeError ? 'error' : 'primary'}
+                                    onChange={handleLisitingTypeChange}
+                                >
+                                    <MenuItem value={"lease"}>Original Lease</MenuItem>
+                                    <MenuItem value={"sublet"}>Sublet</MenuItem>
+                                </Select>
+                            </FormControl>
+                            <FormControl required fullWidth>
+                                <FormLabel htmlFor="Bedrooms">Bedrooms</FormLabel>
+                                <TextField
+                                    required
+                                    fullWidth
+                                    name="Bedrooms"
+                                    placeholder="Number of Bedrooms"
+                                    type="Bedrooms"
+                                    id="Bedrooms"
+                                    autoComplete="Bedrooms"
+                                    variant="outlined"
+                                    error={bedroomsError}
+                                    helperText={bedroomsErrorMessage}
+                                    color={bedroomsError ? 'error' : 'primary'}
+                                />
+                            </FormControl>
+                            <FormControl required fullWidth>
+                                <FormLabel htmlFor="Bathrooms">Bathrooms</FormLabel>
+                                <TextField
+                                    required
+                                    fullWidth
+                                    name="Bathrooms"
+                                    placeholder="Number of Bathrooms"
+                                    type="Bathrooms"
+                                    id="Bathrooms"
+                                    autoComplete="Bathrooms"
+                                    variant="outlined"
+                                    error={bathroomsError}
+                                    helperText={bathroomsErrorMessage}
+                                    color={bathroomsError ? 'error' : 'primary'}
+                                />
+                            </FormControl>
+                            <FormControl required fullWidth>
+                                <FormLabel htmlFor="Price">Price</FormLabel>
+                                <TextField
+                                    required
+                                    fullWidth
+                                    name="Price"
+                                    placeholder="Monthly Price"
+                                    type="Price"
+                                    id="Price"
+                                    autoComplete="Price"
+                                    variant="outlined"
+                                    error={priceError}
+                                    helperText={priceErrorMessage}
+                                    color={priceError ? 'error' : 'primary'}
+                                />
+                            </FormControl>
+                            <FormControl required fullWidth>
+                                <FormLabel htmlFor="squareFootage">SquareFootage</FormLabel>
+                                <TextField
+                                    required
+                                    fullWidth
+                                    name="Square Footage"
+                                    placeholder="Square Footage (ft^2)"
+                                    type="SquareFootage"
+                                    id="SquareFootage"
+                                    autoComplete="SquareFootage"
+                                    variant="outlined"
+                                    error={squareFootageError}
+                                    helperText={squareFootageErrorMessage}
+                                    color={squareFootageError ? 'error' : 'primary'}
+                                />
+                            </FormControl>
+                            <div
+                                style={{
+                                    margin: "0 25%",
+                                    display: "flex",
+                                    flexDirection: "row",
+                                    justifyContent: "center",
+                                    border: "1px solid #000",
+                                    padding: "2em",
+                                    maxwidth: "500px",
+                                }}
+                            >
+                                <FormControlLabel control={<Checkbox />} label="Wheelchair Accessible" />
+                                <FormControlLabel control={<Checkbox />} label="Smoking Allowed" />
+                            </div>
+                        </Box>
+                    </Card>
+                    <hr />
+                    <Card variant="outlined">
+                        <Typography
+                            component="h2"
+                            variant="h5"
+                            sx={{ width: '100%', fontSize: 'clamp(1rem, 5vw, 1rem)' }}
+                        >
+                            Address Info
+                        </Typography>
+                        <Box
+                            component="form"
+                            onSubmit={handleSubmit}
+                            sx={{ display: 'flex', flexDirection: 'column', gap: 2, }} // Adjusted marginBottom
+                        >
+                            <FormControl fullWidth>
+                                <FormLabel htmlFor="ApartmentNumber">Apartment Number</FormLabel>
+                                <TextField
+                                    name="ApartmentNumber"
+                                    fullWidth
+                                    id="ApartmentNumber"
+                                    placeholder="Apartment Number"
+                                    error={apartmentError}
+                                    helperText={apartmentErrorMessage}
+                                    color={apartmentError ? 'error' : 'primary'}
+                                />
+                            </FormControl>
+                            <FormControl required fullWidth>
+                                <FormLabel htmlFor="StreetNumber">Street Number</FormLabel>
+                                <TextField
+                                    name="StreetNumber"
+                                    required
+                                    fullWidth
+                                    id="StreetNumber"
+                                    placeholder="Street Number"
+                                    error={streetNumberError}
+                                    helperText={streetNumberErrorMessage}
+                                    color={streetNumberError ? 'error' : 'primary'}
+                                />
+                            </FormControl>
+                            <FormControl required fullWidth>
+                                <FormLabel htmlFor="Street">Street</FormLabel>
+                                <TextField
+                                    name="Street"
+                                    required
+                                    fullWidth
+                                    id="Street"
+                                    placeholder="Street"
+                                    error={streetError}
+                                    helperText={streetErrorMessage}
+                                    color={streetError ? 'error' : 'primary'}
+                                />
+                            </FormControl>
+                            <FormControl required fullWidth>
+                                <FormLabel htmlFor="City">City</FormLabel>
+                                <TextField
+                                    name="City"
+                                    required
+                                    fullWidth
+                                    id="City"
+                                    placeholder="City"
+                                    error={cityError}
+                                    helperText={cityErrorMessage}
+                                    color={cityError ? 'error' : 'primary'}
+                                />
+                            </FormControl>
+                            <FormControl required fullWidth>
+                                <FormLabel htmlFor="PostalCode">Postal Code</FormLabel>
+                                <TextField
+                                    name="PostalCode"
+                                    required
+                                    fullWidth
+                                    id="PostalCode"
+                                    placeholder="Postal Code"
+                                    error={postalCodeError}
+                                    helperText={postalCodeErrorMessage}
+                                    color={postalCodeError ? 'error' : 'primary'}
+                                />
+                            </FormControl>
+                        </Box>
+                    </Card>
+                </div>
+                <Box textAlign='center'>
+                    <ImageUpload fullWidth/>
+                    <Button
+                        type="updateListing"
+                        fullWidth={false}
+                        variant="contained"
+                        onClick={validateInputs}
+                        sx={{ marginBottom: 2 }} // Adjust the spacing here
+                    >
+                        Update Listing
+                    </Button>
+                </Box>
+            </UpdateListingContainer>
         </AppTheme>
     );
 }
