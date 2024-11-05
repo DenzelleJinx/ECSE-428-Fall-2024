@@ -32,6 +32,10 @@ public class StudentService {
         if (password == null || password.trim().length() < 6) {
             throw new IllegalArgumentException("Password must be at least 6 characters long");
         }
+
+        if (studentDAO.findStudentByUsername(username) != null) {
+            throw new IllegalArgumentException("Username already exists in the system. Please enter another username.");
+        }
         
         if (studentDAO.findStudentByEmail(email) != null) {
             throw new IllegalArgumentException("Email already exists in the system. Please enter another email.");

@@ -1,6 +1,9 @@
 package HouseIt.service;
 
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,13 +27,29 @@ public class LandlordService {
         if (email == null || email.trim().length() == 0) {
             throw new IllegalArgumentException("Email cannot be empty.");
         }
-        
+
         if (password == null || password.trim().length() < 6) {
             throw new IllegalArgumentException("Password must be at least 6 characters long");
+        }
+
+        if (phoneNumber == null || phoneNumber.trim().length() == 0) {
+            throw new IllegalArgumentException("Phone number cannot be empty.");
+        }
+
+        if (phoneNumber.trim().length() != 10) {
+            throw new IllegalArgumentException("Phone number must be 10 digits long.");
+        }
+
+        if (landlordDAO.findLandlordByUsername(username) != null) {
+            throw new IllegalArgumentException("Username already exists in the system. Please enter another username.");
         }
         
         if (landlordDAO.findLandlordByEmail(email) != null) {
             throw new IllegalArgumentException("Email already exists in the system. Please enter another email.");
+        }
+        
+        if (landlordDAO.findLandlordByPhoneNumber(phoneNumber) != null) {
+            throw new IllegalArgumentException("Phone number already exists in the system. Please enter another phone number.");
         }
 
         Landlord newLandlord = new Landlord();

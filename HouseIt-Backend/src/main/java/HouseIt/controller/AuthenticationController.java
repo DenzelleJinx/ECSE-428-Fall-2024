@@ -53,7 +53,7 @@ public class AuthenticationController {
 
     @PostMapping("/signup")
     public ResponseEntity<String> registerUser(@RequestBody SignupRequestDTO signUpDto) {
-        if (signUpDto.getAccountType() == "student") {
+        if (signUpDto.getAccountType().equals("student")) {
             try {
                 studentService.createStudent(signUpDto.getUsername(), signUpDto.getPassword(), signUpDto.getEmail());
             } catch (Exception e) {
@@ -66,7 +66,7 @@ public class AuthenticationController {
             } catch (Exception e) {
                 return new ResponseEntity<>(e.toString(), HttpStatus.BAD_REQUEST);
             }
-            return new ResponseEntity<>("User is registered successfully!", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("User is registered successfully!", HttpStatus.OK);
         }
     }
 }
