@@ -7,12 +7,12 @@ Feature: Admin Menu for Account Management
         Given the user is logged in
         And the user is an admin
 
-    Scenario: Accessing the Admin Menu
+    Scenario: Accessing the Admin Menu (Normal Flow)
         When the user navigates to their dashboard
         Then they should see an "Admin Menu" option
         And the "Admin Menu" should contain options for "Manage Accounts" and "Manage Listings"
 
-    Scenario: Manage Accounts (Normal Flow)
+    Scenario: Manage Accounts (Alternate Flow)
         Given the user is on the "Admin Menu"
         When the user selects the "Manage Accounts" option
         Then they should see a list of all accounts in the system, including account name and type
