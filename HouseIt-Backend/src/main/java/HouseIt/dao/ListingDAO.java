@@ -11,6 +11,8 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface ListingDAO extends CrudRepository<Listing, Integer> {
 
+    List<Listing> findAll();
+
     Listing findListingById(int id);
 
     Listing findListingByTitle(String title);
