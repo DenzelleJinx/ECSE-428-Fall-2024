@@ -18,7 +18,7 @@ Feature: Admin Menu for Account Management
         Then they should see a list of all accounts in the system, including account name and type
         And they should have options to activate or deactivate the accounts
 
-    Scenario: Manage Listings (Normal Flow)
+    Scenario: Manage Listings (Alternate Flow)
         Given the user is on the "Admin Menu"
         When the user selects the "Manage Listings" option
         Then they should see a list of all listings in the system
