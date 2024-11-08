@@ -43,6 +43,45 @@ public class LandlordService {
         return landlordDAO.save(newLandlord);
     }
 
+    @Transactional
+public Landlord updateLandlord(int id, String username, String password, String email, String phoneNumber, AccountStatus status, float rating) {
+    // Retrieve existing landlord
+    Landlord landlord = landlordDAO.findById(id).orElseThrow(() -> new IllegalArgumentException("Landlord not found"));
+
+    // Update fields if they are provided
+    if (username != null && !username.trim().isEmpty()) {
+        landlord.setUsername(username);
+    }
+
+    if (password != null && password.trim().length() >= 6) {
+        landlord.setPassword(password);
+    } else if (password != null) {
+        throw new IllegalArgumentException("Password must be at least 6 characters long");
+    }
+
+    if (email != null && !email.trim().isEmpty()) {
+        if (!email.equals(landlord.getEmail()) && landlordDAO.findLandlordByEmail(email) != null) {
+            throw new IllegalArgumentException("Email already exists in the system. Please enter another email.");
+        }
+        landlord.setEmail(email);
+    }
+
+    if (phoneNumber != null && !phoneNumber.trim().isEmpty()) {
+        landlord.setPhoneNumber(phoneNumber);
+    }
+
+    if (status != null) {
+        landlord.setStatus(status);
+    }
+
+    if (rating >= 0.0f) {
+        landlord.setRating(rating);
+    }
+
+    return landlordDAO.save(landlord);
+}
+
+
     public LandlordDTO convertToDTO(Landlord landlord) {
         LandlordDTO landlordDTO = new LandlordDTO();
         landlordDTO.setId(landlord.getId());

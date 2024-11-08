@@ -45,7 +45,7 @@ import Navbar from '../navbar/Navbar';
 const isNumeric = (string) => /^[+-]?\d+(\.\d+)?$/.test(string)
 
 
-export default function CreateListing(props) {
+export default function UpdateListing(props) {
     const primaryColor = "#D50032";
     const secondaryColor = "#FFFFFF";
 
@@ -284,28 +284,28 @@ export default function CreateListing(props) {
         }),
     }));
 
-        const CreateListingContainer = styled(Stack)(({ theme }) => ({
-            marginTop: theme.spacing(12), // Adds space at the top
-            height: 'auto',
-            padding: theme.spacing(2),
-            [theme.breakpoints.up('sm')]: {
-                padding: theme.spacing(4),
-            },
-            '&::before': {
-                content: '""',
-                display: 'block',
-                position: 'absolute',
-                zIndex: -1,
-                inset: 0,
+    const UpdateListingContainer = styled(Stack)(({ theme }) => ({
+        marginTop: theme.spacing(12), // Adds space at the top
+        height: 'auto',
+        padding: theme.spacing(2),
+        [theme.breakpoints.up('sm')]: {
+            padding: theme.spacing(4),
+        },
+        '&::before': {
+            content: '""',
+            display: 'block',
+            position: 'absolute',
+            zIndex: -1,
+            inset: 0,
+            backgroundImage:
+                'radial-gradient(ellipse at 50% 50%, hsl(210, 100%, 97%), hsl(0, 0%, 100%))',
+            backgroundRepeat: 'no-repeat',
+            ...theme.applyStyles('dark', {
                 backgroundImage:
-                    'radial-gradient(ellipse at 50% 50%, hsl(210, 100%, 97%), hsl(0, 0%, 100%))',
-                backgroundRepeat: 'no-repeat',
-                ...theme.applyStyles('dark', {
-                    backgroundImage:
-                        'radial-gradient(at 50% 50%, hsla(210, 100%, 16%, 0.5), hsl(220, 30%, 5%))',
-                }),
-            },
-        }));
+                    'radial-gradient(at 50% 50%, hsla(210, 100%, 16%, 0.5), hsl(220, 30%, 5%))',
+            }),
+        },
+    }));
 
     const navigate = useNavigate();
 
@@ -314,7 +314,7 @@ export default function CreateListing(props) {
     };
 
     const handleListingClick = () => {
-        navigate('/createlisting');
+        navigate('/updatelisting');
     };
     const handleLogoClick = () => {
         navigate('/');
@@ -325,14 +325,14 @@ export default function CreateListing(props) {
             <CssBaseline enableColorScheme />
             <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' , marginTop: "4rem"}} />
             <Navbar />
-            <CreateListingContainer direction="column" justifyContent="space-between">
+            <UpdateListingContainer direction="column" justifyContent="space-between">
                 <Box textAlign='center'>
                     <Typography
                         component="h1"
                         variant="h4"
                         sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
                     >
-                        Create a Listing
+                        Update a Listing
                     </Typography>
                 </Box>
                 <div
@@ -563,16 +563,16 @@ export default function CreateListing(props) {
                 <Box textAlign='center'>
                     <ImageUpload fullWidth/>
                     <Button
-                        type="createListing"
+                        type="updateListing"
                         fullWidth={false}
                         variant="contained"
                         onClick={validateInputs}
                         sx={{ marginBottom: 2 }} // Adjust the spacing here
                     >
-                        Create Listing
+                        Update Listing
                     </Button>
                 </Box>
-            </CreateListingContainer>
+            </UpdateListingContainer>
         </AppTheme>
     );
 }
