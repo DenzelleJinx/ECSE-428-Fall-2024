@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import HouseIt.dao.StudentDAO;
-import HouseIt.dto.StudentDTO;
+import HouseIt.dto.users.StudentDTO;
 import HouseIt.model.Student;
 import HouseIt.model.User.AccountStatus;
 
@@ -31,6 +31,10 @@ public class StudentService {
         
         if (password == null || password.trim().length() < 6) {
             throw new IllegalArgumentException("Password must be at least 6 characters long");
+        }
+
+        if (studentDAO.findStudentByUsername(username) != null) {
+            throw new IllegalArgumentException("Username already exists in the system. Please enter another username.");
         }
         
         if (studentDAO.findStudentByEmail(email) != null) {

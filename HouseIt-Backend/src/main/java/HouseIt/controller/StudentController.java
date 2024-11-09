@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import HouseIt.dto.StudentDTO;
+import HouseIt.dto.users.StudentDTO;
 import HouseIt.model.Student;
 import HouseIt.model.User.AccountStatus;
 import HouseIt.service.StudentService;

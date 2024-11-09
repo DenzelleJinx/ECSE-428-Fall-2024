@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 
-import HouseIt.dto.LandlordDTO;
+import HouseIt.dto.users.LandlordDTO;
 import HouseIt.model.Landlord;
 import HouseIt.model.User.AccountStatus;
 import HouseIt.service.LandlordService;

@@ -15,6 +15,7 @@ import Select from '@mui/material/Select';
 import mcgillLogo from '../../assets/mcgill-logo.png';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../navbar/Navbar';
+import axios from 'axios';
 
 
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -62,12 +63,11 @@ const SignUpContainer = styled(Stack)(({ theme }) => ({
 export default function SignUp(props) {
   const primaryColor = "#D50032";
   const secondaryColor = "#FFFFFF";
+
   const [accountType, setAccountType] = React.useState('');
-
-  const handleAccountTypeChange = (event) => {
-    setAccountType(event.target.value);
-  };
-
+  const [phoneNumber, setPhoneNumber] = React.useState('');
+  const [phoneNumberError, setPhoneNumberError] = React.useState(false);
+  const [phoneNumberErrorMessage, setPhoneNumberErrorMessage] = React.useState('');
   const [emailError, setEmailError] = React.useState(false);
   const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
   const [passwordError, setPasswordError] = React.useState(false);
@@ -76,11 +76,16 @@ export default function SignUp(props) {
   const [usernameErrorMessage, setUsernameErrorMessage] = React.useState('');
   const [accountTypeError, setAccountTypeError] = React.useState(false);
   const [accountTypeErrorMessage, setAccountTypeErrorMessage] = React.useState('');
+  const [serverErrorMessage, setServerErrorMessage] = React.useState('');
+
+  const handleAccountTypeChange = (event) => {
+    setAccountType(event.target.value);
+  };
 
   const validateInputs = () => {
     const email = document.getElementById('email');
     const password = document.getElementById('password');
-    const name = document.getElementById('username');
+    const username = document.getElementById('username');
 
     let isValid = true;
 
@@ -102,9 +107,9 @@ export default function SignUp(props) {
       setPasswordErrorMessage('');
     }
 
-    if (!name || !name.value || name.value.length < 1) {
+    if (!username || !username.value || username.value.length < 1) {
       setUsernameError(true);
-      setUsernameErrorMessage('Name is required.');
+      setUsernameErrorMessage('Username is required.');
       isValid = false;
     } else {
       setUsernameError(false);
@@ -120,166 +125,162 @@ export default function SignUp(props) {
       setAccountTypeErrorMessage('');
     }
 
+    if (!accountType || (accountType.value === 'landlord' && (!phoneNumber || phoneNumber.length < 1))) {
+      setPhoneNumberError(true);
+      setPhoneNumberErrorMessage('Phone number is required for landlords.');
+      isValid = false;
+    } else {
+      setPhoneNumberError(false);
+      setPhoneNumberErrorMessage('');
+    }
+
     return isValid;
   };
 
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
+
     if (!validateInputs()) {
       return;
     }
-  
+
     const data = new FormData(event.currentTarget);
     const payload = {
-      name: data.get('username'),
+      username: data.get('username'),
       email: data.get('email'),
       password: data.get('password'),
       accountType: accountType,
+      ...(accountType === 'landlord' && { phoneNumber: phoneNumber })
     };
-  
+
     try {
-      const response = await fetch('/authentication/signup', {
-        method: 'POST',
-        body: JSON.stringify(payload),
+      const axiosClient = axios.create({
+        baseURL: "http://localhost:8080",
       });
-  
-      if (response.ok) {
-        const result = await response.json();
-        console.log('Signup successful:', result);
-      } else {
-        const errorData = await response.json();
-        console.error('Signup error:', errorData);
-        // TODO: handle backend errors
-      }
+      const response = await axiosClient.post('/authentication/signup', payload);
+      
+      console.log('Signup successful:', response.data);
+      setServerErrorMessage('');
     } catch (error) {
-      console.error('Network error:', error);
+      setServerErrorMessage(error.response ? error.response.data.split(": ").slice(1).join(": ") : 'An error occurred during signup. Please try again.');
     }
-  };
+};
 
-  const StyledButton = styled(Button)({
-    backgroundColor: primaryColor,
-    color: secondaryColor,
-    '&:hover': {
-        backgroundColor: "#B00029",
-    },
-});
-
-  const navigate = useNavigate();
-
-  const handleSignUpClick = () => {
-      navigate('/signup');
-  };
-
-  const handleListingClick = () => {
-      navigate('/createlisting');
-  };
-  const handleLogoClick = () => {
-    navigate('/');
-  };
-  
-
-  return (
-    <AppTheme {...props}>
-      <CssBaseline enableColorScheme />
-      <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' , marginTop: "4rem"}} />
-      <Navbar />      
-      <SignUpContainer direction="column" justifyContent="space-between">
-        <Card variant="outlined">
-          <Typography
-            component="h1"
-            variant="h4"
-            sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
+return (
+  <AppTheme {...props}>
+    <CssBaseline enableColorScheme />
+    <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem', marginTop: "4rem" }} />
+    <Navbar />
+    <SignUpContainer direction="column" justifyContent="space-between">
+      <Card variant="outlined">
+        <Typography
+          component="h1"
+          variant="h4"
+          sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
+        >
+          Sign up
+        </Typography>
+        <Box
+          component="form"
+          onSubmit={handleSubmit}
+          sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
+        >
+          <FormControl required fullWidth>
+            <FormLabel htmlFor="username">Username</FormLabel>
+            <TextField
+              autoComplete="username"
+              name="username"
+              required
+              fullWidth
+              id="username"
+              placeholder="username"
+              error={usernameError}
+              helperText={usernameErrorMessage}
+              color={usernameError ? 'error' : 'primary'}
+            />
+          </FormControl>
+          <FormControl required fullWidth>
+            <FormLabel htmlFor="email">Email</FormLabel>
+            <TextField
+              required
+              fullWidth
+              id="email"
+              placeholder="your@email.com"
+              name="email"
+              autoComplete="email"
+              variant="outlined"
+              error={emailError}
+              helperText={emailErrorMessage}
+              color={emailError ? 'error' : 'primary'}
+            />
+          </FormControl>
+          <FormControl required fullWidth>
+            <FormLabel htmlFor="password">Password</FormLabel>
+            <TextField
+              required
+              fullWidth
+              name="password"
+              placeholder="••••••"
+              type="password"
+              id="password"
+              autoComplete="new-password"
+              variant="outlined"
+              error={passwordError}
+              helperText={passwordErrorMessage}
+              color={passwordError ? 'error' : 'primary'}
+            />
+          </FormControl>
+          <FormControl required fullWidth>
+            <FormLabel htmlFor="account-type">Account Type</FormLabel>
+            <Select
+              id="account-type"
+              value={accountType}
+              error={accountTypeError}
+              onChange={handleAccountTypeChange}
+              color={accountTypeError ? 'error' : 'primary'}
+            >
+              <MenuItem value={"student"}>Student</MenuItem>
+              <MenuItem value={"landlord"}>Landlord</MenuItem>
+            </Select>
+          </FormControl>
+          {accountType === 'landlord' && (
+            <FormControl required fullWidth>
+              <FormLabel htmlFor="phone-number">Phone Number</FormLabel>
+              <TextField
+                fullWidth
+                id="phone-number"
+                name="phoneNumber"
+                placeholder="Enter phone number"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                error={phoneNumberError}
+                helperText={phoneNumberErrorMessage}
+              />
+            </FormControl>
+          )}
+          {serverErrorMessage && (
+            <Typography color="error" sx={{ textAlign: 'center', marginBottom: 1 }}>
+              {serverErrorMessage}
+            </Typography>
+          )}
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            onClick={validateInputs}
           >
             Sign up
+          </Button>
+          <Typography sx={{ textAlign: 'center' }}>
+            Already have an account?{' '}
+            <Link href="/material-ui/getting-started/templates/sign-in/" variant="body2">
+              Sign in
+            </Link>
           </Typography>
-          <Box
-            component="form"
-            onSubmit={handleSubmit}
-            sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
-          >
-            <FormControl required fullWidth>
-              <FormLabel htmlFor="username">Username</FormLabel>
-              <TextField
-                autoComplete="username"
-                name="username"
-                required
-                fullWidth
-                id="username"
-                placeholder="username"
-                error={usernameError}
-                helperText={usernameErrorMessage}
-                color={usernameError ? 'error' : 'primary'}
-              />
-            </FormControl>
-            <FormControl required fullWidth>
-              <FormLabel htmlFor="email">Email</FormLabel>
-              <TextField
-                required
-                fullWidth
-                id="email"
-                placeholder="your@email.com"
-                name="email"
-                autoComplete="email"
-                variant="outlined"
-                error={emailError}
-                helperText={emailErrorMessage}
-                color={emailError ? 'error' : 'primary'}
-              />
-            </FormControl>
-            <FormControl required fullWidth>
-              <FormLabel htmlFor="password">Password</FormLabel>
-              <TextField
-                required
-                fullWidth
-                name="password"
-                placeholder="••••••"
-                type="password"
-                id="password"
-                autoComplete="new-password"
-                variant="outlined"
-                error={passwordError}
-                helperText={passwordErrorMessage}
-                color={passwordError ? 'error' : 'primary'}
-              />
-            </FormControl>
-            <FormControl required fullWidth>
-              <FormLabel htmlFor="account-type">Account Type</FormLabel>
-              <Select
-                id="account-type"
-                value={accountType}
-                error={accountTypeError}
-                // helperText={accountTypeErrorMessage}
-                color={accountTypeError ? 'error' : 'primary'}
-                onChange={handleAccountTypeChange}
-              >
-                <MenuItem value={"student"}>Student</MenuItem>
-                <MenuItem value={"landlord"}>Landlord</MenuItem>
-              </Select>
-            </FormControl>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              onClick={validateInputs}
-            >
-              Sign up
-            </Button>
-            <Typography sx={{ textAlign: 'center' }}>
-              Already have an account?{' '}
-              <span>
-                <Link
-                  href="/material-ui/getting-started/templates/sign-in/"
-                  variant="body2"
-                  sx={{ alignSelf: 'center' }}
-                >
-                  Sign in
-                </Link>
-              </span>
-            </Typography>
-          </Box>
-        </Card>
-      </SignUpContainer>
-    </AppTheme>
-  );
+        </Box>
+      </Card>
+    </SignUpContainer>
+  </AppTheme>
+)
 }
