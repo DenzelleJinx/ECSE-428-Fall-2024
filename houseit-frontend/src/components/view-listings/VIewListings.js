@@ -2,6 +2,7 @@ import React from 'react';
 import { useListings } from '../../hooks/useListings';
 import ListingCard from "../create-listing/ListingCard";
 import '../create-listing/Listing.css';
+import Navbar from '../navbar/Navbar';
 
 // I created mock listings giving that the database implementation had not been merged yet.
 // Whoever works on the back-end can uncomment the code such that useListings is called.
@@ -67,6 +68,7 @@ export default function Listing() {
 
     return (
         <div className="dashboard">
+            <Navbar />
             <header className="dashboard-header">
                 <h2>Listings</h2>
             </header>
