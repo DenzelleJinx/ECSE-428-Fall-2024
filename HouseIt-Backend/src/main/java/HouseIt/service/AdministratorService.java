@@ -15,7 +15,7 @@ public class AdministratorService {
     private LandlordDAO landlordDAO;
 
     @Transactional
-    public void verifyLandlord(int landlordId) {
+    public void approveLandlord(int landlordId) {
         Landlord landlord = landlordDAO.findLandlordById(landlordId);
         if (landlord == null) {
             throw new IllegalArgumentException("No such landlord with id: " + landlordId);
@@ -25,6 +25,22 @@ public class AdministratorService {
         }
 
         landlord.setStatus(AccountStatus.ACTIVE);
+        landlordDAO.save(landlord);
+
+        // TODO: Notify the landlord
+    }
+
+    @Transactional
+    public void rejectLandlord(int landlordId) {
+        Landlord landlord = landlordDAO.findLandlordById(landlordId);
+        if (landlord == null) {
+            throw new IllegalArgumentException("No such landlord with id: " + landlordId);
+        }
+        if (landlord.getStatus() == AccountStatus.DENIED) {
+            throw new IllegalArgumentException("This account has already been rejected");
+        }
+
+        landlord.setStatus(AccountStatus.DENIED);
         landlordDAO.save(landlord);
 
         // TODO: Notify the landlord

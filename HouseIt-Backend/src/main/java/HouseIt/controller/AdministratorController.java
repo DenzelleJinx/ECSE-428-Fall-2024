@@ -21,11 +21,22 @@ public class AdministratorController {
     @Autowired
     private AdministratorService administratorService;
 
-    @PutMapping(value = {"/verify-landlord/{landlordId}", "/verify-landlord/{landlordId}/"})
-    public ResponseEntity<?> verifyLandlord(@PathVariable int landlordId) {
+    @PutMapping(value = {"/approve-landlord/{landlordId}", "/approve-landlord/{landlordId}/"})
+    public ResponseEntity<?> approveLandlord(@PathVariable int landlordId) {
         // TODO: Authenticate administrator
         try {
-            administratorService.verifyLandlord(landlordId);
+            administratorService.approveLandlord(landlordId);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping(value = {"/reject-landlord/{landlordId}", "/reject-landlord/{landlordId}/"})
+    public ResponseEntity<?> rejectLandlord(@PathVariable int landlordId) {
+        // TODO: Authenticate administrator
+        try {
+            administratorService.rejectLandlord(landlordId);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
