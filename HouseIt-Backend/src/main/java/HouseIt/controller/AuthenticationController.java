@@ -59,7 +59,7 @@ public class AuthenticationController {
             } catch (Exception e) {
                 return new ResponseEntity<>(e.toString(), HttpStatus.BAD_REQUEST);
             }
-            return new ResponseEntity<>("User is registered successfully!", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("User is registered successfully!", HttpStatus.OK);
         } else {
             try {
                 landlordService.createLandlord(signUpDto.getUsername(), signUpDto.getPassword(), signUpDto.getEmail(), signUpDto.getPhoneNumber());

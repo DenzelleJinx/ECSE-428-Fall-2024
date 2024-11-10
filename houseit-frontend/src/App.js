@@ -1,5 +1,6 @@
 import './App.css';
 import SignUp from './components/sign-up/SignUp';
+import SignIn from './components/sign-in/SignIn';
 import ImageUpload from './components/image-upload/ImageUpload';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import LandingPage from "./components/landing-page/LandingPage";
@@ -15,6 +16,7 @@ function App() {
           <Routes>
               <Route path="/" element={<LandingPage />} />
               <Route path="/signup" element={<SignUp />} />
+              <Route path="/login" element={<SignIn />} />
               <Route path="/createlisting" element={<CreateListing />} />
           </Routes>
       </Router>

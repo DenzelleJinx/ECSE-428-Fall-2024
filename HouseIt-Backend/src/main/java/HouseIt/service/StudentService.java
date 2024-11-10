@@ -1,7 +1,11 @@
 package HouseIt.service;
 
 import org.springframework.stereotype.Service;
+
+import java.sql.SQLException;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
 import HouseIt.dao.StudentDAO;
@@ -48,7 +52,15 @@ public class StudentService {
         newStudent.setStatus(AccountStatus.ACTIVE);
         newStudent.setRating(0.0f);
 
-        return studentDAO.save(newStudent);
+        try {
+            return studentDAO.save(newStudent);
+        } catch (DataIntegrityViolationException e) {
+            if (e.getCause() instanceof org.hibernate.exception.ConstraintViolationException) {
+                throw new IllegalArgumentException("An account with the same username or email already exists.");
+            } else {
+                throw new RuntimeException("Unexpected error occurred while creating the student.");
+            }
+        }
     }
 
     public StudentDTO convertToDTO(Student student) {

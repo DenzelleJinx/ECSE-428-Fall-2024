@@ -64,43 +64,21 @@ export default function SignUp(props) {
   const primaryColor = "#D50032";
   const secondaryColor = "#FFFFFF";
 
-  const [accountType, setAccountType] = React.useState('');
-  const [phoneNumber, setPhoneNumber] = React.useState('');
-  const [phoneNumberError, setPhoneNumberError] = React.useState(false);
-  const [phoneNumberErrorMessage, setPhoneNumberErrorMessage] = React.useState('');
-  const [emailError, setEmailError] = React.useState(false);
-  const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
   const [passwordError, setPasswordError] = React.useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
   const [usernameError, setUsernameError] = React.useState(false);
   const [usernameErrorMessage, setUsernameErrorMessage] = React.useState('');
-  const [accountTypeError, setAccountTypeError] = React.useState(false);
-  const [accountTypeErrorMessage, setAccountTypeErrorMessage] = React.useState('');
   const [serverErrorMessage, setServerErrorMessage] = React.useState('');
 
-  const handleAccountTypeChange = (event) => {
-    setAccountType(event.target.value);
-  };
-
   const validateInputs = () => {
-    const email = document.getElementById('email');
-    const password = document.getElementById('password');
     const username = document.getElementById('username');
+    const password = document.getElementById('password');
 
     let isValid = true;
 
-    if (!email || !email.value || !/\S+@\S+\.\S+/.test(email.value)) {
-      setEmailError(true);
-      setEmailErrorMessage('Please enter a valid email address.');
-      isValid = false;
-    } else {
-      setEmailError(false);
-      setEmailErrorMessage('');
-    }
-
     if (!password || !password.value || password.value.length < 6) {
       setPasswordError(true);
-      setPasswordErrorMessage('Password must be at least 6 characters long.');
+      setPasswordErrorMessage('Password is required.');
       isValid = false;
     } else {
       setPasswordError(false);
@@ -109,29 +87,11 @@ export default function SignUp(props) {
 
     if (!username || !username.value || username.value.length < 1) {
       setUsernameError(true);
-      setUsernameErrorMessage('Username is required.');
+      setUsernameErrorMessage('Username, email, or phone number is required.');
       isValid = false;
     } else {
       setUsernameError(false);
       setUsernameErrorMessage('');
-    }
-
-    if (!accountType || accountType.value === '') {
-      setAccountTypeError(true);
-      setAccountTypeErrorMessage('Account Type is required.');
-      isValid = false;
-    } else {
-      setAccountTypeError(false);
-      setAccountTypeErrorMessage('');
-    }
-
-    if (!accountType || (accountType.value === 'landlord' && (!phoneNumber || phoneNumber.length < 1))) {
-      setPhoneNumberError(true);
-      setPhoneNumberErrorMessage('Phone number is required for landlords.');
-      isValid = false;
-    } else {
-      setPhoneNumberError(false);
-      setPhoneNumberErrorMessage('');
     }
 
     return isValid;
@@ -148,22 +108,19 @@ export default function SignUp(props) {
     const data = new FormData(event.currentTarget);
     const payload = {
       username: data.get('username'),
-      email: data.get('email'),
       password: data.get('password'),
-      accountType: accountType,
-      ...(accountType === 'landlord' && { phoneNumber: phoneNumber })
     };
 
     try {
       const axiosClient = axios.create({
         baseURL: "http://localhost:8080",
       });
-      const response = await axiosClient.post('/authentication/signup', payload);
+      const response = await axiosClient.post('/authentication/login', payload);
       
-      console.log('Signup successful:', response.data);
+      console.log('login successful:', response.data);
       setServerErrorMessage('');
     } catch (error) {
-      setServerErrorMessage(error.response ? error.response.data.split(": ").slice(1).join(": ") : 'An error occurred during signup. Please try again.');
+      setServerErrorMessage(error.response ? error.response.data.split(": ").slice(1).join(": ") : 'An error occurred during login. Please try again.');
     }
 };
 
@@ -179,7 +136,7 @@ return (
           variant="h4"
           sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
         >
-          Sign up
+          Login
         </Typography>
         <Box
           component="form"
@@ -194,25 +151,10 @@ return (
               required
               fullWidth
               id="username"
-              placeholder="username"
+              placeholder="username, email, or phone number"
               error={usernameError}
               helperText={usernameErrorMessage}
               color={usernameError ? 'error' : 'primary'}
-            />
-          </FormControl>
-          <FormControl required fullWidth>
-            <FormLabel htmlFor="email">Email</FormLabel>
-            <TextField
-              required
-              fullWidth
-              id="email"
-              placeholder="your@email.com"
-              name="email"
-              autoComplete="email"
-              variant="outlined"
-              error={emailError}
-              helperText={emailErrorMessage}
-              color={emailError ? 'error' : 'primary'}
             />
           </FormControl>
           <FormControl required fullWidth>
@@ -231,34 +173,6 @@ return (
               color={passwordError ? 'error' : 'primary'}
             />
           </FormControl>
-          <FormControl required fullWidth>
-            <FormLabel htmlFor="account-type">Account Type</FormLabel>
-            <Select
-              id="account-type"
-              value={accountType}
-              error={accountTypeError}
-              onChange={handleAccountTypeChange}
-              color={accountTypeError ? 'error' : 'primary'}
-            >
-              <MenuItem value={"student"}>Student</MenuItem>
-              <MenuItem value={"landlord"}>Landlord</MenuItem>
-            </Select>
-          </FormControl>
-          {accountType === 'landlord' && (
-            <FormControl required fullWidth>
-              <FormLabel htmlFor="phone-number">Phone Number</FormLabel>
-              <TextField
-                fullWidth
-                id="phone-number"
-                name="phoneNumber"
-                placeholder="Enter phone number"
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-                error={phoneNumberError}
-                helperText={phoneNumberErrorMessage}
-              />
-            </FormControl>
-          )}
           {serverErrorMessage && (
             <Typography color="error" sx={{ textAlign: 'center', marginBottom: 1 }}>
               {serverErrorMessage}
@@ -270,12 +184,12 @@ return (
             variant="contained"
             onClick={validateInputs}
           >
-            Sign up
+            Login
           </Button>
           <Typography sx={{ textAlign: 'center' }}>
-            Already have an account?{' '}
-            <Link href="/login" variant="body2">
-              Login
+            Don't have an account yet?{' '}
+            <Link href="/signup" variant="body2">
+              Sign up
             </Link>
           </Typography>
         </Box>

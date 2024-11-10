@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
 import HouseIt.dao.LandlordDAO;
@@ -59,7 +60,11 @@ public class LandlordService {
         newLandlord.setPhoneNumber(phoneNumber);
         newLandlord.setStatus(AccountStatus.PENDING);
         newLandlord.setRating(0.0f);
-        return landlordDAO.save(newLandlord);
+        try {
+            return landlordDAO.save(newLandlord);
+        } catch (DataIntegrityViolationException e) {
+            throw new IllegalArgumentException("An account with the same username or email exists already.");
+        }
     }
 
     public LandlordDTO convertToDTO(Landlord landlord) {
