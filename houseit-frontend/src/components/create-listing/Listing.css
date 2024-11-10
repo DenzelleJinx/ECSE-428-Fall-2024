@@ -1,0 +1,54 @@
+.dashboard {
+    padding: 20px;
+}
+
+.dashboard-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.listing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.listing-card {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.listing-card img {
+    width: 100%;
+    height: auto;
+    border-bottom: 1px solid #ddd;
+}
+
+.listing-card .info {
+    padding: 16px;
+}
+
+.listing-card .price {
+    font-weight: bold;
+    font-size: 1.2em;
+    margin-bottom: 8px;
+}
+
+.listing-card .description {
+    font-style: italic;
+    margin: 8px 0;
+}
+
+.listing-card .details {
+    display: flex;
+    gap: 10px;
+    justify-content: space-around;
+    padding: 12px;
+    border-top: 1px solid #ddd;
+}

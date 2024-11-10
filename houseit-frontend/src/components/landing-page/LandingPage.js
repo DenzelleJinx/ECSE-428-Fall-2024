@@ -31,6 +31,10 @@ function LandingPage(props) {
         navigate('/createlisting');
     };
 
+    const handleViewListingsClick = () => {
+        navigate('/viewlistings')
+    }
+
     const handleLogoClick = () => {
         navigate('/');
     };
@@ -70,6 +74,9 @@ function LandingPage(props) {
                         <Typography variant="h6" color="textSecondary" paragraph>
                             Discover listings and connect with landlords effortlessly.
                         </Typography>
+                        <StyledButton variant="contained" size="large" sx={{ m: 1 }} onClick={handleViewListingsClick}>
+                            View Current Listings
+                        </StyledButton>
                         <StyledButton variant="contained" size="large" sx={{ m: 1 }} onClick={handleListingClick}>
                             Create Listing
                         </StyledButton>
