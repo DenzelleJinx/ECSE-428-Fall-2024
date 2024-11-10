@@ -15,7 +15,7 @@ public class AdministratorService {
     private LandlordDAO landlordDAO;
 
     @Transactional
-    public void verifyLandlord(int landlordId, AccountStatus status) {
+    public void verifyLandlord(int landlordId) {
         Landlord landlord = landlordDAO.findLandlordById(landlordId);
         if (landlord == null) {
             throw new IllegalArgumentException("No such landlord with id: " + landlordId);
@@ -24,7 +24,7 @@ public class AdministratorService {
             throw new IllegalArgumentException("This account has already been approved");
         }
 
-        landlord.setStatus(status);
+        landlord.setStatus(AccountStatus.ACTIVE);
         landlordDAO.save(landlord);
 
         // TODO: Notify the landlord
