@@ -22,6 +22,7 @@ import ImageUpload from '../../components/image-upload/ImageUpload';
 import { useNavigate } from 'react-router-dom';
 import mcgillLogo from '../../assets/mcgill-logo.png';
 import Navbar from '../navbar/Navbar';
+import StatusDialog from '../../components/status-dialog/StatusDialog';
 
 // const Card = styled(MuiCard)(({ theme }) => ({
 //     display: 'flex',
@@ -80,6 +81,10 @@ export default function CreateListing(props) {
     const [cityErrorMessage, setCityErrorMessage] = React.useState('');
     const [postalCodeError, setPostalCodeError] = React.useState(false);
     const [postalCodeErrorMessage, setPostalCodeErrorMessage] = React.useState('');
+
+    const [openDialog, setOpenDialog] = React.useState(false); // State for dialog visibility
+    const [dialogMessage, setDialogMessage] = React.useState(''); // Message to display in the dialog
+    const [dialogSeverity, setDialogSeverity] = React.useState('error'); // Severity of the message: 'success' or 'error'
 
     const validateInputs = () => {
         const description = document.getElementById('Description');
@@ -233,8 +238,13 @@ export default function CreateListing(props) {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        const isValid = validateInputs();
+        console.log(isValid); 
 
-        if (!validateInputs()) {
+        if (!isValid) {
+            setDialogMessage('Please fill in all required fields.');
+            setDialogSeverity('error');
+            setOpenDialog(true);
             return;
         }
 
@@ -245,6 +255,7 @@ export default function CreateListing(props) {
             password: data.get('password'),
             listingType: listingType,
         };
+        console.log(payload);
 
         try {
             const response = await fetch('/authentication/signup', {
@@ -255,14 +266,26 @@ export default function CreateListing(props) {
             if (response.ok) {
                 const result = await response.json();
                 console.log('Signup successful:', result);
+                setDialogMessage('Listing created successfully!');
+                setDialogSeverity('success');
             } else {
                 const errorData = await response.json();
                 console.error('Signup error:', errorData);
+                setDialogMessage(`Error: ${errorData.message}`);
+                setDialogSeverity('error');
                 // TODO: handle backend errors
             }
         } catch (error) {
             console.error('Network error:', error);
+            setDialogMessage('Network error occurred. Please try again later.');
+            setDialogSeverity('error');
         }
+
+        setOpenDialog(true); // Open the dialog after submission attempt
+    };
+
+    const handleDialogClose = () => {
+        setOpenDialog(false);
     };
 
     const Card = styled(MuiCard)(({ theme }) => ({
@@ -566,13 +589,20 @@ export default function CreateListing(props) {
                         type="createListing"
                         fullWidth={false}
                         variant="contained"
-                        onClick={validateInputs}
+                        onClick={handleSubmit}
                         sx={{ marginBottom: 2 }} // Adjust the spacing here
                     >
                         Create Listing
                     </Button>
                 </Box>
             </CreateListingContainer>
+            <StatusDialog
+                open={openDialog}
+                onClose={handleDialogClose}
+                severity={dialogSeverity}
+                title={dialogSeverity === 'success' ? 'Success' : 'An Error Occurred'}
+                message={dialogMessage}
+            />
         </AppTheme>
     );
 }
