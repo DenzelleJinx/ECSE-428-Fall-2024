@@ -63,7 +63,7 @@ const SignUpContainer = styled(Stack)(({ theme }) => ({
 export default function SignUp(props) {
   const primaryColor = "#D50032";
   const secondaryColor = "#FFFFFF";
-
+  
   const [accountType, setAccountType] = React.useState('');
   const [phoneNumber, setPhoneNumber] = React.useState('');
   const [phoneNumberError, setPhoneNumberError] = React.useState(false);

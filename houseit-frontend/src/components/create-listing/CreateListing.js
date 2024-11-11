@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import {
     Box,
     Button,
@@ -49,7 +49,7 @@ const isNumeric = (string) => /^[+-]?\d+(\.\d+)?$/.test(string)
 export default function CreateListing(props) {
     const primaryColor = "#D50032";
     const secondaryColor = "#FFFFFF";
-
+    const formRef = useRef(null);
     const [listingType, setListingType] = React.useState('');
 
     const handleLisitingTypeChange = (event) => {
@@ -239,16 +239,16 @@ export default function CreateListing(props) {
     const handleSubmit = async (event) => {
         event.preventDefault();
         const isValid = validateInputs();
-        console.log(isValid); 
 
         if (!isValid) {
             setDialogMessage('Please fill in all required fields.');
             setDialogSeverity('error');
             setOpenDialog(true);
+            console.log("hey");
             return;
         }
 
-        const data = new FormData(event.currentTarget);
+        const data = new FormData(formRef.current);
         const payload = {
             name: data.get('username'),
             email: data.get('email'),
@@ -377,6 +377,7 @@ export default function CreateListing(props) {
                         </Typography>
                         <Box
                             component="form"
+                            ref={formRef} // Assign the ref to the form element
                             onSubmit={handleSubmit}
                             sx={{ display: 'flex', flexDirection: 'column', gap: 2, }} // Adjusted marginBottom
                         >
