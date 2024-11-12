@@ -238,31 +238,7 @@ export default function UpdateListing(props) {
             return;
         }
 
-        const data = new FormData(event.currentTarget);
-        const payload = {
-            name: data.get('username'),
-            email: data.get('email'),
-            password: data.get('password'),
-            listingType: listingType,
-        };
-
-        try {
-            const response = await fetch('/authentication/signup', {
-                method: 'POST',
-                body: JSON.stringify(payload),
-            });
-
-            if (response.ok) {
-                const result = await response.json();
-                console.log('Signup successful:', result);
-            } else {
-                const errorData = await response.json();
-                console.error('Signup error:', errorData);
-                // TODO: handle backend errors
-            }
-        } catch (error) {
-            console.error('Network error:', error);
-        }
+    //TODO!!!
     };
 
     const Card = styled(MuiCard)(({ theme }) => ({

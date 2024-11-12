@@ -111,26 +111,7 @@ export default function SignIn(props) {
             return;
         }
 
-        const data = new FormData(event.currentTarget);
-        const payload = {
-            username: data.get('username'),
-            email: data.get('email'),
-            password: data.get('password'),
-            accountType: accountType,
-            ...(accountType === 'landlord' && { phoneNumber: phoneNumber })
-        };
-
-        try {
-            const axiosClient = axios.create({
-                baseURL: "http://localhost:8080",
-            });
-            const response = await axiosClient.post('/authentication/signin', payload);
-
-            console.log('Signin successful:', response.data);
-            setServerErrorMessage('');
-        } catch (error) {
-            setServerErrorMessage(error.response ? error.response.data.split(": ").slice(1).join(": ") : 'An error occurred during signin. Please try again.');
-        }
+        //TODO !!!
     };
 
     return (

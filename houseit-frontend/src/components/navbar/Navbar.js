@@ -22,6 +22,9 @@ const Navbar = (props) => {
     const handleSignInClick = () => {
         navigate('/signin');
     };
+    const handleApproveLandlordClick = () => {
+        navigate('/approvelandlord');
+    };
 
     const handleLogoClick = () => {
         navigate('/');
@@ -65,6 +68,9 @@ const Navbar = (props) => {
                                 House It - Housing Service for McGill University Students
                             </Typography>
                         </div>
+                        <Button color="inherit" sx={{ color: secondaryColor }} onClick={handleApproveLandlordClick}>
+                            Approve Landlords
+                        </Button>
                         <Button color="inherit" sx={{ color: secondaryColor }} onClick={handleSignInClick}>
                             Sign In
                         </Button>
