@@ -35,12 +35,15 @@ export default function ApproveLandlord(props) {
     const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
     const [reasonError, setReasonError] = React.useState(false);
     const [reasonErrorMessage, setReasonErrorMessage] = React.useState('');
-
+    const [phoneNumber, setPhoneNumber] = React.useState('');
+    const [phoneNumberError, setPhoneNumberError] = React.useState(false);
+    const [phoneNumberErrorMessage, setPhoneNumberErrorMessage] = React.useState('');
 
     const validateInputs = () => {
         const userName = document.getElementById('UserName');
         const email = document.getElementById('Email');
         const reason = document.getElementById('Reason');
+        const phoneNumber = document.getElementById('phone-id');
 
         let isValid = true;
 
@@ -73,6 +76,14 @@ export default function ApproveLandlord(props) {
             setUserNameErrorMessage('');
         }
 
+        if (!phoneNumber || phoneNumber.length < 1) {
+            setPhoneNumberError(true);
+            setPhoneNumberErrorMessage('Phone number is required for landlords.');
+            isValid = false;
+        } else {
+            setPhoneNumberError(false);
+            setPhoneNumberErrorMessage('');
+        }
 
         return isValid;
     };
@@ -205,6 +216,19 @@ export default function ApproveLandlord(props) {
                                     error={emailError}
                                     helperText={emailErrorMessage}
                                     color={emailError ? 'error' : 'primary'}
+                                />
+                            </FormControl>
+                            <FormControl required fullWidth>
+                                <FormLabel htmlFor="phone-number">Phone Number</FormLabel>
+                                <TextField
+                                    fullWidth
+                                    id="phone-number"
+                                    name="phoneNumber"
+                                    placeholder="Enter phone number"
+                                    value={phoneNumber}
+                                    onChange={(e) => setPhoneNumber(e.target.value)}
+                                    error={phoneNumberError}
+                                    helperText={phoneNumberErrorMessage}
                                 />
                             </FormControl>
                             <FormControl required fullWidth>
