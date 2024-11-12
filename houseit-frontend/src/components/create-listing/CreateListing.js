@@ -469,7 +469,6 @@ export default function CreateListing(props) {
                                     display: "flex",
                                     flexDirection: "row",
                                     justifyContent: "center",
-                                    border: "1px solid #000",
                                     padding: "2em",
                                     maxwidth: "500px",
                                 }}
