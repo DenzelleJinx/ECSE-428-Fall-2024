@@ -7,6 +7,10 @@ import Navbar from '../navbar/Navbar';
 // I created mock listings giving that the database implementation had not been merged yet.
 // Whoever works on the back-end can uncomment the code such that useListings is called.
 
+// Added landlordId and phone number to the mock listings as they need to be able to reference who posted the listing
+// so that notifications and phone number can be sent
+// Maybe phone number is redundant if landlordId is available but unsure until implementation is done
+
 const listings = [
     {
         id: 1,
@@ -20,6 +24,8 @@ const listings = [
         propertyType: 'Lease',
         smokingAllowed: false,
         wheelchairAccessible: true,
+        landlordId: 1,
+        landlordPhone: '123-456-7890'
     },
     {
         id: 2,
@@ -32,8 +38,9 @@ const listings = [
         squareFootage: 1000,
         propertyType: 'Sublet',
         smokingAllowed: true,
-        wheelchairAccessible: true
-
+        wheelchairAccessible: true,
+        landlordId: 1,
+        landlordPhone: '123-456-7890'
     },
     {
         id: 3,
@@ -46,7 +53,8 @@ const listings = [
         squareFootage: 1200,
         propertyType: 'Sublet',
         smokingAllowed: true,
-
+        landlordId: 2,
+        landlordPhone: '548-123-3243'
     },
     // Add more listings as needed
 ];
