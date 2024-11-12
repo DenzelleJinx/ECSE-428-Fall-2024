@@ -274,7 +274,7 @@ return (
           </Button>
           <Typography sx={{ textAlign: 'center' }}>
             Already have an account?{' '}
-            <Link href="/material-ui/getting-started/templates/sign-in/" variant="body2">
+            <Link href="/sign-in/" variant="body2">
               Sign in
             </Link>
           </Typography>
