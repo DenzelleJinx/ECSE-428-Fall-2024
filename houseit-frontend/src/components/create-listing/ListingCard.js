@@ -48,6 +48,16 @@ function ListingCard({ listing }) {
         color: '#555',
     };
 
+    const buttonStyles = {
+        backgroundColor: '#d50032',
+        fontSize: '1.25em',
+        color: 'white',
+        border: 'none',
+        padding: '5px',
+        borderRadius: '5px',
+        cursor: 'pointer',
+    };
+
     return (
         <div
             style={cardStyles}
@@ -70,6 +80,7 @@ function ListingCard({ listing }) {
                     {listing.wheelchairAccessible && (
                         <span><AccessibleIcon fontSize="small" /> Wheelchair Accessible</span>
                     )}
+                    <button style={buttonStyles}>Contact</button>
                 </div>
             </div>
         </div>
