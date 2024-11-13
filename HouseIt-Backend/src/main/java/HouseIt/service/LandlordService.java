@@ -10,7 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 import HouseIt.dao.LandlordDAO;
 import HouseIt.dto.users.LandlordDTO;
 import HouseIt.model.Landlord;
+import HouseIt.model.Student;
 import HouseIt.model.User.AccountStatus;
+import HouseIt.utils.ValidationUtils;
+
 
 @Service
 public class LandlordService {
@@ -101,6 +104,17 @@ public Landlord updateLandlord(int id, String username, String password, String 
 }
 
 
+@Transactional
+public void resetPassword(String email, String newPassword) {
+    Landlord landlord = landlordDAO.findLandlordByEmail(email);
+    if (landlord == null) {
+        throw new IllegalArgumentException("No landlord found with the provided email.");
+    }
+
+    ValidationUtils.validatePassword(newPassword);
+    landlord.setPassword(newPassword); // Ideally hash the password
+    landlordDAO.save(landlord);
+}
     public LandlordDTO convertToDTO(Landlord landlord) {
         LandlordDTO landlordDTO = new LandlordDTO();
         landlordDTO.setId(landlord.getId());
@@ -110,5 +124,12 @@ public Landlord updateLandlord(int id, String username, String password, String 
         landlordDTO.setRating(landlord.getRating());
         landlordDTO.setPhoneNumber(landlord.getPhoneNumber());
         return landlordDTO;
+    }
+    public Landlord existsByEmail(String email) {
+        Landlord l = landlordDAO.findLandlordByEmail(email);
+        if (l == null) {
+            System.out.println("existsByEmail, Landlord: null");
+        }
+        return landlordDAO.findLandlordByEmail(email);
     }
 }
