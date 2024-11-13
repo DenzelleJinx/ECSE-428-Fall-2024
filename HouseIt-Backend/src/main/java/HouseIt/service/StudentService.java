@@ -81,4 +81,42 @@ public class StudentService {
 
         return email != null && email.matches(accountEmail);
     }
+
+    @Transactional
+    public Student updateStudent(int id, String username, String password, String email, AccountStatus status, Float rating) {
+        // Retrieve existing student
+        Student student = studentDAO.findById(id).orElseThrow(() -> new IllegalArgumentException("Student not found"));
+
+        // Update fields if they are provided
+        if (username != null && !username.trim().isEmpty()) {
+            student.setUsername(username);
+        }
+
+        if (password != null && password.trim().length() >= 6) {
+            student.setPassword(password);
+        } else if (password != null) {
+            throw new IllegalArgumentException("Password must be at least 6 characters long");
+        }
+
+        if (email != null && !email.trim().isEmpty()) {
+            if (!isValidMcGillEmail(email)) {
+                throw new IllegalArgumentException("Email must be a valid McGill email (format: lower.lower@mail.mcgill.ca).");
+            }
+            if (!email.equals(student.getEmail()) && studentDAO.findStudentByEmail(email) != null) {
+                throw new IllegalArgumentException("Email already exists in the system. Please enter another email.");
+            }
+            student.setEmail(email);
+        }
+
+        if (status != null) {
+            student.setStatus(status);
+        }
+
+        if (rating != null && rating >= 0.0f) {
+            student.setRating(rating);
+        }
+
+        return studentDAO.save(student);
+    }  
+
 }
