@@ -119,6 +119,9 @@ export default function SignUp(props) {
       
       console.log('login successful:', response.data);
       setServerErrorMessage('');
+      const userResponse = await axiosClient.get('/users/' + data.get('email'), payload);
+      const { password, ...userWithoutPassword } = userResponse.data;
+      localStorage.setItem('currentUser', JSON.stringify(userWithoutPassword));
     } catch (error) {
       setServerErrorMessage(error.response ? error.response.data.split(": ").slice(1).join(": ") : 'An error occurred during login. Please try again.');
     }
@@ -151,7 +154,7 @@ return (
               required
               fullWidth
               id="email"
-              placeholder="email, email, or phone number"
+              placeholder="email"
               error={emailError}
               helperText={emailErrorMessage}
               color={emailError ? 'error' : 'primary'}
