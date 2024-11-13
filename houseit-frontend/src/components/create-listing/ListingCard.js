@@ -8,6 +8,7 @@ import apartmentImage from '../../assets/sample-bedroom.png';
 
 function ListingCard({ listing }) {
     const [isHovered, setIsHovered] = useState(false);
+    const [showPhoneNumber, setShowPhoneNumber] = useState(false);
 
     const cardStyles = {
         border: '1px solid #ddd',
@@ -58,6 +59,19 @@ function ListingCard({ listing }) {
         cursor: 'pointer',
     };
 
+    const phoneStyles = {
+        fontSize: '1.25em',
+        color: 'black',
+        borderWidth: '1px',
+        padding: '4px',
+        borderRadius: '5px',
+        cursor: 'pointer',
+    }
+
+    const handleToggle = () => {
+        setShowPhoneNumber(!showPhoneNumber);
+    };
+
     return (
         <div
             style={cardStyles}
@@ -80,9 +94,17 @@ function ListingCard({ listing }) {
                     {listing.wheelchairAccessible && (
                         <span><AccessibleIcon fontSize="small" /> Wheelchair Accessible</span>
                     )}
-                    <button style={buttonStyles}>Contact</button>
                 </div>
-            </div>
+                {showPhoneNumber ? (
+                    <button onClick={handleToggle} style={phoneStyles}>
+                        Call {listing.landlordPhone}
+                    </button>
+                ) : (
+                    <button style={buttonStyles} onClick={handleToggle}>
+                        Contact
+                    </button>
+                )}
+            </div>            
         </div>
     );
 }
