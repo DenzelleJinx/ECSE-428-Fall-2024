@@ -66,12 +66,12 @@ export default function SignUp(props) {
 
   const [passwordError, setPasswordError] = React.useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
-  const [usernameError, setUsernameError] = React.useState(false);
-  const [usernameErrorMessage, setUsernameErrorMessage] = React.useState('');
+  const [emailError, setEmailError] = React.useState(false);
+  const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
   const [serverErrorMessage, setServerErrorMessage] = React.useState('');
 
   const validateInputs = () => {
-    const username = document.getElementById('username');
+    const email = document.getElementById('email');
     const password = document.getElementById('password');
 
     let isValid = true;
@@ -85,13 +85,13 @@ export default function SignUp(props) {
       setPasswordErrorMessage('');
     }
 
-    if (!username || !username.value || username.value.length < 1) {
-      setUsernameError(true);
-      setUsernameErrorMessage('Username, email, or phone number is required.');
+    if (!email || !email.value || email.value.length < 1) {
+      setEmailError(true);
+      setEmailErrorMessage('Email, email, or phone number is required.');
       isValid = false;
     } else {
-      setUsernameError(false);
-      setUsernameErrorMessage('');
+      setEmailError(false);
+      setEmailErrorMessage('');
     }
 
     return isValid;
@@ -107,7 +107,7 @@ export default function SignUp(props) {
 
     const data = new FormData(event.currentTarget);
     const payload = {
-      username: data.get('username'),
+      email: data.get('email'),
       password: data.get('password'),
     };
 
@@ -144,17 +144,17 @@ return (
           sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
         >
           <FormControl required fullWidth>
-            <FormLabel htmlFor="username">Username</FormLabel>
+            <FormLabel htmlFor="email">Email</FormLabel>
             <TextField
-              autoComplete="username"
-              name="username"
+              autoComplete="email"
+              name="email"
               required
               fullWidth
-              id="username"
-              placeholder="username, email, or phone number"
-              error={usernameError}
-              helperText={usernameErrorMessage}
-              color={usernameError ? 'error' : 'primary'}
+              id="email"
+              placeholder="email, email, or phone number"
+              error={emailError}
+              helperText={emailErrorMessage}
+              color={emailError ? 'error' : 'primary'}
             />
           </FormControl>
           <FormControl required fullWidth>

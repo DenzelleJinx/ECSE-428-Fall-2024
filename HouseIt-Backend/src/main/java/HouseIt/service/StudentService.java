@@ -2,10 +2,9 @@ package HouseIt.service;
 
 import org.springframework.stereotype.Service;
 
-import java.sql.SQLException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import HouseIt.dao.StudentDAO;
@@ -18,6 +17,9 @@ public class StudentService {
 
     @Autowired
     StudentDAO studentDAO;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @Transactional
     public Student createStudent(String username, String password, String email) {
@@ -48,7 +50,7 @@ public class StudentService {
         Student newStudent = new Student();
         newStudent.setUsername(username);
         newStudent.setEmail(email);
-        newStudent.setPassword(password);
+        newStudent.setPassword(passwordEncoder.encode(password));
         newStudent.setStatus(AccountStatus.ACTIVE);
         newStudent.setRating(0.0f);
 

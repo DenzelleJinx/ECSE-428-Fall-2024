@@ -40,7 +40,7 @@ public class AuthenticationController {
         try {
             authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            return new ResponseEntity<>("User login successfully!...", HttpStatus.OK);
+            return new ResponseEntity<>("User logged in successfully!...", HttpStatus.OK);
         } catch (AuthenticationException exception) {
             if (exception.getMessage().equals("User does not exist.")) {
                 return new ResponseEntity<>("User with email " + loginRequest.getEmail() + " does not exist.", HttpStatus.UNAUTHORIZED);
