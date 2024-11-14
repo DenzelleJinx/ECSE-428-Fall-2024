@@ -19,9 +19,7 @@ const Navbar = (props) => {
     const handleSignUpClick = () => {
         navigate('/signup');
     };
-    const handleSignInClick = () => {
-        navigate('/signin');
-    };
+
     const handleApproveLandlordClick = () => {
         navigate('/approvelandlord');
     };
@@ -70,9 +68,6 @@ const Navbar = (props) => {
                         </div>
                         <Button color="inherit" sx={{ color: secondaryColor }} onClick={handleApproveLandlordClick}>
                             Approve Landlords
-                        </Button>
-                        <Button color="inherit" sx={{ color: secondaryColor }} onClick={handleSignInClick}>
-                            Sign In
                         </Button>
                         <Button color="inherit" sx={{ color: secondaryColor }} onClick={handleSignUpClick}>
                             Sign Up
