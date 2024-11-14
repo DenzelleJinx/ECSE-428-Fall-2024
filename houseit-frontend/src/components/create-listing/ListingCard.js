@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import BedIcon from '@mui/icons-material/Bed';
+import axios from 'axios';
 import BathtubIcon from '@mui/icons-material/Bathtub';
 import HomeIcon from '@mui/icons-material/Home';
 import SmokingRoomsIcon from '@mui/icons-material/SmokingRooms';
@@ -8,6 +9,7 @@ import apartmentImage from '../../assets/sample-bedroom.png';
 
 function ListingCard({ listing }) {
     const [isHovered, setIsHovered] = useState(false);
+    const [isButtonHovered, setIsButtonHovered] = useState(false);
     const [showPhoneNumber, setShowPhoneNumber] = useState(false);
 
     const cardStyles = {
@@ -50,7 +52,7 @@ function ListingCard({ listing }) {
     };
 
     const buttonStyles = {
-        backgroundColor: '#d50032',
+        backgroundColor: isButtonHovered ? '#b71c1c' : '#d50032',
         fontSize: '1.25em',
         color: 'white',
         border: 'none',
@@ -65,13 +67,37 @@ function ListingCard({ listing }) {
         borderWidth: '1px',
         padding: '4px',
         borderRadius: '5px',
-        cursor: 'pointer',
-    }
+    };
 
+    // Shows and hides phone number only
     const handleToggle = () => {
         setShowPhoneNumber(!showPhoneNumber);
     };
 
+    // Sends notifications
+    const handleContactButtonClick = async () => {
+        try {
+            const axiosClient = axios.create({
+                baseURL: "http://localhost:8080",
+            });
+
+            // NotificationDTO
+            const notificationData = {
+                message: `Someone contacted you about the listing: ${listing.title}`,
+                localDateTime: new Date().toISOString(),
+                type: 'Contact Request',
+                senderId: 1, // Get the actual sender instead of just 1 TODO
+            };
+
+            const landlordId = listing.landlordId;
+
+            const response = await axiosClient.post(`/users/${landlordId}/notifications`, notificationData, {params: {id: landlordId}});
+            console.log('Notification successful:', response.data);
+            
+        } catch (error) {
+            console.error('Error sending notification:', error);
+        }
+    };
     return (
         <div
             style={cardStyles}
@@ -96,11 +122,12 @@ function ListingCard({ listing }) {
                     )}
                 </div>
                 {showPhoneNumber ? (
-                    <button onClick={handleToggle} style={phoneStyles}>
-                        Call {listing.landlordPhone}
-                    </button>
+                    <div style={phoneStyles}>
+                        Call {listing.landlordPhone} <button onClick={handleContactButtonClick}>Notify</button>
+                        <button onClick={handleToggle}>Nevermind</button>
+                    </div>
                 ) : (
-                    <button style={buttonStyles} onClick={handleToggle}>
+                    <button style={buttonStyles} onClick={handleToggle} onMouseEnter={() => setIsButtonHovered(true)} onMouseLeave={() => setIsButtonHovered(false)}>
                         Contact
                     </button>
                 )}
