@@ -35,15 +35,15 @@ export default function ApproveLandlord(props) {
     const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
     const [reasonError, setReasonError] = React.useState(false);
     const [reasonErrorMessage, setReasonErrorMessage] = React.useState('');
-    const [phoneNumber, setPhoneNumber] = React.useState('');
+    //const [phoneNumber, setPhoneNumber] = React.useState('');
     const [phoneNumberError, setPhoneNumberError] = React.useState(false);
     const [phoneNumberErrorMessage, setPhoneNumberErrorMessage] = React.useState('');
 
     const validateInputs = () => {
-        const userName = document.getElementById('UserName');
+        const userName = document.getElementById('Username');
         const email = document.getElementById('Email');
         const reason = document.getElementById('Reason');
-        const phoneNumber = document.getElementById('phone-id');
+        const phoneNumber = document.getElementById('phone-number');
 
         let isValid = true;
 
@@ -76,9 +76,13 @@ export default function ApproveLandlord(props) {
             setUserNameErrorMessage('');
         }
 
-        if (!phoneNumber || phoneNumber.length < 1) {
+        if (!phoneNumber ||  !phoneNumber.value || phoneNumber.length < 1) {
             setPhoneNumberError(true);
             setPhoneNumberErrorMessage('Phone number is required for landlords.');
+            isValid = false;
+        } else if (!isNumeric(phoneNumber.value)){
+            setPhoneNumberError(true);
+            setPhoneNumberErrorMessage('Phone number must be a number');
             isValid = false;
         } else {
             setPhoneNumberError(false);
@@ -190,20 +194,20 @@ export default function ApproveLandlord(props) {
                             onSubmit={handleSubmit}
                             sx={{ display: 'flex', flexDirection: 'column', gap: 2, }} // Adjusted marginBottom
                         >
-                            <FormControl required fullWidth>
+                            <FormControl fullWidth>
                                 <FormLabel htmlFor="Username">Username</FormLabel>
                                 <TextField
                                     name="Username"
                                     fullWidth
                                     id="Username"
                                     placeholder="Username"
-                                    inputProps={{ readOnly: true }}
+                                    //inputProps={{ readOnly: true }}
                                     error={userNameError}
                                     helperText={userNameErrorMessage}
                                     color={userNameError ? 'error' : 'primary'}
                                 />
                             </FormControl>
-                            <FormControl required fullWidth>
+                            <FormControl fullWidth>
                                 <FormLabel htmlFor="Email">Email</FormLabel>
                                 <TextField
                                     fullWidth
@@ -211,6 +215,7 @@ export default function ApproveLandlord(props) {
                                     placeholder="Email"
                                     type="Email"
                                     id="Email"
+                                    //inputProps={{ readOnly: true }}
                                     autoComplete="Email"
                                     variant="outlined"
                                     error={emailError}
@@ -218,17 +223,21 @@ export default function ApproveLandlord(props) {
                                     color={emailError ? 'error' : 'primary'}
                                 />
                             </FormControl>
-                            <FormControl required fullWidth>
+                            <FormControl fullWidth>
                                 <FormLabel htmlFor="phone-number">Phone Number</FormLabel>
                                 <TextField
                                     fullWidth
-                                    id="phone-number"
                                     name="phoneNumber"
                                     placeholder="Enter phone number"
-                                    value={phoneNumber}
-                                    onChange={(e) => setPhoneNumber(e.target.value)}
+                                    type="phoneNumber"
+                                    id="phone-number"
+                                    autoComplete="Phone Number"
+                                    variant="outlined"
+                                    //value={phoneNumber}
+                                    //onChange={(e) => setPhoneNumber(e.target.value)}
                                     error={phoneNumberError}
                                     helperText={phoneNumberErrorMessage}
+                                    color={phoneNumberError ? 'error' : 'primary'}
                                 />
                             </FormControl>
                             <FormControl required fullWidth>
