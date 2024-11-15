@@ -85,18 +85,14 @@ public class AuthenticationController {
         try {
             if ("student".equalsIgnoreCase(accountType)) {
                 if (isStudentAndValidUser(email, username)) {
-                    System.out.println("Password Reset for Student");
                     studentService.resetPassword(email, newPassword);
                 } else {
-                    System.out.println("No matching student found: " + email);
                     return ResponseEntity.badRequest().body("No student found with the provided email and username.");
                 }
             } else if ("landlord".equalsIgnoreCase(accountType)) {
                 if (isLandlordAndValidUser(email, username)) {
-                    System.out.println("Password Reset for Landlord");
                     landlordService.resetPassword(email, newPassword);
                 } else {
-                    System.out.println("No matching landlord found: " + email);
                     return ResponseEntity.badRequest().body("No landlord found with the provided email and username.");
                 }
             } else {
@@ -105,7 +101,6 @@ public class AuthenticationController {
 
             return ResponseEntity.ok("Password has been reset successfully.");
         } catch (Exception e) {
-            System.out.println("The error occurred: " + e.getMessage());
             e.printStackTrace(); // More detailed exception logging
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -119,7 +114,6 @@ public class AuthenticationController {
             System.out.println("Student found: " + student.getUsername());
             return student.getUsername().equals(username);
         }
-        System.out.println("No matching student found for email: " + email);
         return false;
     }
 
@@ -128,7 +122,6 @@ public class AuthenticationController {
         if (landlord != null) {
             return landlord.getUsername().equals(username);
         }
-        System.out.println("No matching landlord found for email: " + email);
         return false;
     }
 

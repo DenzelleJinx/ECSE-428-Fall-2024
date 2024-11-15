@@ -127,9 +127,7 @@ public void resetPassword(String email, String newPassword) {
     }
     public Landlord existsByEmail(String email) {
         Landlord l = landlordDAO.findLandlordByEmail(email);
-        if (l == null) {
-            System.out.println("existsByEmail, Landlord: null");
-        }
-        return landlordDAO.findLandlordByEmail(email);
+
+        return l;
     }
 }
