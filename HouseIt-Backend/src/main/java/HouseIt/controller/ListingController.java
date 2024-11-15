@@ -98,5 +98,15 @@ public class ListingController {
             List<ListingDTO> listingsDTO = listings.stream().map(listingService::convertToDTO).toList();
             return new ResponseEntity<List<ListingDTO>>(listingsDTO, HttpStatus.OK);
     }
+
+    @PutMapping("/{id}/complete")
+    public ResponseEntity<?> completeListing(@PathVariable int id) {
+        try {
+            ListingDTO dto = listingService.convertToDTO(listingService.completeListing(id));
+            return ResponseEntity.ok(dto);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
     
 }
