@@ -362,7 +362,7 @@ export default function CreateListing(props) {
         }
 
         // Get lanlord ID
-        const user = JSON.parse(localStorage.getItem('user'));
+        const user = JSON.parse(localStorage.getItem('currentUser'));
         if (!user || user.accountType !== 'landlord') {
             setServerErrorMessage('You must be logged in as a landlord to create a listing.');
             return;
