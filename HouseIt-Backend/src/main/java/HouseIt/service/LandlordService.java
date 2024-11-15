@@ -2,9 +2,9 @@ package HouseIt.service;
 
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import HouseIt.dao.LandlordDAO;
@@ -17,6 +17,9 @@ public class LandlordService {
     
     @Autowired
     LandlordDAO landlordDAO;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @Transactional
     public Landlord createLandlord(String username, String password, String email, String phoneNumber) {
@@ -54,12 +57,16 @@ public class LandlordService {
 
         Landlord newLandlord = new Landlord();
         newLandlord.setUsername(username);
-        newLandlord.setPassword(password);
+        newLandlord.setPassword(passwordEncoder.encode(password));
         newLandlord.setEmail(email);
         newLandlord.setPhoneNumber(phoneNumber);
         newLandlord.setStatus(AccountStatus.PENDING);
         newLandlord.setRating(0.0f);
-        return landlordDAO.save(newLandlord);
+        try {
+            return landlordDAO.save(newLandlord);
+        } catch (DataIntegrityViolationException e) {
+            throw new IllegalArgumentException("An account with the same username or email exists already.");
+        }
     }
 
     @Transactional

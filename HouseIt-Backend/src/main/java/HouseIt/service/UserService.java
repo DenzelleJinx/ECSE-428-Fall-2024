@@ -21,4 +21,9 @@ public class UserService {
     public List<User> getAllUsers() {
         return Helper.toList(userDAO.findAll());
     }
+
+    @Transactional
+    public User getUserByEmail(String email) {
+        return userDAO.findUserByEmail(email);
+    }
 }

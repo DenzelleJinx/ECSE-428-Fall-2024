@@ -40,7 +40,7 @@ public class AuthenticationController {
         try {
             authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            return new ResponseEntity<>("User login successfully!...", HttpStatus.OK);
+            return new ResponseEntity<>("User logged in successfully!...", HttpStatus.OK);
         } catch (AuthenticationException exception) {
             if (exception.getMessage().equals("User does not exist.")) {
                 return new ResponseEntity<>("User with email " + loginRequest.getEmail() + " does not exist.", HttpStatus.UNAUTHORIZED);
@@ -59,7 +59,7 @@ public class AuthenticationController {
             } catch (Exception e) {
                 return new ResponseEntity<>(e.toString(), HttpStatus.BAD_REQUEST);
             }
-            return new ResponseEntity<>("User is registered successfully!", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("User is registered successfully!", HttpStatus.OK);
         } else {
             try {
                 landlordService.createLandlord(signUpDto.getUsername(), signUpDto.getPassword(), signUpDto.getEmail(), signUpDto.getPhoneNumber());
