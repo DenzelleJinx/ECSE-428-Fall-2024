@@ -6,6 +6,13 @@ public class ResetPasswordRequestDTO {
     private String newPassword;
     private String accountType;
 
+    public ResetPasswordRequestDTO(String email, String username, String newPassword, String accountType) {
+        this.email = email;
+        this.username = username;
+        this.newPassword = newPassword;
+        this.accountType = accountType;
+    }
+
     public void setAccountType(String accountType) {
         this.accountType = accountType;
     }
