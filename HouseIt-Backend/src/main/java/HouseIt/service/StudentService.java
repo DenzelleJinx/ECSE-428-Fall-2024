@@ -11,6 +11,7 @@ import HouseIt.dao.StudentDAO;
 import HouseIt.dto.users.StudentDTO;
 import HouseIt.model.Student;
 import HouseIt.model.User.AccountStatus;
+import HouseIt.utils.ValidationUtils;
 
 @Service
 public class StudentService {
@@ -117,6 +118,23 @@ public class StudentService {
         }
 
         return studentDAO.save(student);
-    }  
+    }
+    
+    @Transactional
+    public Student resetPassword(String email, String newPassword) {
+        Student student = studentDAO.findStudentByEmail(email);
+        if (student == null) {
+            throw new IllegalArgumentException("No student found with the provided email.");
+        }
+
+        ValidationUtils.validatePassword(newPassword);
+        student.setPassword(newPassword); // Ideally hash the password here
+        return studentDAO.save(student);
+    }
+
+    public Student existsByEmail(String email) {
+        Student student = studentDAO.findStudentByEmail(email);
+        return student;
+    }
 
 }
