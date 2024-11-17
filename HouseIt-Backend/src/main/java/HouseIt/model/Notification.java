@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.GeneratedValue;
 
 // line 17 "model.ump"
@@ -34,6 +35,7 @@ public class Notification
     private LocalDateTime localDateTime;
     private String message;
     private NotificationType type;
+    @OneToOne
     private User sender;
 
     //------------------------

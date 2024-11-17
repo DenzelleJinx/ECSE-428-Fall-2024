@@ -18,26 +18,23 @@ import jakarta.transaction.Transactional;
 public class NotificationService {
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
     private NotificationDAO notificationDAO;
 
     @Transactional
-    public Notification createNotification(NotificationDTO notification) {
-        if (notification.getType() == null) {
+    public Notification createNotification(String notificationType, String message, User sender) {
+        if (notificationType == null) {
             throw new IllegalArgumentException("Notification type cannot be empty.");
         }
-        switch (notification.getType()) {
+        switch (notificationType.toUpperCase()) {
             case "CONTACT":
-                User sender = userService.getUserById(notification.getSenderId());
                 if (sender == null) {
-                    throw new IllegalArgumentException("Sender ID cannot be empty for notification type CONTACT.");
+                    throw new IllegalArgumentException("Sender with username " + sender.getUsername() + " does not exist.");
                 }
                 Notification contactNotification = new Notification();
                 contactNotification.setSender(sender);
                 contactNotification.setType(NotificationType.CONTACT);
                 contactNotification.setLocalDateTime(LocalDateTime.now());
+                notificationDAO.save(contactNotification);
                 return contactNotification;
 
             case "REVIEW":
@@ -45,13 +42,18 @@ public class NotificationService {
                 reviewNotification.setType(NotificationType.REVIEW);
                 reviewNotification.setMessage("Your account status has changed, please review it in your account page.");
                 reviewNotification.setLocalDateTime(LocalDateTime.now());
+                notificationDAO.save(reviewNotification);
                 return reviewNotification;
 
             case "OTHER":
                 Notification otherNotification = new Notification();
                 otherNotification.setType(NotificationType.OTHER);
-                otherNotification.setMessage(notification.getMessage());
+                if (message == null || message.isEmpty() || message.equals("")) {
+                    throw new IllegalArgumentException("Message cannot be empty for notification type OTHER.");
+                }
+                otherNotification.setMessage(message);
                 otherNotification.setLocalDateTime(LocalDateTime.now());
+                notificationDAO.save(otherNotification);
                 return otherNotification;
         
             default:
@@ -79,7 +81,7 @@ public class NotificationService {
         dto.setLocalDateTime(notification.getLocalDateTime().toString());
         dto.setMessage(notification.getMessage());
         dto.setType(notification.getType().toString());
-        dto.setSenderId(notification.getSender().getId());
+        dto.setSenderUsername(notification.getSender().getUsername());
         return dto;
     }
     

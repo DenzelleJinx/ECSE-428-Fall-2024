@@ -8,7 +8,7 @@ public class NotificationDTO {
     private String message;
     private String localDateTime;
     private String type;
-    private int senderId;
+    private String senderUsername;
 
     public NotificationDTO() {}
 
@@ -17,15 +17,15 @@ public class NotificationDTO {
         this.message = notification.getMessage();
         this.localDateTime = notification.getLocalDateTime().toString();
         this.type = notification.getType().toString();
-        this.senderId = notification.getSender().getId();
+        this.senderUsername = notification.getSender().getUsername();
     }
 
-    public NotificationDTO(int id, String message, String localDateTime, String type, int senderId) {
+    public NotificationDTO(int id, String message, String localDateTime, String type, String senderUsername) {
         this.id = id;
         this.message = message;
         this.localDateTime = localDateTime;
         this.type = type;
-        this.senderId = senderId;
+        this.senderUsername = senderUsername;
     }
 
     public int getId() {
@@ -44,8 +44,8 @@ public class NotificationDTO {
         return type;
     }
 
-    public int getSenderId() {
-        return senderId;
+    public String getSenderUsername() {
+        return senderUsername;
     }
 
     public void setId(int id) {
@@ -64,7 +64,7 @@ public class NotificationDTO {
         this.type = type;
     }
 
-    public void setSenderId(int senderId) {
-        this.senderId = senderId;
+    public void setSenderUsername(String senderUsername) {
+        this.senderUsername = senderUsername;
     }
 }
