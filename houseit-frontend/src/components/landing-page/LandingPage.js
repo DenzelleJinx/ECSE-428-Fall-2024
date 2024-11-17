@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container, Typography, Button, Box, AppBar, Toolbar } from '@mui/material';
 import { styled } from '@mui/system';
 import { useNavigate } from 'react-router-dom';
@@ -21,6 +21,17 @@ const StyledButton = styled(Button)({
 });
 
 function LandingPage(props) {
+    const [isLandlord, setIsLandlord] = useState(false);
+
+    useEffect(() => {
+        const checkAuth = () => {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            setIsLandlord(user && user.accountType === 'landlord');
+        };
+        
+        checkAuth();
+    }, []);
+
     const navigate = useNavigate();
 
     const handleSignUpClick = () => {
@@ -30,6 +41,10 @@ function LandingPage(props) {
     const handleListingClick = () => {
         navigate('/createlisting');
     };
+
+    const handleViewListingsClick = () => {
+        navigate('/viewlistings')
+    }
 
     const handleLogoClick = () => {
         navigate('/');
@@ -70,9 +85,14 @@ function LandingPage(props) {
                         <Typography variant="h6" color="textSecondary" paragraph>
                             Discover listings and connect with landlords effortlessly.
                         </Typography>
-                        <StyledButton variant="contained" size="large" sx={{ m: 1 }} onClick={handleListingClick}>
-                            Create Listing
+                        <StyledButton variant="contained" size="large" sx={{ m: 1 }} onClick={handleViewListingsClick}>
+                            View Current Listings
                         </StyledButton>
+                        {isLandlord && (
+                            <StyledButton variant="contained" size="large" sx={{ m: 1 }} onClick={handleListingClick}>
+                                Create Listing
+                            </StyledButton>
+                        )}
                         <Button variant="outlined" size="large" sx={{ m: 1, color: primaryColor, borderColor: primaryColor }} onClick={handleSignUpClick}>
                             Sign Up Now
                         </Button>
