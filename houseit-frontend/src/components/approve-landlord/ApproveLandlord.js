@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Box,
     Button,
@@ -25,6 +25,17 @@ const isNumeric = (string) => /^[+-]?\d+(\.\d+)?$/.test(string)
 
 
 export default function ApproveLandlord(props) {
+    useEffect(() => {
+        const checkAuth = () => {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            if (!user || user.accountType !== 'landlord') {
+                // Redirect to home page if not authenticated as landlord
+                navigate('/');
+            }
+        };
+        
+        checkAuth();
+    }, []);
     const primaryColor = "#D50032";
     const secondaryColor = "#FFFFFF";
 

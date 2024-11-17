@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -12,6 +12,16 @@ import { useNavigate } from 'react-router-dom';
 
 
 const Navbar = (props) => {
+    const [isLandlord, setIsLandlord] = useState(false);
+    useEffect(() => {
+        const checkAuth = () => {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            setIsLandlord(user && user.accountType === 'landlord');
+        };
+        
+        checkAuth();
+    }, []);
+
     const primaryColor = "#D50032";
     const secondaryColor = "#FFFFFF";
     const navigate = useNavigate();
@@ -69,9 +79,11 @@ const Navbar = (props) => {
                                 House It - Housing Service for McGill University Students
                             </Typography>
                         </div>
-                        <Button color="inherit" sx={{ color: secondaryColor }} onClick={handleApproveLandlordClick}>
-                            Approve Landlords
-                        </Button>
+                        {isLandlord && (
+                            <Button color="inherit" sx={{ color: secondaryColor }} onClick={handleApproveLandlordClick}>
+                                Approve Landlords
+                            </Button>
+                        )}
                         <Button color="inherit" sx={{ color: secondaryColor }} onClick={handleSignInClick}>
                             Login
                         </Button>
