@@ -31,6 +31,16 @@ const isNumeric = (string) => /^[+-]?\d+(\.\d+)?$/.test(string)
 export default function CreateListing(props) {
 
     useEffect(() => {
+        const checkAuth = () => {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            if (!user || user.accountType !== 'landlord') {
+                // Redirect to home page if not authenticated as landlord
+                navigate('/');
+            }
+        };
+        
+        checkAuth();
+
         // TODO: Remove this when done testing
         const isTesting = true;
         if (isTesting) {
@@ -625,7 +635,7 @@ export default function CreateListing(props) {
                                     display: "flex",
                                     flexDirection: "row",
                                     justifyContent: "center",
-                                    border: "1px solid #000",
+                                    // border: "1px solid #000",
                                     padding: "2em",
                                     maxwidth: "500px",
                                 }}
