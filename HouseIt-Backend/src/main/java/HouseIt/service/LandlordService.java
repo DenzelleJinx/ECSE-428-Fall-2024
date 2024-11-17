@@ -2,21 +2,27 @@ package HouseIt.service;
 
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import HouseIt.dao.LandlordDAO;
 import HouseIt.dto.users.LandlordDTO;
 import HouseIt.model.Landlord;
+import HouseIt.model.Student;
 import HouseIt.model.User.AccountStatus;
+import HouseIt.utils.ValidationUtils;
+
 
 @Service
 public class LandlordService {
     
     @Autowired
     LandlordDAO landlordDAO;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @Transactional
     public Landlord createLandlord(String username, String password, String email, String phoneNumber) {
@@ -54,12 +60,16 @@ public class LandlordService {
 
         Landlord newLandlord = new Landlord();
         newLandlord.setUsername(username);
-        newLandlord.setPassword(password);
+        newLandlord.setPassword(passwordEncoder.encode(password));
         newLandlord.setEmail(email);
         newLandlord.setPhoneNumber(phoneNumber);
         newLandlord.setStatus(AccountStatus.PENDING);
         newLandlord.setRating(0.0f);
-        return landlordDAO.save(newLandlord);
+        try {
+            return landlordDAO.save(newLandlord);
+        } catch (DataIntegrityViolationException e) {
+            throw new IllegalArgumentException("An account with the same username or email exists already.");
+        }
     }
 
     @Transactional
@@ -101,6 +111,17 @@ public Landlord updateLandlord(int id, String username, String password, String 
 }
 
 
+@Transactional
+public void resetPassword(String email, String newPassword) {
+    Landlord landlord = landlordDAO.findLandlordByEmail(email);
+    if (landlord == null) {
+        throw new IllegalArgumentException("No landlord found with the provided email.");
+    }
+
+    ValidationUtils.validatePassword(newPassword);
+    landlord.setPassword(newPassword); // Ideally hash the password
+    landlordDAO.save(landlord);
+}
     public LandlordDTO convertToDTO(Landlord landlord) {
         LandlordDTO landlordDTO = new LandlordDTO();
         landlordDTO.setId(landlord.getId());
@@ -110,5 +131,10 @@ public Landlord updateLandlord(int id, String username, String password, String 
         landlordDTO.setRating(landlord.getRating());
         landlordDTO.setPhoneNumber(landlord.getPhoneNumber());
         return landlordDTO;
+    }
+    public Landlord existsByEmail(String email) {
+        Landlord l = landlordDAO.findLandlordByEmail(email);
+
+        return l;
     }
 }

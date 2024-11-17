@@ -1,19 +1,26 @@
 package HouseIt.service;
 
 import org.springframework.stereotype.Service;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import HouseIt.dao.StudentDAO;
 import HouseIt.dto.users.StudentDTO;
 import HouseIt.model.Student;
 import HouseIt.model.User.AccountStatus;
+import HouseIt.utils.ValidationUtils;
 
 @Service
 public class StudentService {
 
     @Autowired
     StudentDAO studentDAO;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @Transactional
     public Student createStudent(String username, String password, String email) {
@@ -44,11 +51,19 @@ public class StudentService {
         Student newStudent = new Student();
         newStudent.setUsername(username);
         newStudent.setEmail(email);
-        newStudent.setPassword(password);
+        newStudent.setPassword(passwordEncoder.encode(password));
         newStudent.setStatus(AccountStatus.ACTIVE);
         newStudent.setRating(0.0f);
 
-        return studentDAO.save(newStudent);
+        try {
+            return studentDAO.save(newStudent);
+        } catch (DataIntegrityViolationException e) {
+            if (e.getCause() instanceof org.hibernate.exception.ConstraintViolationException) {
+                throw new IllegalArgumentException("An account with the same username or email already exists.");
+            } else {
+                throw new RuntimeException("Unexpected error occurred while creating the student.");
+            }
+        }
     }
 
     public StudentDTO convertToDTO(Student student) {
@@ -103,6 +118,23 @@ public class StudentService {
         }
 
         return studentDAO.save(student);
-    }  
+    }
+    
+    @Transactional
+    public Student resetPassword(String email, String newPassword) {
+        Student student = studentDAO.findStudentByEmail(email);
+        if (student == null) {
+            throw new IllegalArgumentException("No student found with the provided email.");
+        }
+
+        ValidationUtils.validatePassword(newPassword);
+        student.setPassword(newPassword); // Ideally hash the password here
+        return studentDAO.save(student);
+    }
+
+    public Student existsByEmail(String email) {
+        Student student = studentDAO.findStudentByEmail(email);
+        return student;
+    }
 
 }

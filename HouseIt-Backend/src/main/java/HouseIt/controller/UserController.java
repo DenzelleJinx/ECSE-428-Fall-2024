@@ -19,6 +19,8 @@ import HouseIt.dto.users.UserDTO;
 import HouseIt.service.UserService;
 import HouseIt.model.Notification;
 import HouseIt.model.User;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @CrossOrigin(origins = "*")
 @RestController

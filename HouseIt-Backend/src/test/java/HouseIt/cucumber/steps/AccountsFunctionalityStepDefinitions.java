@@ -37,7 +37,7 @@ public class AccountsFunctionalityStepDefinitions {
     String landlordEmail = "landlordname@gmail.com";
     String landlordUsername = "Jane Doe";
     String landlordPassword = "mypass321";
-    String landlordPhone = "514-123-4567";
+    String landlordPhone = "5141234567";
 
     // Temporary variables
     boolean isStudent = false;
