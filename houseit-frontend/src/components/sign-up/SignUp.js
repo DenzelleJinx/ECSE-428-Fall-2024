@@ -85,9 +85,16 @@ export default function SignUp(props) {
   const [accountTypeErrorMessage, setAccountTypeErrorMessage] = React.useState('');
   const [serverErrorMessage, setServerErrorMessage] = React.useState('');
 
+  const navigate = useNavigate();
+
   const handleAccountTypeChange = (event) => {
     setAccountType(event.target.value);
   };
+
+  const closeDialog = () => {
+    setDialogOpen(false);
+    navigate('/login');
+  }
 
   const validateInputs = () => {
     const email = document.getElementById('email');
@@ -295,7 +302,7 @@ return (
         </Box>
       </Card>
     </SignUpContainer>
-    <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
+    <Dialog open={dialogOpen} onClose={() => closeDialog()}>
       <DialogTitle>Account Status</DialogTitle>
       <DialogContent>
         <DialogContentText>
@@ -303,7 +310,7 @@ return (
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={() => setDialogOpen(false)} color="primary">OK</Button>
+        <Button onClick={() => closeDialog()} color="primary">OK</Button>
       </DialogActions>
     </Dialog>
   </AppTheme>
