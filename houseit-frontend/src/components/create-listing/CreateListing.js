@@ -425,7 +425,7 @@ export default function CreateListing(props) {
             if (error.response && typeof error.response.data === 'string') {
                 errorMessage = error.response.data
             }
-            setServerErrorMessage(errorMessage ? errorMessage : 'An error occurred during signup. Please try again.');
+            setServerErrorMessage(errorMessage ? errorMessage : 'An error occurred. Please try again.');
           }
     };
 
