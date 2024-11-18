@@ -40,70 +40,51 @@ export default function CreateListing(props) {
         };
         
         checkAuth();
-
-        // TODO: Remove this when done testing
-        const isTesting = true;
-        if (isTesting) {
-            // this code block sets test values to make your life easier
-            console.log("using test values");
-            const title = document.getElementById('Title');
-            const description = document.getElementById('Description');
-            const bedrooms = document.getElementById('Bedrooms');
-            const bathrooms = document.getElementById('Bathrooms');
-            const price = document.getElementById('Price');
-            const squareFootage = document.getElementById('SquareFootage');
-            const wheelchairAccessible = document.getElementById('wheelchair-accessible');
-            const smokingAllowed = document.getElementById('smoking-allowed');
-            const apartment = document.getElementById('ApartmentNumber');
-            const streetNumber = document.getElementById('StreetNumber');
-            const street = document.getElementById('Street');
-            const city = document.getElementById('City');
-            const postalCode = document.getElementById('PostalCode');
-            const gym = document.getElementById('gym');
-            const laundry = document.getElementById('laundry');
-            const petsAllowed = document.getElementById('pets-allowed');
-            const parking = document.getElementById('parking');
-            const internetIncluded = document.getElementById('internet-included');
-            const waterCost = document.getElementById('water-cost');
-            const electricityCost = document.getElementById('electricity-cost');
-            const heatingCost = document.getElementById('heating-cost');
-            title.value = "test";
-            description.value = "test desc";
-            setPropertyType("HOUSE");
-            bedrooms.value = 1;
-            bathrooms.value = 1;
-            price.value = 1;
-            squareFootage.value = 1;
-            wheelchairAccessible.checked = false;
-            smokingAllowed.checked = false;
-            apartment.value = 1;
-            streetNumber.value = 1;
-            street.value = "test street";
-            city.value = "test city";
-            postalCode.value = "A1A1A1";
-            gym.checked = false;
-            laundry.checked = false;
-            petsAllowed.checked = false;
-            parking.checked = false;
-            internetIncluded.checked = false;
-            waterCost.value = 1;
-            electricityCost.value = 1;
-            heatingCost.value = 1;
-            document.getElementById('image-1').value = "https://liveatencore.com/wp-content/uploads/2018/12/14-dec-2018-UNIT-2.png";
-            document.getElementById('image-3').value = "https://images1.apartments.com/i2/waLNySi3DU4Z-hW66noKuBfuS1SgQEozHk5sIrcJbBo/117/4346-46-39th-pl-unit-ph-1-queens-ny-building-photo.jpg?p=1";
-            document.getElementById('image-4').value = "https://images.rentals.ca/property-pictures/medium/montreal-qc/809658/apartment-220293668.jpg";
-        }
     })
 
-    const primaryColor = "#D50032";
-    const secondaryColor = "#FFFFFF";
+    // listing variables
+    const [title, setTitle] = React.useState('test');
+    const [description, setDescription] = React.useState('test desc');
+    const [price, setPrice] = React.useState('1');
+    const [bedrooms, setBedrooms] = React.useState('1');
+    const [bathrooms, setBathrooms] = React.useState('1');
+    const [propertyType, setPropertyType] = React.useState('HOUSE');
+    const [squareFootage, setSquareFootage] = React.useState('1');
+    const [wheelchairAccessible, setWheelchairAccessible] = React.useState(false);
+    const [smokingAllowed, setSmokingAllowed] = React.useState(false);
 
-    const [propertyType, setPropertyType] = React.useState('');
+    // address variables
+    const [city, setCity] = React.useState('test city');
+    const [postalCode, setPostalCode] = React.useState('A1A1A1');
+    const [street, setStreet] = React.useState('test street');
+    const [streetNumber, setStreetNumber] = React.useState('1');
+    const [apartmentNumber, setApartmentNumber] = React.useState('1');
 
-    const handlePropertyTypeChange = (event) => {
-        setPropertyType(event.target.value);
-    };
+    // amenities variables
+    const [gym, setGym] = React.useState(false);
+    const [laundry, setLaundry] = React.useState(false);
+    const [petsAllowed, setPetsAllowed] = React.useState(false);
+    const [parking, setParking] = React.useState(false);
+    const [internetIncluded, setInternetIncluded] = React.useState(false);
 
+    // utilities variables
+    const [waterCost, setWaterCost] = React.useState('1');
+    const [electricityCost, setElectricityCost] = React.useState('1');
+    const [heatingCost, setHeatingCost] = React.useState('1');
+
+    // image variables
+    const [image1, setImage1] = React.useState('https://liveatencore.com/wp-content/uploads/2018/12/14-dec-2018-UNIT-2.png');
+    const [image2, setImage2] = React.useState('https://images1.apartments.com/i2/waLNySi3DU4Z-hW66noKuBfuS1SgQEozHk5sIrcJbBo/117/4346-46-39th-pl-unit-ph-1-queens-ny-building-photo.jpg?p=1');
+    const [image3, setImage3] = React.useState('https://images.rentals.ca/property-pictures/medium/montreal-qc/809658/apartment-220293668.jpg');
+    const [image4, setImage4] = React.useState('');
+    const [image5, setImage5] = React.useState('');
+    const [image6, setImage6] = React.useState('');
+    const [image7, setImage7] = React.useState('');
+    const [image8, setImage8] = React.useState('');
+    const [image9, setImage9] = React.useState('');
+    const [image10, setImage10] = React.useState('');
+
+    // error variables
     const [descriptionError, setDescriptionError] = React.useState(false);
     const [descriptionErrorMessage, setDescriptionErrorMessage] = React.useState('');
     const [bedroomsError, setBedroomsError] = React.useState(false);
@@ -118,7 +99,6 @@ export default function CreateListing(props) {
     const [priceErrorMessage, setPriceErrorMessage] = React.useState('');
     const [squareFootageError, setSquareFootageError] = React.useState(false);
     const [squareFootageErrorMessage, setSquareFootageErrorMessage] = React.useState('');
-
     const [apartmentError, setApartmentError] = React.useState(false);
     const [apartmentErrorMessage, setApartmentErrorMessage] = React.useState('');
     const [streetNumberError, setStreetNumberError] = React.useState(false);
@@ -129,37 +109,28 @@ export default function CreateListing(props) {
     const [cityErrorMessage, setCityErrorMessage] = React.useState('');
     const [postalCodeError, setPostalCodeError] = React.useState(false);
     const [postalCodeErrorMessage, setPostalCodeErrorMessage] = React.useState('');
-
     const [waterCostError, setWaterCostError] = React.useState(false);
     const [waterCostErrorMessage, setWaterCostErrorMessage] = React.useState('');
     const [electricityCostError, setElectricityCostError] = React.useState(false);
     const [electricityCostErrorMessage, setElectricityCostErrorMessage] = React.useState('');
     const [heatingCostError, setHeatingCostError] = React.useState(false);
     const [heatingCostErrorMessage, setHeatingCostErrorMessage] = React.useState('');
-
     const [serverErrorMessage, setServerErrorMessage] = React.useState('');
     const [serverSuccessMessage, setServerSuccessMessage] = React.useState('');
 
-    const validateInputs = () => {        
-        const title = document.getElementById('Title');
-        const description = document.getElementById('Description');
-        const bedrooms = document.getElementById('Bedrooms');
-        const bathrooms = document.getElementById('Bathrooms');
-        const price = document.getElementById('Price');
-        const squareFootage = document.getElementById('SquareFootage');
-        const apartment = document.getElementById('ApartmentNumber');
-        const streetNumber = document.getElementById('StreetNumber');
-        const street = document.getElementById('Street');
-        const city = document.getElementById('City');
-        const postalCode = document.getElementById('PostalCode');
-
-        const waterCost = document.getElementById('water-cost');
-        const electricityCost = document.getElementById('electricity-cost');
-        const heatingCost = document.getElementById('heating-cost');
-
+    const validateInputs = () => {
         let isValid = true;
-
-        if (!description || !description.value || description.value >= 256 || description.value < 1) {
+        
+        if (!title || title.length < 1) {
+            setTitleError(true);
+            setTitleErrorMessage('Title is required.');
+            isValid = false;
+        } else {
+            setTitleError(false);
+            setTitleErrorMessage('');
+        }
+        
+        if (!description || description.length >= 256 || description.length < 1) {
             setDescriptionError(true);
             setDescriptionErrorMessage('A description needs to be between 1 and 256 characters.');
             isValid = false;
@@ -167,12 +138,12 @@ export default function CreateListing(props) {
             setDescriptionError(false);
             setDescriptionErrorMessage('');
         }
-
-        if (!bedrooms || !bedrooms.value || bedrooms.value < 1) {
+        
+        if (!bedrooms || bedrooms < 1) {
             setBedroomsError(true);
             setBedroomsErrorMessage('There must be at least 1 bedroom.');
             isValid = false;
-        } else if (!isNumeric(bedrooms.value)){
+        } else if (!isNumeric(bedrooms)){
             setBedroomsError(true);
             setBedroomsErrorMessage('The number of bedrooms has to be an integer.');
             isValid = false;
@@ -180,12 +151,12 @@ export default function CreateListing(props) {
             setBedroomsError(false);
             setBedroomsErrorMessage('');
         }
-
-        if (!bathrooms || !bathrooms.value || bathrooms.value < 1) {
+        
+        if (!bathrooms || bathrooms < 1) {
             setBathroomsError(true);
             setBathroomsErrorMessage('There must be at least 1 bathroom.');
             isValid = false;
-        } else if (!isNumeric(bathrooms.value)){
+        } else if (!isNumeric(bathrooms)){
             setBathroomsError(true);
             setBathroomsErrorMessage('The number of bathrooms has to be an integer.');
             isValid = false;
@@ -194,11 +165,11 @@ export default function CreateListing(props) {
             setBathroomsErrorMessage('');
         }
 
-        if (!price || !price.value || price.value < 1) {
+        if (!price || price < 1) {
             setPriceError(true);
             setPriceErrorMessage('The minimum price must be at least 1$/month.');
             isValid = false;
-        } else if (!isNumeric(price.value)){
+        } else if (!isNumeric(price)){
             setPriceError(true);
             setPriceErrorMessage('The price has to be an integer.');
             isValid = false;
@@ -207,11 +178,11 @@ export default function CreateListing(props) {
             setPriceErrorMessage('');
         }
 
-        if (!squareFootage || !squareFootage.value || squareFootage.value < 1) {
+        if (!squareFootage || squareFootage < 1) {
             setSquareFootageError(true);
             setSquareFootageErrorMessage('The minimum square footage must be at least 1 ft^2.');
             isValid = false;
-        } else if (!isNumeric(squareFootage.value)){
+        } else if (!isNumeric(squareFootage)){
             setSquareFootageError(true);
             setSquareFootageErrorMessage('The square footage has to be an integer.');
             isValid = false;
@@ -220,16 +191,7 @@ export default function CreateListing(props) {
             setSquareFootageErrorMessage('');
         }
 
-        if (!title || !title.value || title.value.length < 1) {
-            setTitleError(true);
-            setTitleErrorMessage('Title is required.');
-            isValid = false;
-        } else {
-            setTitleError(false);
-            setTitleErrorMessage('');
-        }
-
-        if (!propertyType || propertyType.value === '') {
+        if (!propertyType) {
             setPropertyTypeError(true);
             setPropertyTypeErrorMessage('Listing Type is required.');
             isValid = false;
@@ -238,11 +200,11 @@ export default function CreateListing(props) {
             setPropertyTypeErrorMessage('');
         }
 
-        if (!apartment || !apartment.value || apartment.value < 1) {
+        if (!apartmentNumber || apartmentNumber < 1) {
             setApartmentError(true);
             setApartmentErrorMessage('The address must have a apartment number greater than 1');
             isValid = false;
-        } else if (!isNumeric(apartment.value)){
+        } else if (!isNumeric(apartmentNumber)){
             setApartmentError(true);
             setApartmentErrorMessage('The apartment number has to be an integer.');
             isValid = false;
@@ -251,11 +213,11 @@ export default function CreateListing(props) {
             setApartmentErrorMessage('');
         }
 
-        if (!streetNumber || !streetNumber.value || streetNumber.value < 1) {
+        if (!streetNumber || streetNumber < 1) {
             setStreetNumberError(true);
             setStreetNumberErrorMessage('The address must have a street number greater than 1');
             isValid = false;
-        } else if (!isNumeric(streetNumber.value)){
+        } else if (!isNumeric(streetNumber)){
             setStreetNumberError(true);
             setStreetNumberErrorMessage('The street number has to be an integer.');
             isValid = false;
@@ -264,7 +226,7 @@ export default function CreateListing(props) {
             setStreetNumberErrorMessage('');
         }
 
-        if (!street || !street.value || street.value >= 256 || street.value < 1) {
+        if (!street || street.length >= 256 || street.length < 1) {
             setStreetError(true);
             setStreetErrorMessage('A street name needs to be between 1 and 256 characters.');
             isValid = false;
@@ -273,7 +235,7 @@ export default function CreateListing(props) {
             setStreetErrorMessage('');
         }
 
-        if (!city || !city.value || city.value >= 256 || city.value < 1) {
+        if (!city || city.length >= 256 || city.length < 1) {
             setCityError(true);
             setCityErrorMessage('A city name needs to be between 1 and 256 characters.');
             isValid = false;
@@ -282,7 +244,7 @@ export default function CreateListing(props) {
             setCityErrorMessage('');
         }
 
-        if (!postalCode || !postalCode.value || postalCode.value > 6 || postalCode.value <= 5) {
+        if (!postalCode || postalCode.length != 6) {
             setPostalCodeError(true);
             setPostalCodeErrorMessage('A postal code name needs to have 6 characters.');
             isValid = false;
@@ -291,8 +253,8 @@ export default function CreateListing(props) {
             setPostalCodeErrorMessage('');
         }
 
-        if ((waterCost && waterCost.value) || (electricityCost && electricityCost.value) || (heatingCost && heatingCost.value)) {
-            if (!waterCost || !waterCost.value || waterCost.value < 0) {
+        if (waterCost || electricityCost || heatingCost) {
+            if (!waterCost || !isNumeric(waterCost) ||  waterCost < 1) {
                 setWaterCostError(true);
                 setWaterCostErrorMessage('The water cost must be a positive number.');
                 isValid = false;
@@ -301,7 +263,7 @@ export default function CreateListing(props) {
                 setWaterCostErrorMessage('');
             }
 
-            if (!electricityCost || !electricityCost.value || electricityCost.value < 0) {
+            if (!electricityCost || !isNumeric(electricityCost) || electricityCost < 1) {
                 setElectricityCostError(true);
                 setElectricityCostErrorMessage('The electricity cost must be a positive number.');
                 isValid = false;
@@ -310,7 +272,7 @@ export default function CreateListing(props) {
                 setElectricityCostErrorMessage('');
             }
 
-            if (!heatingCost || !heatingCost.value || heatingCost.value < 0) {
+            if (!heatingCost || !isNumeric(heatingCost) || heatingCost < 1) {
                 setHeatingCostError(true);
                 setHeatingCostErrorMessage('The heating cost must be a positive number.');
                 isValid = false;
@@ -330,44 +292,19 @@ export default function CreateListing(props) {
         setServerErrorMessage('');
         setServerSuccessMessage('');
         
-        // Get form values
-        const title = document.getElementById('Title');
-        const description = document.getElementById('Description');
-        const bedrooms = document.getElementById('Bedrooms');
-        const bathrooms = document.getElementById('Bathrooms');
-        const price = document.getElementById('Price');
-        const squareFootage = document.getElementById('SquareFootage');
-        const wheelchairAccessible = document.getElementById('wheelchair-accessible');
-        const smokingAllowed = document.getElementById('smoking-allowed');
-        const apartment = document.getElementById('ApartmentNumber');
-        const streetNumber = document.getElementById('StreetNumber');
-        const street = document.getElementById('Street');
-        const city = document.getElementById('City');
-        const postalCode = document.getElementById('PostalCode');
-        const gym = document.getElementById('gym');
-        const laundry = document.getElementById('laundry');
-        const petsAllowed = document.getElementById('pets-allowed');
-        const parking = document.getElementById('parking');
-        const internetIncluded = document.getElementById('internet-included');
-        const waterCost = document.getElementById('water-cost');
-        const electricityCost = document.getElementById('electricity-cost');
-        const heatingCost = document.getElementById('heating-cost');
-        
         // Validate inputs
         if (!validateInputs()) {
             return;
         }
         
         // Check whether to include utilities or leave utilities as null
-        const includeUtilities = waterCost && electricityCost && heatingCost && 
-        waterCost.value && electricityCost.value && heatingCost.value;
+        const includeUtilities = waterCost && electricityCost && heatingCost;
         
         // Get property images
         const propertyImages = [];
-        for (let i = 1; i <= 10; i++) {
-            const img = document.getElementById(`image-${i}`);
-            if (img && img.value) {
-                propertyImages.push({ url: img.value });
+        for (const img of [image1, image2, image3, image4, image5, image6, image7, image8, image9, image10]) {
+            if (img) {
+                propertyImages.push({ url: img });
             }
         }
 
@@ -381,33 +318,33 @@ export default function CreateListing(props) {
         // Build the payload
         const payload = {
             landlordId: user.id,
-            title: title.value,
-            description: description.value,
+            title: title,
+            description: description,
             propertyType: propertyType,
-            bedrooms: bedrooms.value,
-            bathrooms: bathrooms.value,
-            monthlyPrice: price.value,
-            squareFootage: squareFootage.value,
-            wheelchairAccessible: wheelchairAccessible.checked,
-            smokingAllowed: smokingAllowed.checked,
+            bedrooms: bedrooms,
+            bathrooms: bathrooms,
+            monthlyPrice: price,
+            squareFootage: squareFootage,
+            wheelchairAccessible: wheelchairAccessible,
+            smokingAllowed: smokingAllowed,
             address: {
-                apartment: apartment.value,
-                streetNumber: streetNumber.value,
-                street: street.value,
-                city: city.value,
-                postalCode: postalCode.value
+                apartment: apartmentNumber,
+                streetNumber: streetNumber,
+                street: street,
+                city: city,
+                postalCode: postalCode
             },
             amenitiesOffered: {
-                gym: gym.checked,
-                laundry: laundry.checked,
-                petsAllowed: petsAllowed.checked,
-                parking: parking.checked,
-                internetIncluded: internetIncluded.checked
+                gym: gym,
+                laundry: laundry,
+                petsAllowed: petsAllowed,
+                parking: parking,
+                internetIncluded: internetIncluded
             },
             utilitiesCosts: includeUtilities ? {
-                waterCost: waterCost.value,
-                electricityCost: electricityCost.value,
-                heatingCost: heatingCost.value
+                waterCost: waterCost,
+                electricityCost: electricityCost,
+                heatingCost: heatingCost
             } : null,
             propertyImages: propertyImages
         };
@@ -473,17 +410,6 @@ export default function CreateListing(props) {
 
     const navigate = useNavigate();
 
-    const handleSignUpClick = () => {
-        navigate('/signup');
-    };
-
-    const handleListingClick = () => {
-        navigate('/createlisting');
-    };
-    const handleLogoClick = () => {
-        navigate('/');
-    };
-
     return (
         <AppTheme {...props}>
             <CssBaseline enableColorScheme />
@@ -529,6 +455,8 @@ export default function CreateListing(props) {
                                     fullWidth
                                     id="Title"
                                     placeholder="Title"
+                                    value={title}
+                                    onChange={(e) => setTitle(e.target.value)}
                                     error={titleError}
                                     helperText={titleErrorMessage}
                                     color={titleError ? 'error' : 'primary'}
@@ -541,6 +469,8 @@ export default function CreateListing(props) {
                                     fullWidth
                                     id="Description"
                                     placeholder="Enter description here"
+                                    value={description}
+                                    onChange={(e) => setDescription(e.target.value)}
                                     name="Description"
                                     autoComplete="Description"
                                     variant="outlined"
@@ -556,7 +486,7 @@ export default function CreateListing(props) {
                                     value={propertyType}
                                     error={propertyTypeError}
                                     color={propertyTypeError ? 'error' : 'primary'}
-                                    onChange={handlePropertyTypeChange}
+                                    onChange={(e) => setPropertyType(e.target.value)}
                                 >
                                     <MenuItem value={"STUDIO"}>Studio</MenuItem>
                                     <MenuItem value={"DORM"}>Dorm</MenuItem>
@@ -572,6 +502,8 @@ export default function CreateListing(props) {
                                     fullWidth
                                     name="Bedrooms"
                                     placeholder="Number of Bedrooms"
+                                    value={bedrooms}
+                                    onChange={(e) => setBedrooms(e.target.value)}
                                     type="Bedrooms"
                                     id="Bedrooms"
                                     autoComplete="Bedrooms"
@@ -588,6 +520,8 @@ export default function CreateListing(props) {
                                     fullWidth
                                     name="Bathrooms"
                                     placeholder="Number of Bathrooms"
+                                    value={bathrooms}
+                                    onChange={(e) => setBathrooms(e.target.value)}
                                     type="Bathrooms"
                                     id="Bathrooms"
                                     autoComplete="Bathrooms"
@@ -604,6 +538,8 @@ export default function CreateListing(props) {
                                     fullWidth
                                     name="Price"
                                     placeholder="Monthly Price"
+                                    value={price}
+                                    onChange={(e) => setPrice(e.target.value)}
                                     type="Price"
                                     id="Price"
                                     autoComplete="Price"
@@ -620,6 +556,8 @@ export default function CreateListing(props) {
                                     fullWidth
                                     name="Square Footage"
                                     placeholder="Square Footage (ft^2)"
+                                    value={squareFootage}
+                                    onChange={(e) => setSquareFootage(e.target.value)}
                                     type="SquareFootage"
                                     id="SquareFootage"
                                     autoComplete="SquareFootage"
@@ -640,8 +578,8 @@ export default function CreateListing(props) {
                                     maxwidth: "500px",
                                 }}
                             >
-                                <FormControlLabel control={<Checkbox id="wheelchair-accessible" />} label="Wheelchair Accessible" />
-                                <FormControlLabel control={<Checkbox id="smoking-allowed"/>} label="Smoking Allowed" />
+                                <FormControlLabel control={<Checkbox id="wheelchair-accessible" checked={wheelchairAccessible} onChange={(e) => setWheelchairAccessible(e.target.checked)}/>} label="Wheelchair Accessible" />
+                                <FormControlLabel control={<Checkbox id="smoking-allowed" checked={smokingAllowed} onChange={(e) => setSmokingAllowed(e.target.checked)}/>} label="Smoking Allowed" />
                             </div>
                         </Box>
                     </Card>
@@ -666,6 +604,8 @@ export default function CreateListing(props) {
                                     fullWidth
                                     id="ApartmentNumber"
                                     placeholder="Apartment Number"
+                                    value={apartmentNumber}
+                                    onChange={(e) => setApartmentNumber(e.target.value)}
                                     error={apartmentError}
                                     helperText={apartmentErrorMessage}
                                     color={apartmentError ? 'error' : 'primary'}
@@ -679,6 +619,8 @@ export default function CreateListing(props) {
                                     fullWidth
                                     id="StreetNumber"
                                     placeholder="Street Number"
+                                    value={streetNumber}
+                                    onChange={(e) => setStreetNumber(e.target.value)}
                                     error={streetNumberError}
                                     helperText={streetNumberErrorMessage}
                                     color={streetNumberError ? 'error' : 'primary'}
@@ -692,6 +634,8 @@ export default function CreateListing(props) {
                                     fullWidth
                                     id="Street"
                                     placeholder="Street"
+                                    value={street}
+                                    onChange={(e) => setStreet(e.target.value)}
                                     error={streetError}
                                     helperText={streetErrorMessage}
                                     color={streetError ? 'error' : 'primary'}
@@ -705,6 +649,8 @@ export default function CreateListing(props) {
                                     fullWidth
                                     id="City"
                                     placeholder="City"
+                                    value={city}
+                                    onChange={(e) => setCity(e.target.value)}
                                     error={cityError}
                                     helperText={cityErrorMessage}
                                     color={cityError ? 'error' : 'primary'}
@@ -718,6 +664,8 @@ export default function CreateListing(props) {
                                     fullWidth
                                     id="PostalCode"
                                     placeholder="Postal Code"
+                                    value={postalCode}
+                                    onChange={(e) => setPostalCode(e.target.value)}
                                     error={postalCodeError}
                                     helperText={postalCodeErrorMessage}
                                     color={postalCodeError ? 'error' : 'primary'}
@@ -739,11 +687,11 @@ export default function CreateListing(props) {
                             onSubmit={handleSubmit}
                             sx={{ display: 'flex', flexDirection: 'column', gap: 2, }} // Adjusted marginBottom
                         >
-                            <FormControlLabel control={<Checkbox id="gym" />} label="Gym" />
-                            <FormControlLabel control={<Checkbox id="laundry"/>} label="Laundry" />
-                            <FormControlLabel control={<Checkbox id="pets-allowed"/>} label="Pets Allowed" />
-                            <FormControlLabel control={<Checkbox id="parking"/>} label="Parking" />
-                            <FormControlLabel control={<Checkbox id="internet-included"/>} label="Internet Included" />
+                            <FormControlLabel control={<Checkbox id="gym" checked={gym} onChange={(e) => setGym(e.target.checked)} />} label="Gym" />
+                            <FormControlLabel control={<Checkbox id="laundry" checked={laundry} onChange={(e) => setLaundry(e.target.checked)}/>} label="Laundry" />
+                            <FormControlLabel control={<Checkbox id="pets-allowed" checked={petsAllowed} onChange={(e) => setPetsAllowed(e.target.checked)}/>} label="Pets Allowed" />
+                            <FormControlLabel control={<Checkbox id="parking" checked={parking} onChange={(e) => setParking(e.target.checked)}/>} label="Parking" />
+                            <FormControlLabel control={<Checkbox id="internet-included" checked={internetIncluded} onChange={(e) => setInternetIncluded(e.target.checked)}/>} label="Internet Included" />
                         </Box>
                     </Card>
                     <br />
@@ -766,6 +714,8 @@ export default function CreateListing(props) {
                                     name="water-cost"
                                     fullWidth
                                     id="water-cost"
+                                    value={waterCost}
+                                    onChange={(e) => setWaterCost(e.target.value)}
                                     error={waterCostError}
                                     helperText={waterCostErrorMessage}
                                     color={waterCostError ? 'error' : 'primary'}
@@ -777,6 +727,8 @@ export default function CreateListing(props) {
                                     name="electricity-cost"
                                     fullWidth
                                     id="electricity-cost"
+                                    value={electricityCost}
+                                    onChange={(e) => setElectricityCost(e.target.value)}
                                     error={electricityCostError}
                                     helperText={electricityCostErrorMessage}
                                     color={electricityCostError ? 'error' : 'primary'}
@@ -788,6 +740,8 @@ export default function CreateListing(props) {
                                     name="heating-cost"
                                     fullWidth
                                     id="heating-cost"
+                                    value={heatingCost}
+                                    onChange={(e) => setHeatingCost(e.target.value)}
                                     error={heatingCostError}
                                     helperText={heatingCostErrorMessage}
                                     color={heatingCostError ? 'error' : 'primary'}
@@ -816,6 +770,8 @@ export default function CreateListing(props) {
                                     name="image-1"
                                     fullWidth
                                     id="image-1"
+                                    value={image1}
+                                    onChange={(e) => setImage1(e.target.value)}
                                 />
                             </FormControl>
                             <FormControl fullWidth>
@@ -824,6 +780,8 @@ export default function CreateListing(props) {
                                     name="image-2"
                                     fullWidth
                                     id="image-2"
+                                    value={image2}
+                                    onChange={(e) => setImage2(e.target.value)}
                                 />
                             </FormControl>
                             <FormControl fullWidth>
@@ -832,6 +790,8 @@ export default function CreateListing(props) {
                                     name="image-3"
                                     fullWidth
                                     id="image-3"
+                                    value={image3}
+                                    onChange={(e) => setImage3(e.target.value)}
                                 />
                             </FormControl>
                             <FormControl fullWidth>
@@ -840,6 +800,8 @@ export default function CreateListing(props) {
                                     name="image-4"
                                     fullWidth
                                     id="image-4"
+                                    value={image4}
+                                    onChange={(e) => setImage4(e.target.value)}
                                 />
                             </FormControl>
                             <FormControl fullWidth>
@@ -848,6 +810,8 @@ export default function CreateListing(props) {
                                     name="image-5"
                                     fullWidth
                                     id="image-5"
+                                    value={image5}
+                                    onChange={(e) => setImage5(e.target.value)}
                                 />
                             </FormControl>
                             <FormControl fullWidth>
@@ -856,6 +820,8 @@ export default function CreateListing(props) {
                                     name="image-6"
                                     fullWidth
                                     id="image-6"
+                                    value={image6}
+                                    onChange={(e) => setImage6(e.target.value)}
                                 />
                             </FormControl>
                             <FormControl fullWidth>
@@ -864,6 +830,8 @@ export default function CreateListing(props) {
                                     name="image-7"
                                     fullWidth
                                     id="image-7"
+                                    value={image7}
+                                    onChange={(e) => setImage7(e.target.value)}
                                 />
                             </FormControl>
                             <FormControl fullWidth>
@@ -872,6 +840,8 @@ export default function CreateListing(props) {
                                     name="image-8"
                                     fullWidth
                                     id="image-8"
+                                    value={image8}
+                                    onChange={(e) => setImage8(e.target.value)}
                                 />
                             </FormControl>
                             <FormControl fullWidth>
@@ -880,6 +850,8 @@ export default function CreateListing(props) {
                                     name="image-9"
                                     fullWidth
                                     id="image-9"
+                                    value={image9}
+                                    onChange={(e) => setImage9(e.target.value)}
                                 />
                             </FormControl>
                             <FormControl fullWidth>
@@ -888,6 +860,8 @@ export default function CreateListing(props) {
                                     name="image-10"
                                     fullWidth
                                     id="image-10"
+                                    value={image10}
+                                    onChange={(e) => setImage10(e.target.value)}
                                 />
                             </FormControl>
                         </Box>
