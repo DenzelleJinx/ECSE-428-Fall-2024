@@ -10,7 +10,8 @@ export function useListings() {
         const fetchListings = async () => {
             setLoading(true);
             try {
-                const response = await axios.get('/listing');
+                const response = await axios.get('http://localhost:8080/listing');
+                // console.log(response.data)
                 setListings(response.data);
                 setError(null);
             } catch (err) {
@@ -19,7 +20,7 @@ export function useListings() {
                 setLoading(false);
             }
         };
-        }, []);
-
+        fetchListings(); // Call fetchListings here
+    }, []);
     return { listings, loading, error };
 }
