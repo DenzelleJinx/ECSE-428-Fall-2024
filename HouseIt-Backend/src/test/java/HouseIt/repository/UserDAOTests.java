@@ -2,11 +2,15 @@ package HouseIt.repository;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import HouseIt.model.Notification;
 import HouseIt.model.User;
 import HouseIt.model.User.AccountStatus;
 import HouseIt.dao.UserDAO;
@@ -29,8 +33,9 @@ public class UserDAOTests {
         String password = "password";
         AccountStatus status = AccountStatus.ACTIVE;
         float rating = 5.0f;
+        List<Notification> notifications = new ArrayList<>();
 
-        User user = new User(username, email, password, status, rating);
+        User user = new User(username, email, password, status, rating, notifications);
         userDAO.save(user);
 
         User foundUser = userDAO.findUserByUsername(username);
@@ -46,8 +51,9 @@ public class UserDAOTests {
         String password = "password2";
         AccountStatus status = AccountStatus.PENDING;
         float rating = 4.0f;
+        List<Notification> notifications = new ArrayList<>();
 
-        User user = new User(username, email, password, status, rating);
+        User user = new User(username, email, password, status, rating, notifications);
         userDAO.save(user);
 
         User foundUser = userDAO.findUserByEmail(email);
@@ -63,8 +69,9 @@ public class UserDAOTests {
         String password = "password3";
         AccountStatus status = AccountStatus.SUSPENDED;
         float rating = 3.0f;
+        List<Notification> notifications = new ArrayList<>();
 
-        User user = new User(username, email, password, status, rating);
+        User user = new User(username, email, password, status, rating, notifications);
         userDAO.save(user);
 
         User foundUser = userDAO.findUserByStatus(status);
@@ -92,8 +99,9 @@ public class UserDAOTests {
         String password = "deletePassword";
         AccountStatus status = AccountStatus.ACTIVE;
         float rating = 5.0f;
+        List<Notification> notifications = new ArrayList<>();
 
-        User user = new User(username, email, password, status, rating);
+        User user = new User(username, email, password, status, rating, notifications);
         userDAO.save(user);
 
         userDAO.delete(user);

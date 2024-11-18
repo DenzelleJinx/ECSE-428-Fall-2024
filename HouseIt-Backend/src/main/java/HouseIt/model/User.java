@@ -7,6 +7,7 @@ import java.util.*;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Column;
 import jakarta.persistence.Table;
@@ -45,13 +46,16 @@ public class User
   private AccountStatus status;
   private float rating;
 
+  @OneToMany
+  private List<Notification> notifications;
+
   //------------------------
   // CONSTRUCTOR
   //------------------------
 
   public User() {}
 
-  public User(String aUsername, String aEmail, String aPassword, AccountStatus aStatus, float aRating)
+  public User(String aUsername, String aEmail, String aPassword, AccountStatus aStatus, float aRating, List<Notification> aNotifications)
   {
     password = aPassword;
     status = aStatus;
@@ -64,6 +68,7 @@ public class User
     {
       throw new RuntimeException("Cannot create due to duplicate email. See https://manual.umple.org?RE003ViolationofUniqueness.html");
     }
+    notifications = aNotifications;
   }
 
   //------------------------
@@ -118,6 +123,15 @@ public class User
     return wasSet;
   }
 
+  public boolean addNotification(Notification aNotification)
+  {
+    boolean wasAdded = false;
+    if (notifications.contains(aNotification)) { return false; }
+    notifications.add(aNotification);
+    wasAdded = true;
+    return wasAdded;
+  }
+
   public int getId()
   {
     return id;
@@ -146,6 +160,11 @@ public class User
   public float getRating()
   {
     return rating;
+  }
+
+  public List<Notification> getNotifications ()
+  {
+    return notifications;
   }
 
   // use repository to delete
