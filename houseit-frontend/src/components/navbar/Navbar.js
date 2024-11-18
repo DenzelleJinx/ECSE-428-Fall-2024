@@ -20,7 +20,7 @@ const Navbar = (props) => {
     const secondaryColor = "#FFFFFF";
     const navigate = useNavigate();
 
-    const loggedInUsername = "poopyheadyes"
+    const loggedInUsername = "john"
     const isLoggedIn = true; // Replace with actual login state
     const [notifications, setNotifications] = useState([]);
     const [anchorEl, setAnchorEl] = useState(null);
