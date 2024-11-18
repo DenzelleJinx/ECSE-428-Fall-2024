@@ -16,18 +16,35 @@ import mcgillLogo from '../../assets/mcgill-logo.png';
 import { useNavigate } from 'react-router-dom';
 
 const Navbar = (props) => {
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isLandlord, setIsLandlord] = useState(false);
+    const [isStudent, setIsStudent] = useState(false);
+    const [loggedInUsername, setLoggedInUsername] = useState('');
+
     const primaryColor = "#D50032";
     const secondaryColor = "#FFFFFF";
     const navigate = useNavigate();
 
-    const loggedInUsername = "john"
-    const isLoggedIn = true; // Replace with actual login state
+    //const loggedInUsername = "john"
+    //const isLoggedIn = false; // Replace with actual login state
     const [notifications, setNotifications] = useState([]);
     const [anchorEl, setAnchorEl] = useState(null);
     const [accountMenuAnchor, setAccountMenuAnchor] = useState(null);
 
     // Fetch notifications when the component mounts
     useEffect(() => {
+        const checkAuth = () => {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            if (user) {
+                setIsLandlord(user && user.accountType === 'landlord');
+                setIsStudent(user && user.accountType === 'student')
+                setIsLoggedIn(true);
+                setLoggedInUsername(user.username);
+            } else {
+                setIsLoggedIn(false);
+            }
+        };
+
         // Define the API URL for notifications
         const fetchNotifications = async () => {
             try {
@@ -40,6 +57,7 @@ const Navbar = (props) => {
         };
     
         fetchNotifications(); // Call the function
+        checkAuth();
     }, [loggedInUsername]); // Run the effect when the component mounts or when loggedInUsername changes
 
     const handleNavigation = (path) => {
@@ -50,6 +68,9 @@ const Navbar = (props) => {
         setAnchorEl(event.currentTarget);
     };
 
+    const handleApproveLandlordClick = () => {
+        navigate('/approvelandlord');
+    }
     const handleNotificationClose = () => {
         setAnchorEl(null);
     };
@@ -140,7 +161,12 @@ const Navbar = (props) => {
 
                         {/* Navigation Buttons */}
                         <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                            <Button
+                            {isLandlord && (
+                            <Button color="inherit" sx={{ color: secondaryColor }} onClick={handleApproveLandlordClick}>
+                                Approve Landlords
+                            </Button>
+                        )}
+                        <Button
                                 color="inherit"
                                 sx={{ color: secondaryColor }}
                                 onClick={() => handleNavigation('/viewListings')}
