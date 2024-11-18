@@ -40,12 +40,12 @@ public class UserController {
         return ResponseEntity.ok(new UserListDTO(userResponseDTOs));
     }
 
-    @GetMapping("/users/{id}")
+    /* @GetMapping("/users/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable("id") int id) {
         User user = userService.getUserById(id);
         UserDTO userDTO = new UserDTO(user);
         return ResponseEntity.ok(userDTO);
-    }
+    } */
 
     @GetMapping("/users/{email}")
     public ResponseEntity<UserDTO> getUserByEmail(@PathVariable("email") String email) {
@@ -54,12 +54,12 @@ public class UserController {
         return ResponseEntity.ok(userDTO);
     }
 
-    @GetMapping("/users/{username}")
+    /* @GetMapping("/users/{username}")
     public ResponseEntity<UserDTO> getUserByUsername(@PathVariable("username") String username) {
         User user = userService.getUserByUsername(username);
         UserDTO userDTO = new UserDTO(user);
         return ResponseEntity.ok(userDTO);
-    }
+    } */
 
     @PostMapping("/users/{username}/notifications")
     public ResponseEntity<String> createNotificationForUser(@PathVariable("username") String username, @RequestBody NotificationDTO notificationDTO) {

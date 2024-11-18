@@ -28,7 +28,7 @@ public class NotificationService {
         switch (notificationType.toUpperCase()) {
             case "CONTACT":
                 if (sender == null) {
-                    throw new IllegalArgumentException("Sender with username " + sender.getUsername() + " does not exist.");
+                    throw new IllegalArgumentException("Sender with username does not exist.");
                 }
                 Notification contactNotification = new Notification();
                 contactNotification.setSender(sender);
@@ -39,6 +39,7 @@ public class NotificationService {
 
             case "REVIEW":
                 Notification reviewNotification = new Notification();
+                reviewNotification.setSender(sender);
                 reviewNotification.setType(NotificationType.REVIEW);
                 reviewNotification.setMessage("Your account status has changed, please review it in your account page.");
                 reviewNotification.setLocalDateTime(LocalDateTime.now());
@@ -47,6 +48,7 @@ public class NotificationService {
 
             case "OTHER":
                 Notification otherNotification = new Notification();
+                otherNotification.setSender(sender);
                 otherNotification.setType(NotificationType.OTHER);
                 if (message == null || message.isEmpty() || message.equals("")) {
                     throw new IllegalArgumentException("Message cannot be empty for notification type OTHER.");

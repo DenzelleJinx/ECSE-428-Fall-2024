@@ -19,14 +19,13 @@ const Navbar = (props) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isLandlord, setIsLandlord] = useState(false);
     const [isStudent, setIsStudent] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
     const [loggedInUsername, setLoggedInUsername] = useState('');
 
     const primaryColor = "#D50032";
     const secondaryColor = "#FFFFFF";
     const navigate = useNavigate();
 
-    //const loggedInUsername = "john"
-    //const isLoggedIn = false; // Replace with actual login state
     const [notifications, setNotifications] = useState([]);
     const [anchorEl, setAnchorEl] = useState(null);
     const [accountMenuAnchor, setAccountMenuAnchor] = useState(null);
@@ -34,15 +33,20 @@ const Navbar = (props) => {
     // Fetch notifications when the component mounts
     useEffect(() => {
         const checkAuth = () => {
-            const user = JSON.parse(localStorage.getItem('currentUser'));
-            console.log(user.username);
-            if (user) {
-                setIsLandlord(user && user.accountType === 'landlord');
-                setIsStudent(user && user.accountType === 'student')
-                setIsLoggedIn(true);
-                setLoggedInUsername(user.username);
-            } else {
-                setIsLoggedIn(false);
+            try {
+                const user = JSON.parse(localStorage.getItem('currentUser'));
+                console.log(user.username);
+                if (user) {
+                    setIsLandlord(user && user.accountType === 'landlord');
+                    setIsStudent(user && user.accountType === 'student');
+                    setIsAdmin(user && user.accountType === 'admin');
+                    setIsLoggedIn(true);
+                    setLoggedInUsername(user.username);
+                } else {
+                    setIsLoggedIn(false);
+                }
+            } catch (error) {
+                console.error("Error fetching user:", error);
             }
         };
 
@@ -51,9 +55,10 @@ const Navbar = (props) => {
             try {
                 // Make a GET request to fetch notifications
                 const response = await Axios.get(`http://localhost:8080/users/${loggedInUsername}/notifications`);
-                setNotifications(response.data); // Update state with the notifications data
+                setNotifications(response.data.notifications); // Update state with the notifications data
             } catch (error) {
                 console.error("Error fetching notifications:", error);
+                setNotifications([]); // Fallback to an empty array if there's an error
             }
         };
     
@@ -92,6 +97,18 @@ const Navbar = (props) => {
     const handleViewAccountClick = () => {
         navigate('/view-account');
         handleAccountMenuClose();
+    };
+
+    const handlelLogoutClick = () => {
+        localStorage.removeItem('currentUser');
+
+        setIsLoggedIn(false);
+        setIsLandlord(false);
+        setIsStudent(false);
+        setIsAdmin(false);
+        setLoggedInUsername('');
+
+        navigate('/login');
     };
 
     // Function to generate a notification message based on its type
@@ -162,7 +179,7 @@ const Navbar = (props) => {
 
                         {/* Navigation Buttons */}
                         <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                            {isLandlord && (
+                            {isAdmin && (
                             <Button color="inherit" sx={{ color: secondaryColor }} onClick={handleApproveLandlordClick}>
                                 Approve Landlords
                             </Button>
@@ -226,10 +243,7 @@ const Navbar = (props) => {
                                     <Button
                                         color="inherit"
                                         sx={{ color: secondaryColor }}
-                                        onClick={() => {
-                                            //Add logout logic
-                                            navigate('/login'); // Redirect to login page
-                                        }}
+                                        onClick={handlelLogoutClick}
                                     >
                                         Log Out
                                     </Button>
