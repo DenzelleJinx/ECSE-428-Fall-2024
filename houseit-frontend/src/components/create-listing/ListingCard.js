@@ -19,7 +19,8 @@ import PropertyListing from "../view-listings/ImagePopup";
 function ListingCard({ listing}) {
     const [isHovered, setIsHovered] = useState(false);
     const [showPhoneNumber, setShowPhoneNumber] = useState(false);
-    
+    const [contactErrorMessage, setContactErrorMessage] = useState('');
+
     const cardStyles = {
         border: '1px solid #ddd',
         borderRadius: '8px',
@@ -90,6 +91,12 @@ function ListingCard({ listing}) {
     }
 
     const handleToggle = () => {
+        const user = JSON.parse(localStorage.getItem('currentUser'));
+        // Don't allow contact button if not logged in
+        if (user == null) {
+            setContactErrorMessage("Log in to contact lister.")
+            return;
+        }
         setShowPhoneNumber(!showPhoneNumber);
     };
 
@@ -97,7 +104,6 @@ function ListingCard({ listing}) {
     const handleNotify = async () => {
         try {
             const user = JSON.parse(localStorage.getItem('currentUser'));
-            // TODO: Handle what happens if user is not logged in
             if (user == null) {
                 console.log("User is not logged in.");
                 return;
@@ -127,7 +133,7 @@ function ListingCard({ listing}) {
                 <div style={priceButtonContainerStyles}>
                     <p style={priceStyles}>${listing.monthlyPrice} monthly</p>
                     {!showPhoneNumber ?
-                        (<Button
+                        (<div><Button
                             onClick={handleToggle}
                             variant="contained"
                             color="primary"
@@ -139,11 +145,12 @@ function ListingCard({ listing}) {
                                     backgroundColor: "#b71c1c", // Hover effect
                                 },
                                 fontSize: '1.1em',
-                                textTransform: "none",
+                                textTransform: "none"
                             }}
                         >
                         Contact
-                        </Button>) :
+                        </Button>
+                        <p style={{color: 'var(--template-palette-error-main)'}}>{contactErrorMessage}</p></div>) :
                         (<div>
                             <p style={phoneStyles}>{callString}</p>
                             <Button
