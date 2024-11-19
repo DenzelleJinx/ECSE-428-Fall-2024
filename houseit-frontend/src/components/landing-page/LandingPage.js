@@ -22,6 +22,7 @@ const StyledButton = styled(Button)({
 
 function LandingPage(props) {
     const [isLandlord, setIsLandlord] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     useEffect(() => {
         const checkAuth = () => {
@@ -93,9 +94,11 @@ function LandingPage(props) {
                                 Create Listing
                             </StyledButton>
                         )}
+                        {isLoggedIn && (
                         <Button variant="outlined" size="large" sx={{ m: 1, color: primaryColor, borderColor: primaryColor }} onClick={handleSignUpClick}>
                             Sign Up Now
                         </Button>
+                        )}
                     </Box>
                 </Container>
             </div>

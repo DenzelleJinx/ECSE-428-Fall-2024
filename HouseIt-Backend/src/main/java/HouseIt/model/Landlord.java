@@ -35,9 +35,9 @@ public class Landlord extends User
     super();
     properties = new ArrayList<Listing>();
   }
-  public Landlord(int aId, String aUsername, String aEmail, String aPassword, AccountStatus aStatus, float aRating, String aPhoneNumber)
+  public Landlord(int aId, String aUsername, String aEmail, String aPassword, AccountStatus aStatus, float aRating, List<Notification> aNotifications, String aPhoneNumber)
   {
-    super(aUsername, aEmail, aPassword, aStatus, aRating);
+    super(aUsername, aEmail, aPassword, aStatus, aRating, aNotifications);
     phoneNumber = aPhoneNumber;
     properties = new ArrayList<Listing>();
   }

@@ -3,6 +3,7 @@ package HouseIt.model;
 /*PLEASE DO NOT EDIT THIS CODE*/
 /*This code was generated using the UMPLE 1.35.0.7523.c616a4dce modeling language!*/
 
+import java.util.*;
 
 import jakarta.persistence.Entity;
 
@@ -25,9 +26,9 @@ public class Administrator extends User
     super();
   }
 
-  public Administrator(String aUsername, String aEmail, String aPassword, AccountStatus aStatus, float aRating)
+  public Administrator(String aUsername, String aEmail, String aPassword, AccountStatus aStatus, float aRating, List<Notification> aNotifications)
   {
-    super(aUsername, aEmail, aPassword, aStatus, aRating);
+    super(aUsername, aEmail, aPassword, aStatus, aRating, aNotifications);
   }
 
   //------------------------

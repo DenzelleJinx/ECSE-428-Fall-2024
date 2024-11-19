@@ -63,6 +63,7 @@ const SignUpContainer = styled(Stack)(({ theme }) => ({
 export default function SignUp(props) {
   const primaryColor = "#D50032";
   const secondaryColor = "#FFFFFF";
+  const navigate = useNavigate();
 
   const [passwordError, setPasswordError] = React.useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
@@ -122,8 +123,17 @@ export default function SignUp(props) {
       const userResponse = await axiosClient.get('/users/' + data.get('email'), payload);
       const { password, ...userWithoutPassword } = userResponse.data;
       localStorage.setItem('currentUser', JSON.stringify(userWithoutPassword));
+      navigate('/');
     } catch (error) {
-      setServerErrorMessage(error.response ? error.response.data.split(": ").slice(1).join(": ") : 'An error occurred during login. Please try again.');
+        if (error.response && error.response.data) {
+          const errorMessage =
+            typeof error.response.data === 'string'
+              ? error.response.data.split(": ").slice(1).join(": ")
+              : JSON.stringify(error.response.data); // Fallback for non-string responses
+          setServerErrorMessage(errorMessage);
+        } else {
+          setServerErrorMessage('An error occurred during login. Please try again.');
+        }
     }
 };
 
