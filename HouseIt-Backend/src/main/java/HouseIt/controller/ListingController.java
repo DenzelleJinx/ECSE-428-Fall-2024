@@ -1,6 +1,5 @@
 package HouseIt.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -150,7 +149,7 @@ public class ListingController {
                 throw new IllegalArgumentException("No property or sublet listing found for listing id " + id);
             }
         }
-        
+
         return ResponseEntity.ok(userDTO);
     }
 }
