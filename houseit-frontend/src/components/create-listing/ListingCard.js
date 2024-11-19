@@ -226,19 +226,19 @@ function ListingCard({ listing}) {
                             <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
                                 <WaterIcon color="primary"/>
                                 <Typography variant="body1">
-                                    Water: {listing.utilitiesCosts.waterCost != null ? `$${listing.utilitiesCosts.waterCost}` : 'N/A'}
+                                    Water: {listing.utilitiesCosts != null ? `$${listing.utilitiesCosts.waterCost}` : 'N/A'}
                                 </Typography>
                             </div>
                             <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
                                 <BoltIcon color="primary"/>
                                 <Typography variant="body1">
-                                    Electricity: {listing.utilitiesCosts.electricityCost != null ? `$${listing.utilitiesCosts.electricityCost}` : 'N/A'}
+                                    Electricity: {listing.utilitiesCosts != null ? `$${listing.utilitiesCosts.electricityCost}` : 'N/A'}
                                 </Typography>
                             </div>
                             <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
                                 <FireIcon color="primary"/>
                                 <Typography variant="body1">
-                                    Heating: {listing.utilitiesCosts.heatingCost != null ? `$${listing.utilitiesCosts.heatingCost}` : 'N/A'}
+                                    Heating: {listing.utilitiesCosts != null ? `$${listing.utilitiesCosts.heatingCost}` : 'N/A'}
                                 </Typography>
                             </div>
 
