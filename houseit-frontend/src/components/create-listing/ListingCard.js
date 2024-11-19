@@ -10,6 +10,7 @@ import WaterIcon from '@mui/icons-material/Opacity';
 import BoltIcon from '@mui/icons-material/Bolt';
 import FireIcon from '@mui/icons-material/Whatshot';
 import { Button, Modal, Box, Typography } from '@mui/material';
+import axios from 'axios';
 
 
 import apartmentImage from '../../assets/sample-bedroom.png';
@@ -17,7 +18,8 @@ import PropertyListing from "../view-listings/ImagePopup";
 
 function ListingCard({ listing}) {
     const [isHovered, setIsHovered] = useState(false);
-
+    const [showPhoneNumber, setShowPhoneNumber] = useState(false);
+    
     const cardStyles = {
         border: '1px solid #ddd',
         borderRadius: '8px',
@@ -46,8 +48,8 @@ function ListingCard({ listing}) {
         margin: '0px',
         color: '#3A3B3C',
         fontFamily: "'Roboto', sans-serif", // Material-UI default font
-
     };
+
     const priceButtonContainerStyles = {
         display: 'flex',
         alignItems: 'center',
@@ -67,10 +69,50 @@ function ListingCard({ listing}) {
         borderRadius: 2,
     };
 
+    const phoneStyles = {
+        fontSize: '1.25em',
+        color: 'white',
+        backgroundColor: 'black',
+        borderWidth: '1px',
+        padding: '4px',
+        textAlign: 'center',
+        borderRadius: '4px',
+        margin: '2px'
+    }
+
     const openUtilitiesModal = () => setShowUtilitiesModal(true);
     const closeUtilitiesModal = () => setShowUtilitiesModal(false);
     const [showUtilitiesModal, setShowUtilitiesModal] = useState(false);
 
+    var callString = `Call ${listing.lister.phoneNumber}`;
+    if (listing.lister == null) {
+        callString = "Number Unavailable";
+    }
+
+    const handleToggle = () => {
+        setShowPhoneNumber(!showPhoneNumber);
+    };
+
+    // Sends notifications
+    const handleNotify = async () => {
+        try {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            // TODO: Handle what happens if user is not logged in
+            if (user == null) {
+                console.log("User is not logged in.");
+                return;
+            }
+            const body = {
+                type: "CONTACT",
+                senderUsername: user.username
+            };
+            const response = await axios.post(`http://localhost:8080/users/${listing.lister.username}/notifications`, body);
+            console.log('Notification successful:', response.data);
+            
+        } catch (error) {
+            console.error('Error sending notification:', error);
+        }
+    };
 
     return (
         <div
@@ -84,21 +126,58 @@ function ListingCard({ listing}) {
             <div style={infoStyles}>
                 <div style={priceButtonContainerStyles}>
                     <p style={priceStyles}>${listing.monthlyPrice} monthly</p>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        size="small"
-                        sx={{
-                            backgroundColor: "red",
-                            color: "white",
-                            "&:hover": {
-                                backgroundColor: "darkred", // Hover effect
-                            },
-                            textTransform: "none",
-                        }}
-                    >
-                        Contact Landlord
-                    </Button>
+                    {!showPhoneNumber ?
+                        (<Button
+                            onClick={handleToggle}
+                            variant="contained"
+                            color="primary"
+                            size="small"
+                            sx={{
+                                backgroundColor: "#d50032",
+                                color: "white",
+                                "&:hover": {
+                                    backgroundColor: "#b71c1c", // Hover effect
+                                },
+                                fontSize: '1.1em',
+                                textTransform: "none",
+                            }}
+                        >
+                        Contact
+                        </Button>) :
+                        (<div>
+                            <p style={phoneStyles}>{callString}</p>
+                            <Button
+                                onClick={handleNotify}
+                                variant="contained"
+                                color="primary"
+                                size="small"
+                                sx={{
+                                    backgroundColor: "#d50032",
+                                    "&:hover": {
+                                        backgroundColor: "#b71c1c", // Hover effect
+                                    },
+                                    fontSize: '1.1em',
+                                    textTransform: "none",
+                                    margin: '2px'
+                                }}
+                            >
+                            Notify
+                            </Button>
+                            <Button
+                                onClick={handleToggle}
+                                variant="contained"
+                                color="primary"
+                                size="small"
+                                sx={{
+                                    textTransform: "none",
+                                    fontSize: '1.1em',
+                                    margin: '2px'
+                                }}
+                            >
+                            Nevermind
+                            </Button>
+                        </div>)
+                    }
                 </div>
                 <p style={priceStyles}>{listing.title}</p>
                 <p><em>{listing.description}</em></p>
