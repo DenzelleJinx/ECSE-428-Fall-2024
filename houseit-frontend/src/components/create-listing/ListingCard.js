@@ -78,7 +78,6 @@ function ListingCard({ listing}) {
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
-            {/*<img src={apartmentImage} alt={listing.title} style={imageStyles} />*/}
             <div>
                 <PropertyListing key={listing.id} property={listing}/>
             </div>
@@ -226,43 +225,49 @@ function ListingCard({ listing}) {
                         <div style={{display: 'flex', flexDirection: 'column', gap: '10px'}}>
                             <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
                                 <WaterIcon color="primary"/>
-                                <Typography variant="body1">Water: ${listing.utilitiesCosts.waterCost}</Typography>
+                                <Typography variant="body1">
+                                    Water: {listing.utilitiesCosts.waterCost != null ? `$${listing.utilitiesCosts.waterCost}` : 'N/A'}
+                                </Typography>
                             </div>
                             <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
                                 <BoltIcon color="primary"/>
                                 <Typography variant="body1">
-                                    Electricity: ${listing.utilitiesCosts.electricityCost}
+                                    Electricity: {listing.utilitiesCosts.electricityCost != null ? `$${listing.utilitiesCosts.electricityCost}` : 'N/A'}
                                 </Typography>
                             </div>
                             <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
                                 <FireIcon color="primary"/>
-                                <Typography variant="body1">Heating: ${listing.utilitiesCosts.heatingCost}</Typography>
-                            </div>
-                            <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
-                                <SquareFootIcon color="primary"/>
                                 <Typography variant="body1">
-                                    Square Footage: {listing.squareFootage} square ft
+                                    Heating: {listing.utilitiesCosts.heatingCost != null ? `$${listing.utilitiesCosts.heatingCost}` : 'N/A'}
                                 </Typography>
                             </div>
-                            <Button
-                                variant="contained"
-                                color="secondary"
-                                style={{
-                                    margin: '10px 0',
-                                    backgroundColor: '#3A3B3C',
-                                    color: 'white',
-                                    textTransform: 'none',
-                                }}
-                                onClick={closeUtilitiesModal}
-                            >
-                                Close
-                            </Button>
-                        </div>
-                    </Box>
-                </Modal>
 
+                        <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
+                            <SquareFootIcon color="primary"/>
+                            <Typography variant="body1">
+                                Square Footage: {listing.squareFootage} square ft
+                            </Typography>
+                        </div>
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            style={{
+                                margin: '10px 0',
+                                backgroundColor: '#3A3B3C',
+                                color: 'white',
+                                textTransform: 'none',
+                            }}
+                            onClick={closeUtilitiesModal}
+                        >
+                            Close
+                        </Button>
             </div>
-        </div>
-        )};
+        </Box>
+</Modal>
+
+</div>
+</div>
+)
+};
 
 export default ListingCard;

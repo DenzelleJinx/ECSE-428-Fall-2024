@@ -2,42 +2,60 @@ import React, { useState } from "react";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import CloseIcon from "@mui/icons-material/Close";
 
-
 const PropertyListing = ({ property }) => {
     const [showModal, setShowModal] = useState(false);
 
     const openModal = () => setShowModal(true);
     const closeModal = () => setShowModal(false);
 
+    const hasImages = property.propertyImages && property.propertyImages.length > 0;
+
     return (
         <div style={{ border: "1px solid #ccc", padding: "10px", marginBottom: "20px" }}>
             {/* First Image and Camera Icon */}
-            <div style={{ position: "relative" }}>
-                <img
-                    src={property.propertyImages[0].url}
-                    alt={`Property ${property.id}`}
-                    style={{ width: "300px", height: "200px", objectFit: "cover", borderRadius: "5px" }}
-                />
-                <button
-                    onClick={openModal}
+            {hasImages ? (
+                <div style={{ position: "relative" }}>
+                    <img
+                        src={property.propertyImages[0].url}
+                        alt={`Property ${property.id}`}
+                        style={{ width: "300px", height: "200px", objectFit: "cover", borderRadius: "5px" }}
+                    />
+                    <button
+                        onClick={openModal}
+                        style={{
+                            position: "absolute",
+                            bottom: "10px",
+                            right: "10px",
+                            backgroundColor: "rgba(0, 0, 0, 0.5)",
+                            color: "white",
+                            border: "none",
+                            padding: "5px 10px",
+                            cursor: "pointer",
+                            borderRadius: "50%",
+                        }}
+                    >
+                        <PhotoCamera />
+                    </button>
+                </div>
+            ) : (
+                <div
                     style={{
-                        position: "absolute",
-                        bottom: "10px",
-                        right: "10px",
-                        backgroundColor: "rgba(0, 0, 0, 0.5)",
-                        color: "white",
-                        border: "none",
-                        padding: "5px 10px",
-                        cursor: "pointer",
-                        borderRadius: "50%",
+                        width: "300px",
+                        height: "200px",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        backgroundColor: "#f0f0f0",
+                        borderRadius: "5px",
+                        textAlign: "center",
                     }}
                 >
-                    <PhotoCamera />
-                </button>
-            </div>
+                    <p>No Images Available</p>
+                </div>
+            )}
 
             {/* Modal for Viewing All Images */}
-            {showModal && (
+            {hasImages && showModal && (
                 <div
                     style={{
                         position: "fixed",
@@ -78,7 +96,7 @@ const PropertyListing = ({ property }) => {
                                 borderRadius: "5px",
                             }}
                         >
-                            <CloseIcon/>
+                            <CloseIcon />
                         </button>
                         <h3>Property Images</h3>
                         <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
