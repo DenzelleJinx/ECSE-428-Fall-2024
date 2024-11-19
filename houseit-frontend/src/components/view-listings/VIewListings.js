@@ -7,72 +7,60 @@ import Navbar from '../navbar/Navbar';
 // I created mock listings giving that the database implementation had not been merged yet.
 // Whoever works on the back-end can uncomment the code such that useListings is called.
 
-// Added landlordId and phone number to the mock listings as they need to be able to reference who posted the listing
-// so that notifications and phone number can be sent
-// Maybe phone number is redundant if landlordId is available but unsure until implementation is done
-
 const listings = [
-    {
-        id: 1,
-        title: "3 1/2 for Rent in the McGill Ghetto",
-        address: "3021 Rue Milton, Montreal, QC H2X 1W5",
-        description: "Cozy apartment, hydro included in price!",
-        monthlyPrice: "1,200.00",
-        bedrooms: 1,
-        bathrooms: 1,
-        squareFootage: 880,
-        propertyType: 'Lease',
-        smokingAllowed: false,
-        wheelchairAccessible: true,
-        landlordId: 1,
-        landlordPhone: '123-456-7890'
-    },
-    {
-        id: 2,
-        title: "4 1/2 to Sublet in the McGill Ghetto",
-        address: "3628 Rue Lorne Crescent, Montreal, QC H2X 2A8",
-        description: "Subletting from May to August 2025",
-        monthlyPrice: "2,000.00",
-        bedrooms: 2,
-        bathrooms: 1,
-        squareFootage: 1000,
-        propertyType: 'Sublet',
-        smokingAllowed: true,
-        wheelchairAccessible: true,
-        landlordId: 1,
-        landlordPhone: '123-456-7890'
-    },
-    {
-        id: 3,
-        title: "5 1/2 to Sublet in the McGill Ghetto",
-        address: "3628 Rue Durocher, Montreal, QC H2X 2W4",
-        description: "Subletting from January to August 2025",
-        monthlyPrice: "1,200.00",
-        bedrooms: 4,
-        bathrooms: 2,
-        squareFootage: 1200,
-        propertyType: 'Sublet',
-        smokingAllowed: true,
-        landlordId: 2,
-        landlordPhone: '548-123-3243'
-    },
+    // {
+    //     id: 1,
+    //     title: "3 1/2 for Rent in the McGill Ghetto",
+    //     address: "3021 Rue Milton, Montreal, QC H2X 1W5",
+    //     description: "Cozy apartment, hydro included in price!",
+    //     monthlyPrice: "1,200.00",
+    //     bedrooms: 1,
+    //     bathrooms: 1,
+    //     squareFootage: 880,
+    //     propertyType: 'Lease',
+    //     smokingAllowed: false,
+    //     wheelchairAccessible: true,
+    // },
+    // {
+    //     id: 2,
+    //     title: "4 1/2 to Sublet in the McGill Ghetto",
+    //     address: "3628 Rue Lorne Crescent, Montreal, QC H2X 2A8",
+    //     description: "Subletting from May to August 2025",
+    //     monthlyPrice: "2,000.00",
+    //     bedrooms: 2,
+    //     bathrooms: 1,
+    //     squareFootage: 1000,
+    //     propertyType: 'Sublet',
+    //     smokingAllowed: true,
+    //     wheelchairAccessible: true
+    //
+    // },
+    // {
+    //     id: 3,
+    //     title: "5 1/2 to Sublet in the McGill Ghetto",
+    //     address: "3628 Rue Durocher, Montreal, QC H2X 2W4",
+    //     description: "Subletting from January to August 2025",
+    //     monthlyPrice: "1,200.00",
+    //     bedrooms: 4,
+    //     bathrooms: 2,
+    //     squareFootage: 1200,
+    //     propertyType: 'Sublet',
+    //     smokingAllowed: true,
+    //
+    // },
     // Add more listings as needed
 ];
 
 export default function Listing() {
     // Create sample listings because none are currently defined.
 
-    // const { listing, loading, error } = useListings();
-    // if (listing ===  undefined) return <p>No listings available.</p>;
-    //
-    // if (loading) return <p>Loading...</p>;
-    // if (error) return <p>{error}</p>;
+    const { listings, loading, error } = useListings();
+    console.log(listings)
+    if (listings ===  undefined) return <p>No listings available.</p>;
 
-    // return (
-    //     <div>
-    //         <h1>"Currently there are no listings, so I cannot extract properties directly from there"</h1>
-    //     </div>
-    // );
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p>{error}</p>;
+
 
     return (
         <div className="dashboard">
