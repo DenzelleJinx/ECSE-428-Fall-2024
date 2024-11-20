@@ -113,6 +113,10 @@ public class ListingService {
 
         // Find the landlord associated with the listing
 
+        List<Image> images = listing.getPropertyImages();
+        for (Image image : images) {
+            imageService.deleteImage(image.getId());
+        }
         Landlord landlord = StreamSupport.stream(landlordDAO.findAll().spliterator(), false)
                 .filter(l -> l.getProperties().stream().anyMatch(ll -> ll.getId() == listingId))
                 .findFirst()
