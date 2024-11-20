@@ -31,3 +31,4 @@ The umple model can be found [here](https://cruise.umple.org/umpleonline/umple.p
     - You might need to change permission using `chmod 700 gradlew` 
 
 - run `npm start` in `ECSE-428-Fall-2024\houseit-frontend`
+- run `./gradlew bootRun` in `ECSE-428-Fall-2024\HouseIt-Backend`
