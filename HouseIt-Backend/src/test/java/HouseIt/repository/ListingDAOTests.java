@@ -48,6 +48,7 @@ public class ListingDAOTests {
         listingDAO.save(listing);
     }
 
+    @BeforeEach
     @AfterEach
     public void tearDown() {
         listingDAO.deleteAll();

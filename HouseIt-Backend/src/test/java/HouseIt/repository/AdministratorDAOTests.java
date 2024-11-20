@@ -25,6 +25,7 @@ public class AdministratorDAOTests {
     private float rating = 5.0f;
     private Administrator administrator;
 
+    @BeforeEach
     @AfterEach
     public void tearDown() {
         administratorDAO.deleteAll();

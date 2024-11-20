@@ -5,7 +5,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.aspectj.weaver.ast.Not;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import HouseIt.model.Notification;
 import HouseIt.model.User;
 import HouseIt.model.User.AccountStatus;
+import HouseIt.dao.NotificationDAO;
 import HouseIt.dao.UserDAO;
 
 @SpringBootTest
@@ -20,10 +23,14 @@ public class UserDAOTests {
 
     @Autowired
     private UserDAO userDAO;
+    @Autowired
+    private NotificationDAO notificationDAO;
 
+    @BeforeEach
     @AfterEach
     public void clearDatabase() {
         userDAO.deleteAll();
+        notificationDAO.deleteAll();
     }
 
     @Test
@@ -34,9 +41,11 @@ public class UserDAOTests {
         AccountStatus status = AccountStatus.ACTIVE;
         float rating = 5.0f;
         List<Notification> notifications = new ArrayList<>();
-
+        
         User user = new User(username, email, password, status, rating, notifications);
         userDAO.save(user);
+
+        
 
         User foundUser = userDAO.findUserByUsername(username);
 

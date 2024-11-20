@@ -2,6 +2,7 @@ package HouseIt.cucumber.steps;
 
 import static org.junit.Assert.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import HouseIt.dao.LandlordDAO;
 import HouseIt.dao.StudentDAO;
@@ -46,6 +47,8 @@ public class AccountsFunctionalityStepDefinitions {
     String password;
     String phone;
     String errorMessage;
+
+    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     @Before
     public void beforeScenario() {
@@ -127,19 +130,21 @@ public class AccountsFunctionalityStepDefinitions {
         if (isStudent) {
             Student student = studentDAO.findStudentByEmail(email);
             assertNotNull(student);
-            assertEquals(password, student.getPassword());
+            // Use BCrypt's matches method to verify if the password matches the stored hash
+            assertTrue(encoder.matches(password, student.getPassword()));
             assertEquals(email, student.getEmail());
             assertEquals(username, student.getUsername());
-        }
-        else {
+        } else {
             Landlord landlord = landlordDAO.findLandlordByEmail(email);
             assertNotNull(landlord);
-            assertEquals(password, landlord.getPassword());
+            // Use BCrypt's matches method to verify if the password matches the stored hash
+            assertTrue(encoder.matches(password, landlord.getPassword()));
             assertEquals(email, landlord.getEmail());
             assertEquals(username, landlord.getUsername());
             assertEquals(phone, landlord.getPhoneNumber());
         }
     }
+
 
     @Then("the account is only activated once the user clicks the verification link sent by email")
     public void theAccountIsActivatedOnEmailVerification() {
