@@ -40,6 +40,17 @@ public class ListingService {
     @Autowired
     private ImageService imageService;
 
+
+    public Listing completeListing(int id) {
+        Listing listing = listingDAO.findListingById(id);
+        if (listing == null) {
+            throw new IllegalArgumentException("Listing not found");
+        }
+        listing.setCompleted(true);
+        return listingDAO.save(listing);
+    }
+
+
     @Transactional
     public Listing createListing(int landlordId, String title, String description, int monthlyPrice, int bedrooms,
             int bathrooms,

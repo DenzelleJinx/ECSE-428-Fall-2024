@@ -110,4 +110,15 @@ public class ListingController {
         }
     }
 
+
+    @PutMapping("/{id}/complete")
+    public ResponseEntity<?> completeListing(@PathVariable int id) {
+        try {
+            ListingDTO dto = listingService.convertToDTO(listingService.completeListing(id));
+            return ResponseEntity.ok(dto);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 }
