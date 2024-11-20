@@ -1,66 +1,49 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useListings } from '../../hooks/useListings';
 import ListingCard from "../create-listing/ListingCard";
 import '../create-listing/Listing.css';
 import Navbar from '../navbar/Navbar';
-
-// I created mock listings giving that the database implementation had not been merged yet.
-// Whoever works on the back-end can uncomment the code such that useListings is called.
-
-const listings = [
-    // {
-    //     id: 1,
-    //     title: "3 1/2 for Rent in the McGill Ghetto",
-    //     address: "3021 Rue Milton, Montreal, QC H2X 1W5",
-    //     description: "Cozy apartment, hydro included in price!",
-    //     monthlyPrice: "1,200.00",
-    //     bedrooms: 1,
-    //     bathrooms: 1,
-    //     squareFootage: 880,
-    //     propertyType: 'Lease',
-    //     smokingAllowed: false,
-    //     wheelchairAccessible: true,
-    // },
-    // {
-    //     id: 2,
-    //     title: "4 1/2 to Sublet in the McGill Ghetto",
-    //     address: "3628 Rue Lorne Crescent, Montreal, QC H2X 2A8",
-    //     description: "Subletting from May to August 2025",
-    //     monthlyPrice: "2,000.00",
-    //     bedrooms: 2,
-    //     bathrooms: 1,
-    //     squareFootage: 1000,
-    //     propertyType: 'Sublet',
-    //     smokingAllowed: true,
-    //     wheelchairAccessible: true
-    //
-    // },
-    // {
-    //     id: 3,
-    //     title: "5 1/2 to Sublet in the McGill Ghetto",
-    //     address: "3628 Rue Durocher, Montreal, QC H2X 2W4",
-    //     description: "Subletting from January to August 2025",
-    //     monthlyPrice: "1,200.00",
-    //     bedrooms: 4,
-    //     bathrooms: 2,
-    //     squareFootage: 1200,
-    //     propertyType: 'Sublet',
-    //     smokingAllowed: true,
-    //
-    // },
-    // Add more listings as needed
-];
+import Axios from 'axios';
+import StatusDialog from '../status-dialog/StatusDialog';
 
 export default function Listing() {
-    // Create sample listings because none are currently defined.
+    // Use the custom hook to fetch listings
+    const { listings: fetchedListings, loading, error } = useListings();
 
-    const { listings, loading, error } = useListings();
-    console.log(listings)
-    if (listings ===  undefined) return <p>No listings available.</p>;
+    // Maintain local state for active listings
+    const [listings, setListings] = useState([]);
+    const [openDialog, setOpenDialog] = useState(false);
+    const [dialogMessage, setDialogMessage] = useState('');
+    const [dialogSeverity, setDialogSeverity] = useState('error');
+
+    // Populate local state when fetchedListings changes
+    useEffect(() => {
+        if (fetchedListings) {
+            const activeListings = fetchedListings.filter(listing => !listing.completed);
+            setListings(activeListings);
+        }
+    }, [fetchedListings]);
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p>{error}</p>;
 
+    const handleRentOut = async (listingId) => {
+        try {
+            const response = await Axios.put(`http://localhost:8080/listing/${listingId}/complete`);
+            if (response.status === 200) {
+                setDialogMessage('Your listing has been rented out. A notification has been sent to the landlord.');
+                setDialogSeverity('success');
+                setOpenDialog(true);
+            }
+
+            setListings(prevListings => prevListings.filter(listing => listing.id !== listingId));
+        } catch (error) {
+            console.error("Error renting out listing:", error);
+            setDialogMessage('An error occurred while renting out the listing. Please try again later.');
+            setDialogSeverity('error');
+            setOpenDialog(true);
+        }
+    };
 
     return (
         <div className="dashboard">
@@ -70,9 +53,20 @@ export default function Listing() {
             </header>
             <div className="listing-grid">
                 {listings.map(listing => (
-                    <ListingCard key={listing.id} listing={listing} />
+                    <ListingCard
+                        key={listing.id}
+                        listing={listing}
+                        onRentOut={handleRentOut}
+                        />
                 ))}
             </div>
+            {/* Status Dialog */}
+            <StatusDialog
+                open={openDialog}
+                onClose={() => setOpenDialog(false)}
+                severity={dialogSeverity}
+                message={dialogMessage}
+            />
         </div>
     );
 }

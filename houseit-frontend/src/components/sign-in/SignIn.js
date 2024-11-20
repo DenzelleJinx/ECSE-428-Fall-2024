@@ -16,6 +16,7 @@ import mcgillLogo from '../../assets/mcgill-logo.png';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../navbar/Navbar';
 import axios from 'axios';
+import StatusDialog from '../status-dialog/StatusDialog';
 
 
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -71,6 +72,10 @@ export default function SignUp(props) {
   const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
   const [serverErrorMessage, setServerErrorMessage] = React.useState('');
 
+  const [openDialog, setOpenDialog] = React.useState(false);
+  const [dialogMessage, setDialogMessage] = React.useState('');
+  const [dialogSeverity, setDialogSeverity] = React.useState('error');
+
   const validateInputs = () => {
     const email = document.getElementById('email');
     const password = document.getElementById('password');
@@ -96,6 +101,10 @@ export default function SignUp(props) {
     }
 
     return isValid;
+  };
+
+  const handleDialogClose = () => {
+    setOpenDialog(false);
   };
 
 
@@ -125,15 +134,21 @@ export default function SignUp(props) {
       localStorage.setItem('currentUser', JSON.stringify(userWithoutPassword));
       navigate('/');
     } catch (error) {
-        if (error.response && error.response.data) {
-          const errorMessage =
-            typeof error.response.data === 'string'
-              ? error.response.data.split(": ").slice(1).join(": ")
-              : JSON.stringify(error.response.data); // Fallback for non-string responses
-          setServerErrorMessage(errorMessage);
-        } else {
-          setServerErrorMessage('An error occurred during login. Please try again.');
-        }
+      if (error.response && error.response.data) {
+        const errorMessage =
+          typeof error.response.data === 'string'
+            ? error.response.data.split(": ").slice(1).join(": ")
+            : JSON.stringify(error.response.data); // Fallback for non-string responses
+        
+        setServerErrorMessage(errorMessage);
+        setDialogMessage('Invalid credentials, please try again.');
+        setDialogSeverity('error');
+      } else {
+        setServerErrorMessage('An error occurred during login. Please try again.');
+        setDialogMessage('An error occurred while logging in.');
+        setDialogSeverity('error');
+      }
+      setOpenDialog(true);  // Open the dialog to show the error message
     }
 };
 
@@ -208,6 +223,13 @@ return (
         </Box>
       </Card>
     </SignUpContainer>
+    <StatusDialog
+        open={openDialog}
+        onClose={handleDialogClose}
+        severity={dialogSeverity}
+        title={dialogSeverity === 'success' ? 'Success' : 'An Error Occurred'}
+        message={dialogMessage}
+    />
   </AppTheme>
 )
 }

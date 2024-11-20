@@ -233,6 +233,7 @@ public class ListingService {
         dto.setWheelchairAccessible(listing.getWheelchairAccessible());
         dto.setHidden(listing.getHidden());
         dto.setSmokingAllowed(listing.getSmokingAllowed());
+        dto.setCompleted(listing.isCompleted());
         dto.setAddress(listing.getAddress());
         dto.setAmenitiesOffered(listing.getAmenitiesOffered());
         dto.setUtilitiesCosts(listing.getUtilitiesCosts());

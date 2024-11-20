@@ -17,7 +17,7 @@ import StatusDialog from '../status-dialog/StatusDialog';
 import apartmentImage from '../../assets/sample-bedroom.png';
 import PropertyListing from "../view-listings/ImagePopup";
 
-function ListingCard({ listing}) {
+function ListingCard({ listing, onRentOut }) {
     const [isHovered, setIsHovered] = useState(false);
 
     const cardStyles = {
@@ -78,6 +78,7 @@ function ListingCard({ listing}) {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [currentUserName, setCurrentUserName] = useState(null);
     const [isContactingLandlord, setIsContactingLandlord] = useState(false);
+    const [isRentingOut, setIsRentingOut] = useState(false);
 
     const [openDialog, setOpenDialog] = React.useState(false); // State for dialog visibility
     const [dialogMessage, setDialogMessage] = React.useState(''); // Message to display in the dialog
@@ -128,6 +129,35 @@ function ListingCard({ listing}) {
 
     };
 
+    const handleRentOut = async () => {
+        try {
+            const landlordResponse = await Axios.get(`http://localhost:8080/users/id/${listing.landlordId}`);
+            const landlord = landlordResponse.data;  // Extract landlord data
+
+            // Now, send a POST request to the landlord's notifications endpoint
+            const notificationBody = {
+                type: "OTHER",
+                message: `Your listing has been rented out by ${currentUserName}.`,
+                senderUsername: currentUserName
+            };
+
+            console.log("Sending notification to landlord:", landlord.username, notificationBody, "by", currentUserName);
+            
+
+            // Make a GET request to fetch notifications
+            const response = await Axios.post(`http://localhost:8080/users/${landlord.username}/notifications`, notificationBody);
+
+            if (response.status === 201) {
+                onRentOut(listing.id);
+            }
+        } catch (error) {
+            console.error("Error contacting landlord:", error);
+            setDialogMessage('An error occurred while contacting the landlord. Please try again later.');
+            setDialogSeverity('error');
+            setOpenDialog(true);
+        }
+    };
+
 
     return (
         <div
@@ -141,29 +171,46 @@ function ListingCard({ listing}) {
             <div style={infoStyles}>
                 <div style={priceButtonContainerStyles}>
                     <p style={priceStyles}>${listing.monthlyPrice} monthly</p>
-                    {isStudent && <Button
-                        variant="contained"
-                        color="primary"
-                        size="small"
-                        sx={{
-                            backgroundColor: "red",
-                            color: "white",
-                            "&:hover": {
-                                backgroundColor: "darkred", // Hover effect
-                            },
-                            textTransform: "none",
-                        }}
-                        onClick={handleContactLandlord}
-                    >
-                        Contact Landlord
-                    </Button>
-                    }
-                    <StatusDialog
-                        open={openDialog}
-                        onClose={handleDialogClose}
-                        message={dialogMessage}
-                        severity={dialogSeverity}
-                    />
+                {isStudent && (
+                    <div>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            size="small"
+                            sx={{
+                                backgroundColor: "red",
+                                color: "white",
+                                "&:hover": {
+                                    backgroundColor: "darkred", // Hover effect
+                                },
+                                textTransform: "none",
+                            }}
+                            onClick={handleContactLandlord}
+                        >
+                            Contact Landlord
+                        </Button>
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            onClick={handleRentOut}
+                            disabled={listing.completed}
+                            style={{
+                                marginTop: '10px',
+                                backgroundColor: 'green',
+                                color: 'white',
+                                textTransform: 'none',
+                            }}
+                        >
+                            Rent Out
+                        </Button>
+                        <StatusDialog
+                            open={openDialog}
+                            onClose={handleDialogClose}
+                            message={dialogMessage}
+                            severity={dialogSeverity}
+                        />
+                    </div>
+                )}
                 </div>
                 <p style={priceStyles}>{listing.title}</p>
                 <p><em>{listing.description}</em></p>
