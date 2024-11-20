@@ -102,6 +102,7 @@ export default function ApproveLandlord(props) {
     const handleAction = async (actionType) => {
         // actionType: 'approve' or 'decline'
         const email = document.getElementById('Email').value;
+        const reason = document.getElementById('Reason').value;
 
         try {
             const axiosClient = axios.create({
@@ -126,6 +127,28 @@ export default function ApproveLandlord(props) {
                             : 'Landlord rejected successfully.'
                     );
                     setDialogSeverity('success');
+                    setOpenDialog(true);
+                }
+
+                // Send a notification to the landlord
+                try {
+                    // Now, send a POST request to the landlord's notifications endpoint
+                    const notificationBody = {
+                        type: "OTHER",
+                        message: `Your account has been ${actionType}d. ${reason}`,
+                        senderUsername: "admin"
+                    };
+        
+                    console.log("Sending notification to landlord:", userResponse.data.username, notificationBody, "by", "admin");
+                    
+        
+                    // Make a POST request to the landlord's notifications endpoint
+                    const response = await axiosClient.post(`http://localhost:8080/users/${userResponse.data.username}/notifications`, notificationBody);
+        
+                } catch (error) {
+                    console.error("Error contacting landlord:", error);
+                    setDialogMessage('An error occurred while contacting the landlord. Please try again later.');
+                    setDialogSeverity('error');
                     setOpenDialog(true);
                 }
             } else {

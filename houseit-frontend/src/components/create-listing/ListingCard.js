@@ -69,6 +69,17 @@ function ListingCard({ listing, onRentOut }) {
         borderRadius: 2,
     };
 
+    const phoneStyles = {
+        fontSize: '1.25em',
+        color: 'white',
+        backgroundColor: 'black',
+        borderWidth: '1px',
+        padding: '4px',
+        textAlign: 'center',
+        borderRadius: '4px',
+        margin: '2px'
+    }
+
     const openUtilitiesModal = () => setShowUtilitiesModal(true);
     const closeUtilitiesModal = () => setShowUtilitiesModal(false);
     const [showUtilitiesModal, setShowUtilitiesModal] = useState(false);
@@ -79,6 +90,9 @@ function ListingCard({ listing, onRentOut }) {
     const [currentUserName, setCurrentUserName] = useState(null);
     const [isContactingLandlord, setIsContactingLandlord] = useState(false);
     const [isRentingOut, setIsRentingOut] = useState(false);
+    const [showPhoneNumber, setShowPhoneNumber] = useState(false);
+    const [callString, setCallString] = useState('');
+    const [contactErrorMessage, setContactErrorMessage] = useState('');
 
     const [openDialog, setOpenDialog] = React.useState(false); // State for dialog visibility
     const [dialogMessage, setDialogMessage] = React.useState(''); // Message to display in the dialog
@@ -87,6 +101,7 @@ function ListingCard({ listing, onRentOut }) {
     const handleDialogClose = () => {
         setOpenDialog(false);
     };
+    
 
     useEffect(() => {
         const checkAuth = () => {
@@ -94,13 +109,59 @@ function ListingCard({ listing, onRentOut }) {
             setIsLandlord(user && user.accountType === 'landlord');
             setIsStudent(user && user.accountType === 'student');
             setIsAuthenticated(user != null);
-            setCurrentUserName(user.username);
+            setCurrentUserName(user && user.username);
         };
 
         checkAuth();
     }, []);
 
-    const handleContactLandlord = async () => {
+    const handleToggle = () => {
+        const user = JSON.parse(localStorage.getItem('currentUser'));
+        // Don't allow contact button if not logged in
+        if (user == null) {
+            setContactErrorMessage("Log in to contact lister.")
+            return;
+        }
+        setShowPhoneNumber(!showPhoneNumber);
+    };
+
+    // Sends notifications
+    const handleNotify = async () => {
+        try {
+            if (currentUserName == null) {
+                console.error('User not logged in');
+                return;
+            }
+            const landlordResponse = await Axios.get(`http://localhost:8080/users/id/${listing.landlordId}`);
+            const landlord = landlordResponse.data;  // Extract landlord data
+
+            console.log(landlord.phoneNumber);
+            setCallString(`Call ${landlord.phoneNumber}`);
+            if (callString === '') {
+                setCallString("Number Unavailable");
+            }
+
+            const body = {
+                type: "CONTACT",
+                senderUsername: currentUserName
+            };
+            const response = await Axios.post(`http://localhost:8080/users/${landlord.username}/notifications`, body);
+            console.log('Notification successful:', response.data);
+            if (response.status === 201) {
+                setDialogMessage('Your message has been sent to the landlord.');
+                setDialogSeverity('success');
+                setOpenDialog(true);
+            }
+
+        } catch (error) {
+            console.error('Error sending notification:', error);
+            setDialogMessage('An error occurred while contacting the landlord. Please try again later.');
+            setDialogSeverity('error');
+            setOpenDialog(true);
+        }
+    };
+
+    /* const handleContactLandlord = async () => {
         try {
             const landlordResponse = await Axios.get(`http://localhost:8080/users/id/${listing.landlordId}`);
             const landlord = landlordResponse.data;  // Extract landlord data
@@ -127,7 +188,7 @@ function ListingCard({ listing, onRentOut }) {
             setOpenDialog(true);
         }
 
-    };
+    }; */
 
     const handleRentOut = async () => {
         try {
@@ -171,34 +232,76 @@ function ListingCard({ listing, onRentOut }) {
             <div style={infoStyles}>
                 <div style={priceButtonContainerStyles}>
                     <p style={priceStyles}>${listing.monthlyPrice} monthly</p>
-                {isStudent && (
+                    {isStudent && (
                     <div>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            size="small"
-                            sx={{
-                                backgroundColor: "red",
-                                color: "white",
-                                "&:hover": {
-                                    backgroundColor: "darkred", // Hover effect
-                                },
-                                textTransform: "none",
-                            }}
-                            onClick={handleContactLandlord}
-                        >
-                            Contact Landlord
-                        </Button>
+                        {!showPhoneNumber ? (
+                            <div>
+                                <Button
+                                    onClick={handleToggle}
+                                    variant="contained"
+                                    color="primary"
+                                    size="small"
+                                    sx={{
+                                        backgroundColor: "#d50032",
+                                        color: "white",
+                                        "&:hover": {
+                                            backgroundColor: "#b71c1c", // Hover effect
+                                        },
+                                        fontSize: "1.1em",
+                                        textTransform: "none",
+                                    }}
+                                >
+                                    Contact
+                                </Button>
+                                <p style={{ color: "var(--template-palette-error-main)" }}>
+                                    {contactErrorMessage}
+                                </p>
+                            </div>
+                        ) : (
+                            <div>
+                                <p style={phoneStyles}>{callString}</p>
+                                <Button
+                                    onClick={handleNotify}
+                                    variant="contained"
+                                    color="primary"
+                                    size="small"
+                                    sx={{
+                                        backgroundColor: "#d50032",
+                                        "&:hover": {
+                                            backgroundColor: "#b71c1c", // Hover effect
+                                        },
+                                        fontSize: "1.1em",
+                                        textTransform: "none",
+                                        margin: "2px",
+                                    }}
+                                >
+                                    Notify
+                                </Button>
+                                <Button
+                                    onClick={handleToggle}
+                                    variant="contained"
+                                    color="primary"
+                                    size="small"
+                                    sx={{
+                                        textTransform: "none",
+                                        fontSize: "1.1em",
+                                        margin: "2px",
+                                    }}
+                                >
+                                    Nevermind
+                                </Button>
+                            </div>
+                        )}
                         <Button
                             variant="contained"
                             color="secondary"
                             onClick={handleRentOut}
                             disabled={listing.completed}
                             style={{
-                                marginTop: '10px',
-                                backgroundColor: 'green',
-                                color: 'white',
-                                textTransform: 'none',
+                                marginTop: "10px",
+                                backgroundColor: "green",
+                                color: "white",
+                                textTransform: "none",
                             }}
                         >
                             Rent Out
@@ -211,7 +314,7 @@ function ListingCard({ listing, onRentOut }) {
                         />
                     </div>
                 )}
-                </div>
+            </div>
                 <p style={priceStyles}>{listing.title}</p>
                 <p><em>{listing.description}</em></p>
                 <div>
