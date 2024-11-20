@@ -36,9 +36,9 @@ public class Student extends User
     subletListings = new ArrayList<Listing>();
   }
 
-  public Student(int aId, String aUsername, String aEmail, String aPassword, AccountStatus aStatus, float aRating)
+  public Student(int aId, String aUsername, String aEmail, String aPassword, AccountStatus aStatus, float aRating, List<Notification> aNotifications)
   {
-    super(aUsername, aEmail, aPassword, aStatus, aRating);
+    super(aUsername, aEmail, aPassword, aStatus, aRating, aNotifications);
     favoritedListings = new ArrayList<Listing>();
     subletListings = new ArrayList<Listing>();
   }

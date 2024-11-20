@@ -8,8 +8,7 @@ import HouseIt.model.Utilities;
 import HouseIt.model.Listing.PropertyType;
 
 /**
- * DTO for creating a listing. The difference with ListingDTO is that this class stores
- * the landlord ID.
+ * DTO for creating a listing
  */
 public class ListingCreateDTO {
    
@@ -17,13 +16,11 @@ public class ListingCreateDTO {
     private String title;
     private String description;
     private int monthlyPrice;
-    private float propertyRating;
     private int bedrooms;
     private int bathrooms;
     private PropertyType propertyType;
     private int squareFootage;
     private boolean wheelchairAccessible;
-    private boolean hidden;
     private boolean smokingAllowed;
     private Address address ;
     private Amenities amenitiesOffered ;
@@ -62,15 +59,6 @@ public class ListingCreateDTO {
 
     public void setMonthlyPrice(int monthlyPrice) {
         this.monthlyPrice = monthlyPrice;
-    }
-
-    // Property Rating
-    public float getPropertyRating() {
-        return propertyRating;
-    }
-
-    public void setPropertyRating(float propertyRating) {
-        this.propertyRating = propertyRating;
     }
 
     // Bedrooms
@@ -116,15 +104,6 @@ public class ListingCreateDTO {
 
     public void setWheelchairAccessible(boolean wheelchairAccessible) {
         this.wheelchairAccessible = wheelchairAccessible;
-    }
-
-    // Hidden
-    public boolean isHidden() {
-        return hidden;
-    }
-
-    public void setHidden(boolean hidden) {
-        this.hidden = hidden;
     }
 
     // Smoking Allowed

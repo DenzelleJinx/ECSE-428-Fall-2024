@@ -16,6 +16,12 @@ import mcgillLogo from '../../assets/mcgill-logo.png';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../navbar/Navbar';
 import axios from 'axios';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContentText from '@mui/material/DialogContentText';
+
 
 
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -63,7 +69,8 @@ const SignUpContainer = styled(Stack)(({ theme }) => ({
 export default function SignUp(props) {
   const primaryColor = "#D50032";
   const secondaryColor = "#FFFFFF";
-  
+  const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [dialogMessage, setDialogMessage] = React.useState('');
   const [accountType, setAccountType] = React.useState('');
   const [phoneNumber, setPhoneNumber] = React.useState('');
   const [phoneNumberError, setPhoneNumberError] = React.useState(false);
@@ -78,9 +85,16 @@ export default function SignUp(props) {
   const [accountTypeErrorMessage, setAccountTypeErrorMessage] = React.useState('');
   const [serverErrorMessage, setServerErrorMessage] = React.useState('');
 
+  const navigate = useNavigate();
+
   const handleAccountTypeChange = (event) => {
     setAccountType(event.target.value);
   };
+
+  const closeDialog = () => {
+    setDialogOpen(false);
+    navigate('/login');
+  }
 
   const validateInputs = () => {
     const email = document.getElementById('email');
@@ -159,9 +173,16 @@ export default function SignUp(props) {
         baseURL: "http://localhost:8080",
       });
       const response = await axiosClient.post('/authentication/signup', payload);
+
+      if (accountType === 'landlord'){
+        setDialogMessage("Landlord accounts require admin approval before they can be activated.");
+        setDialogOpen(true);
+      } else {
+        console.log('Signup successful:', response.data);
+        setServerErrorMessage('');
+      }
       
-      console.log('Signup successful:', response.data);
-      setServerErrorMessage('');
+      
     } catch (error) {
       setServerErrorMessage(error.response ? error.response.data.split(": ").slice(1).join(": ") : 'An error occurred during signup. Please try again.');
     }
@@ -274,13 +295,24 @@ return (
           </Button>
           <Typography sx={{ textAlign: 'center' }}>
             Already have an account?{' '}
-            <Link href="/material-ui/getting-started/templates/sign-in/" variant="body2">
-              Sign in
+            <Link href="/login" variant="body2">
+              Login
             </Link>
           </Typography>
         </Box>
       </Card>
     </SignUpContainer>
+    <Dialog open={dialogOpen} onClose={() => closeDialog()}>
+      <DialogTitle>Account Status</DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          {dialogMessage}
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => closeDialog()} color="primary">OK</Button>
+      </DialogActions>
+    </Dialog>
   </AppTheme>
 )
 }

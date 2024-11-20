@@ -7,7 +7,7 @@ import HouseIt.model.Student;
 
 public class UserDTO {
     
-    private Integer id; 
+    private int id;
     private String username;
     private String email;
     private String password;
@@ -48,6 +48,12 @@ public class UserDTO {
         this.accountStatus = user.getStatus().toString();
     }
 
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
+    }
     public String getUsername() {
         return username;
     }

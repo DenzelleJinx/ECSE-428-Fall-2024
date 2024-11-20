@@ -41,8 +41,8 @@ public class ListingService {
     private ImageService imageService;
 
     @Transactional
-    public Listing createListing(int landlordId,String title, String description, int monthlyPrice, float propertyRating, int bedrooms, int bathrooms, 
-                                 Listing.PropertyType propertyType, int squareFootage, boolean wheelchairAccessible, boolean hidden, 
+    public Listing createListing(int landlordId,String title, String description, int monthlyPrice, int bedrooms, int bathrooms, 
+                                 Listing.PropertyType propertyType, int squareFootage, boolean wheelchairAccessible, 
                                  boolean smokingAllowed, Address address,  Amenities amenitiesOffered, List<Image> propertyImages, Utilities utilitiesCosts ) {
 
         // Validation of individual parameters
@@ -63,13 +63,13 @@ public class ListingService {
         newListing.setTitle(title);
         newListing.setDescription(description);
         newListing.setMonthlyPrice(monthlyPrice);
-        newListing.setPropertyRating(propertyRating);
+        newListing.setPropertyRating(0); // Default value
         newListing.setBedrooms(bedrooms);
         newListing.setBathrooms(bathrooms);
         newListing.setPropertyType(propertyType);
         newListing.setSquareFootage(squareFootage);
         newListing.setWheelchairAccessible(wheelchairAccessible);
-        newListing.setHidden(hidden);
+        newListing.setHidden(false); // Default value
         newListing.setSmokingAllowed(smokingAllowed);
 
         address = addressService.createAddress(address);
