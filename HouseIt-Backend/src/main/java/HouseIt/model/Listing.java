@@ -44,6 +44,7 @@ public class Listing
   private boolean wheelchairAccessible;
   private boolean hidden;
   private boolean smokingAllowed;
+  private boolean completed;
 
   //Listing Associations
   @OneToMany(fetch = FetchType.EAGER)
@@ -92,6 +93,14 @@ public class Listing
   //------------------------
   // INTERFACE
   //------------------------
+   // Getters and Setters
+   public boolean isCompleted() {
+    return completed;
+}
+
+    public void setCompleted(boolean completed) {
+      this.completed = completed;
+}
 
   public boolean setLandlordId(int aLandlordId)
   {
