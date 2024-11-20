@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.StreamSupport;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,12 +19,9 @@ import HouseIt.model.Utilities;
 import HouseIt.model.Image;
 import HouseIt.dto.ListingDTO;
 
-
 @Service
 public class ListingService {
 
-    
-    
     @Autowired
     private ListingDAO listingDAO;
 
@@ -54,19 +52,21 @@ public class ListingService {
 
 
     @Transactional
-    public Listing createListing(int landlordId,String title, String description, int monthlyPrice, int bedrooms, int bathrooms, 
-                                 Listing.PropertyType propertyType, int squareFootage, boolean wheelchairAccessible, 
-                                 boolean smokingAllowed, Address address,  Amenities amenitiesOffered, List<Image> propertyImages, Utilities utilitiesCosts ) {
+    public Listing createListing(int landlordId, String title, String description, int monthlyPrice, int bedrooms,
+            int bathrooms,
+            Listing.PropertyType propertyType, int squareFootage, boolean wheelchairAccessible,
+            boolean smokingAllowed, Address address, Amenities amenitiesOffered, List<Image> propertyImages,
+            Utilities utilitiesCosts) {
 
         // Validation of individual parameters
         if (title == null || title.trim().isEmpty()) {
             throw new IllegalArgumentException("Title cannot be empty.");
         }
-        
+
         if (description == null || description.trim().isEmpty()) {
             throw new IllegalArgumentException("Description cannot be empty.");
         }
-        
+
         if (monthlyPrice <= 0) {
             throw new IllegalArgumentException("Monthly price must be greater than zero.");
         }
@@ -95,12 +95,12 @@ public class ListingService {
         newListing.setUtilitiesCosts(utilitiesCosts);
 
         List<Image> newPropertyImages = new ArrayList<>();
-        for(Image img : propertyImages) {
+        for (Image img : propertyImages) {
             Image image = imageService.createImage(img);
             newPropertyImages.add(image);
         }
-        Image[] imageArray = new Image[newPropertyImages.size()];     // Create an array of the same size as the list
-        imageArray = newPropertyImages.toArray(imageArray);           // Convert the list to an array
+        Image[] imageArray = new Image[newPropertyImages.size()]; // Create an array of the same size as the list
+        imageArray = newPropertyImages.toArray(imageArray); // Convert the list to an array
         newListing.setPropertyImages(imageArray);
 
         Landlord landlord = landlordDAO.findLandlordById(landlordId);
@@ -115,24 +115,54 @@ public class ListingService {
 
         return newListing;
     }
-    
-    public Listing updateListing(int id, String title, String description, int monthlyPrice, float propertyRating, int bedrooms, int bathrooms, 
-    Listing.PropertyType propertyType, int squareFootage, boolean wheelchairAccessible, boolean hidden, 
-    boolean smokingAllowed, Address address,  Amenities amenitiesOffered, List<Image> propertyImages, Utilities utilitiesCosts ) {
+
+    @Transactional
+    public void deleteListing(int listingId) {
+        // Find the listing by ID
+        Listing listing = listingDAO.findById(listingId)
+                .orElseThrow(() -> new IllegalArgumentException("No listing found with ID: " + listingId));
+
+        // Find the landlord associated with the listing
+
+        List<Image> images = listing.getPropertyImages();
+        for (Image image : images) {
+            imageService.deleteImage(image.getId());
+        }
+        Landlord landlord = StreamSupport.stream(landlordDAO.findAll().spliterator(), false)
+                .filter(l -> l.getProperties().stream().anyMatch(ll -> ll.getId() == listingId))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("No landlord found for listing ID: " + listingId));
+
+        // Remove the listing from the landlord's properties
+        if (landlord.removeProperty(listing)) {
+            landlordDAO.save(landlord); // Persist the updated landlord
+        } else {
+            throw new IllegalStateException("Failed to remove listing from landlord's properties.");
+        }
+
+        // Delete the listing from the database
+        listingDAO.delete(listing);
+    }
+
+    public Listing updateListing(int id, String title, String description, int monthlyPrice, float propertyRating,
+            int bedrooms, int bathrooms,
+            Listing.PropertyType propertyType, int squareFootage, boolean wheelchairAccessible, boolean hidden,
+            boolean smokingAllowed, Address address, Amenities amenitiesOffered, List<Image> propertyImages,
+            Utilities utilitiesCosts) {
 
         // Validation of individual parameters
         if (title == null || title.trim().isEmpty()) {
             throw new IllegalArgumentException("Title cannot be empty.");
         }
-        
+
         if (description == null || description.trim().isEmpty()) {
             throw new IllegalArgumentException("Description cannot be empty.");
         }
-        
+
         if (monthlyPrice <= 0) {
             throw new IllegalArgumentException("Monthly price must be greater than zero.");
         }
-        
+
         // Get and update the existing Listing object
         Listing existingListing = listingDAO.findListingById(id);
         if (existingListing == null) {
@@ -161,14 +191,14 @@ public class ListingService {
         existingListing.setUtilitiesCosts(utilitiesCosts);
 
         List<Image> newPropertyImages = new ArrayList<>();
-        for(Image img : propertyImages) {
+        for (Image img : propertyImages) {
             Image image = imageService.updateImage(img);
             newPropertyImages.add(image);
         }
-        Image[] imageArray = new Image[newPropertyImages.size()];     // Create an array of the same size as the list
-        imageArray = newPropertyImages.toArray(imageArray);           // Convert the list to an array
+        Image[] imageArray = new Image[newPropertyImages.size()]; // Create an array of the same size as the list
+        imageArray = newPropertyImages.toArray(imageArray); // Convert the list to an array
         existingListing.setPropertyImages(imageArray);
-        
+
         return listingDAO.save(existingListing);
     }
 
@@ -205,10 +235,10 @@ public class ListingService {
         dto.setAmenitiesOffered(listing.getAmenitiesOffered());
         dto.setUtilitiesCosts(listing.getUtilitiesCosts());
 
-        List<Image> imageList = listing.getPropertyImages();  // Get the list of images
-        Image[] imageArray = new Image[imageList.size()];     // Create an array of the same size as the list
-        imageArray = imageList.toArray(imageArray);           // Convert the list to an array
-        dto.setPropertyImages(imageArray);                    // Pass the array to the setPropertyImages method
+        List<Image> imageList = listing.getPropertyImages(); // Get the list of images
+        Image[] imageArray = new Image[imageList.size()]; // Create an array of the same size as the list
+        imageArray = imageList.toArray(imageArray); // Convert the list to an array
+        dto.setPropertyImages(imageArray); // Pass the array to the setPropertyImages method
 
         return dto;
     }

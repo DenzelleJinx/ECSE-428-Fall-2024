@@ -22,4 +22,9 @@ public class ImageService {
     public Image updateImage(Image image) {
         return imageDAO.save(image);
     }
+
+    @Transactional
+    public void deleteImage(int id) {
+        imageDAO.deleteById(id);
+    }
 }
