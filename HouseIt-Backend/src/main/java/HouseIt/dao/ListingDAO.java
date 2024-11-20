@@ -41,5 +41,7 @@ public interface ListingDAO extends CrudRepository<Listing, Integer> {
 
     List<Listing> findListingByAmenitiesOffered(Amenities amenitiesOffered);
 
+    List<Listing> findByCompleted(boolean completed);
+
     void deleteById(int id);
 }
