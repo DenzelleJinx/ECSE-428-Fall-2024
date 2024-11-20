@@ -95,9 +95,9 @@ public class Landlord extends User
   }
   /* Code from template association_AddManyToOne */
   // do not use
-  public Listing addProperty(String aTitle, String aDescription, int aMonthlyPrice, float aPropertyRating, int aBedrooms, int aBathrooms, Listing.PropertyType aPropertyType, int aSquareFootage, boolean aWheelchairAccessible, boolean aHidden, boolean aSmokingAllowed, Address aAddress, Amenities aAmenitiesOffered)
+  public Listing addProperty(int alandlordId, String aTitle, String aDescription, int aMonthlyPrice, float aPropertyRating, int aBedrooms, int aBathrooms, Listing.PropertyType aPropertyType, int aSquareFootage, boolean aWheelchairAccessible, boolean aHidden, boolean aSmokingAllowed, Address aAddress, Amenities aAmenitiesOffered)
   {
-    return new Listing(aTitle, aDescription, aMonthlyPrice, aPropertyRating, aBedrooms, aBathrooms, aPropertyType, aSquareFootage, aWheelchairAccessible, aHidden, aSmokingAllowed, aAddress, this, aAmenitiesOffered);
+    return new Listing(alandlordId, aTitle, aDescription, aMonthlyPrice, aPropertyRating, aBedrooms, aBathrooms, aPropertyType, aSquareFootage, aWheelchairAccessible, aHidden, aSmokingAllowed, aAddress, this, aAmenitiesOffered);
   }
 
   public boolean addProperty(Listing aProperty)

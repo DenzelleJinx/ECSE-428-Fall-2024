@@ -10,6 +10,7 @@ import HouseIt.model.Listing.PropertyType;
 public class ListingDTO {
    
     private int id;
+    private int landlordId;
     private String title;
     private String description;
     private int monthlyPrice;
@@ -33,6 +34,15 @@ public class ListingDTO {
     public void setId(int id) {
         this.id = id;
     }
+
+    // Landlord ID
+    public int getLandlordId() {
+        return landlordId;
+    }
+    public void setLandlordId(int landlordId) {
+        this.landlordId = landlordId;
+    }
+    
     // Title
     public String getTitle() {
         return title;

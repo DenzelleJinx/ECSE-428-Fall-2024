@@ -105,6 +105,10 @@ export default function CreateListing(props) {
         setPropertyType(event.target.value);
     };
 
+    const handleDialogClose = () => {
+        setOpenDialog(false);
+    };
+
     const [descriptionError, setDescriptionError] = React.useState(false);
     const [descriptionErrorMessage, setDescriptionErrorMessage] = React.useState('');
     const [bedroomsError, setBedroomsError] = React.useState(false);

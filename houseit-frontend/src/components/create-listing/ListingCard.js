@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import BedIcon from '@mui/icons-material/Bed';
 import BathtubIcon from '@mui/icons-material/Bathtub';
 import HomeIcon from '@mui/icons-material/Home';
@@ -10,6 +10,8 @@ import WaterIcon from '@mui/icons-material/Opacity';
 import BoltIcon from '@mui/icons-material/Bolt';
 import FireIcon from '@mui/icons-material/Whatshot';
 import { Button, Modal, Box, Typography } from '@mui/material';
+import Axios from 'axios';
+import StatusDialog from '../status-dialog/StatusDialog';
 
 
 import apartmentImage from '../../assets/sample-bedroom.png';
@@ -71,6 +73,61 @@ function ListingCard({ listing}) {
     const closeUtilitiesModal = () => setShowUtilitiesModal(false);
     const [showUtilitiesModal, setShowUtilitiesModal] = useState(false);
 
+    const [isLandlord, setIsLandlord] = useState(false);
+    const [isStudent, setIsStudent] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [currentUserName, setCurrentUserName] = useState(null);
+    const [isContactingLandlord, setIsContactingLandlord] = useState(false);
+
+    const [openDialog, setOpenDialog] = React.useState(false); // State for dialog visibility
+    const [dialogMessage, setDialogMessage] = React.useState(''); // Message to display in the dialog
+    const [dialogSeverity, setDialogSeverity] = React.useState('error'); // Severity of the message: 'success' or 'error'
+
+    const handleDialogClose = () => {
+        setOpenDialog(false);
+    };
+
+    useEffect(() => {
+        const checkAuth = () => {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            setIsLandlord(user && user.accountType === 'landlord');
+            setIsStudent(user && user.accountType === 'student');
+            setIsAuthenticated(user != null);
+            setCurrentUserName(user.username);
+        };
+
+        checkAuth();
+    }, []);
+
+    const handleContactLandlord = async () => {
+        try {
+            const landlordResponse = await Axios.get(`http://localhost:8080/users/id/${listing.landlordId}`);
+            const landlord = landlordResponse.data;  // Extract landlord data
+
+            // Now, send a POST request to the landlord's notifications endpoint
+            const notificationBody = {
+                type: "CONTACT",
+                senderUsername: currentUserName
+            };
+
+            console.log("Sending notification to landlord:", landlord.username, notificationBody);
+            // Make a GET request to fetch notifications
+            const response = await Axios.post(`http://localhost:8080/users/${landlord.username}/notifications`, notificationBody);
+
+            if (response.status === 201) {
+                setDialogMessage('Your message has been sent to the landlord.');
+                setDialogSeverity('success');
+                setOpenDialog(true);
+            }
+        } catch (error) {
+            console.error("Error contacting landlord:", error);
+            setDialogMessage('An error occurred while contacting the landlord. Please try again later.');
+            setDialogSeverity('error');
+            setOpenDialog(true);
+        }
+
+    };
+
 
     return (
         <div
@@ -84,7 +141,7 @@ function ListingCard({ listing}) {
             <div style={infoStyles}>
                 <div style={priceButtonContainerStyles}>
                     <p style={priceStyles}>${listing.monthlyPrice} monthly</p>
-                    <Button
+                    {isStudent && <Button
                         variant="contained"
                         color="primary"
                         size="small"
@@ -96,9 +153,17 @@ function ListingCard({ listing}) {
                             },
                             textTransform: "none",
                         }}
+                        onClick={handleContactLandlord}
                     >
                         Contact Landlord
                     </Button>
+                    }
+                    <StatusDialog
+                        open={openDialog}
+                        onClose={handleDialogClose}
+                        message={dialogMessage}
+                        severity={dialogSeverity}
+                    />
                 </div>
                 <p style={priceStyles}>{listing.title}</p>
                 <p><em>{listing.description}</em></p>
