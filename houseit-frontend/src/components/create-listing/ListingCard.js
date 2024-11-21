@@ -19,6 +19,8 @@ import PropertyListing from "../view-listings/ImagePopup";
 
 function ListingCard({ listing, onRentOut }) {
     const [isHovered, setIsHovered] = useState(false);
+    const [showPhoneNumber, setShowPhoneNumber] = useState(false);
+    const [contactErrorMessage, setContactErrorMessage] = useState('');
 
     const cardStyles = {
         border: '1px solid #ddd',
@@ -48,8 +50,8 @@ function ListingCard({ listing, onRentOut }) {
         margin: '0px',
         color: '#3A3B3C',
         fontFamily: "'Roboto', sans-serif", // Material-UI default font
-
     };
+
     const priceButtonContainerStyles = {
         display: 'flex',
         alignItems: 'center',

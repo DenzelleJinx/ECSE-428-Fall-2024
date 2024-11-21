@@ -1,6 +1,7 @@
 package HouseIt.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,10 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import HouseIt.dto.ListingCreateDTO;
 import HouseIt.dto.ListingDTO;
+import HouseIt.dto.users.UserDTO;
+import HouseIt.service.UserService;
 import HouseIt.model.Listing;
+import HouseIt.model.User;
 import HouseIt.service.ListingService;
 
 @CrossOrigin(origins = "*")
