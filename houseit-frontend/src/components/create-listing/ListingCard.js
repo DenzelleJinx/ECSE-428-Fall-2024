@@ -32,7 +32,6 @@ function ListingCard({ listing, onRentOut }) {
         boxShadow: isHovered ? '0 4px 12px rgba(255, 0, 0, 0.3)' : '0 4px 8px rgba(0, 0, 0, 0.1)',
     };
 
-
     const infoStyles = {
         padding: '10px',
         display: 'flex',
@@ -48,8 +47,8 @@ function ListingCard({ listing, onRentOut }) {
         margin: '0px',
         color: '#3A3B3C',
         fontFamily: "'Roboto', sans-serif", // Material-UI default font
-
     };
+
     const priceButtonContainerStyles = {
         display: 'flex',
         alignItems: 'center',
@@ -80,19 +79,20 @@ function ListingCard({ listing, onRentOut }) {
         margin: '2px'
     }
 
-    const openUtilitiesModal = () => setShowUtilitiesModal(true);
-    const closeUtilitiesModal = () => setShowUtilitiesModal(false);
-    const [showUtilitiesModal, setShowUtilitiesModal] = useState(false);
-
     const [isLandlord, setIsLandlord] = useState(false);
     const [isStudent, setIsStudent] = useState(false);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [currentUserName, setCurrentUserName] = useState(null);
     const [isContactingLandlord, setIsContactingLandlord] = useState(false);
     const [isRentingOut, setIsRentingOut] = useState(false);
+
+    const openUtilitiesModal = () => setShowUtilitiesModal(true);
+    const closeUtilitiesModal = () => setShowUtilitiesModal(false);
+    const [showUtilitiesModal, setShowUtilitiesModal] = useState(false);
+    
     const [showPhoneNumber, setShowPhoneNumber] = useState(false);
-    const [callString, setCallString] = useState('');
-    const [contactErrorMessage, setContactErrorMessage] = useState('');
+    const [callString, setCallString] = useState('Number Unavailable');
+    const [currentUserName, setCurrentUserName] = useState(null);
+    const [landlordData, setLandLordData] = useState(null);
 
     const [openDialog, setOpenDialog] = React.useState(false); // State for dialog visibility
     const [dialogMessage, setDialogMessage] = React.useState(''); // Message to display in the dialog
@@ -101,27 +101,27 @@ function ListingCard({ listing, onRentOut }) {
     const handleDialogClose = () => {
         setOpenDialog(false);
     };
-    
 
     useEffect(() => {
-        const checkAuth = () => {
+        const checkAuth = async () => {
             const user = JSON.parse(localStorage.getItem('currentUser'));
             setIsLandlord(user && user.accountType === 'landlord');
             setIsStudent(user && user.accountType === 'student');
             setIsAuthenticated(user != null);
             setCurrentUserName(user && user.username);
+
+            const landlordResponse = await Axios.get(`http://localhost:8080/users/id/${listing.landlordId}`);
+            setLandLordData(landlordResponse.data);  // Extract landlord data
+            setCallString(`Call ${landlordResponse.data.phoneNumber}`);
+            if (callString === 'Call ') {
+                setCallString("Number Unavailable");
+            }
         };
 
         checkAuth();
     }, []);
 
     const handleToggle = () => {
-        const user = JSON.parse(localStorage.getItem('currentUser'));
-        // Don't allow contact button if not logged in
-        if (user == null) {
-            setContactErrorMessage("Log in to contact lister.")
-            return;
-        }
         setShowPhoneNumber(!showPhoneNumber);
     };
 
@@ -129,23 +129,17 @@ function ListingCard({ listing, onRentOut }) {
     const handleNotify = async () => {
         try {
             if (currentUserName == null) {
-                console.error('User not logged in');
+                console.error('User not logged in.');
                 return;
-            }
-            const landlordResponse = await Axios.get(`http://localhost:8080/users/id/${listing.landlordId}`);
-            const landlord = landlordResponse.data;  // Extract landlord data
-
-            console.log(landlord.phoneNumber);
-            setCallString(`Call ${landlord.phoneNumber}`);
-            if (callString === '') {
-                setCallString("Number Unavailable");
             }
 
             const body = {
                 type: "CONTACT",
                 senderUsername: currentUserName
             };
-            const response = await Axios.post(`http://localhost:8080/users/${landlord.username}/notifications`, body);
+            console.log(body);
+            console.log(landlordData.username);
+            const response = await Axios.post(`http://localhost:8080/users/${landlordData.username}/notifications`, body);
             console.log('Notification successful:', response.data);
             if (response.status === 201) {
                 setDialogMessage('Your message has been sent to the landlord.');
@@ -253,9 +247,6 @@ function ListingCard({ listing, onRentOut }) {
                                 >
                                     Contact
                                 </Button>
-                                <p style={{ color: "var(--template-palette-error-main)" }}>
-                                    {contactErrorMessage}
-                                </p>
                             </div>
                         ) : (
                             <div>
