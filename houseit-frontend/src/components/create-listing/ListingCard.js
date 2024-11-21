@@ -91,7 +91,7 @@ function ListingCard({ listing, onRentOut }) {
     const [isContactingLandlord, setIsContactingLandlord] = useState(false);
     const [isRentingOut, setIsRentingOut] = useState(false);
     const [showPhoneNumber, setShowPhoneNumber] = useState(false);
-    const [callString, setCallString] = useState('');
+    const [callString, setCallString] = useState('Number Unavailable');
     const [contactErrorMessage, setContactErrorMessage] = useState('');
 
     const [openDialog, setOpenDialog] = React.useState(false); // State for dialog visibility
