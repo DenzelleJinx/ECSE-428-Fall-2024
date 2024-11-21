@@ -10,6 +10,11 @@
     align-items: center;
 }
 
+.modal-header {
+    text-align: center;
+    margin-top: 0px;
+}
+
 .modal-content {
     background: white;
     padding: 20px;
@@ -17,7 +22,24 @@
     width: 80%;
     max-width: 600px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    user-select: none;
 }
+
+.modal-content .filter-section input[type="number"] {
+    width: 50px;
+    padding: 5px 10px;
+    font-size: 14px;
+    margin: 5px; 
+}
+
+/* Removing spinners*/
+/* WebKit Browsers (Chrome, Safari, Edge) */
+.modal-content .filter-section input[type="number"]::-webkit-outer-spin-button,
+.modal-content .filter-section input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
 
 .filter-section {
     margin-bottom: 15px;

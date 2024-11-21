@@ -49,9 +49,9 @@ export default function FilterModal({ filters, onChange, onClose, onApply }) {
     return (
         <div className="filter-modal">
             <div className="modal-content">
-                <h3>Filter Listings</h3>
+                <h1 className="modal-header">Filter Listings</h1>
                 <div className="filter-section">
-                    <label>Address (Street):</label>
+                    <label>Street Name: </label>
                     <input
                         type="text"
                         value={localFilters.address}
@@ -59,7 +59,7 @@ export default function FilterModal({ filters, onChange, onClose, onApply }) {
                     />
                 </div>
                 <div className="filter-section">
-                    <label>Bedrooms:</label>
+                    <label>Bedrooms: </label>
                     <input
                         type="number"
                         placeholder="Min"
@@ -74,7 +74,7 @@ export default function FilterModal({ filters, onChange, onClose, onApply }) {
                     />
                 </div>
                 <div className="filter-section">
-                    <label>Bathrooms:</label>
+                    <label>Bathrooms: </label>
                     <input
                         type="number"
                         placeholder="Min"
@@ -89,7 +89,7 @@ export default function FilterModal({ filters, onChange, onClose, onApply }) {
                     />
                 </div>
                 <div className="filter-section">
-                    <label>Property Type:</label>
+                    <label>Property Type: </label>
                     <select
                         value={localFilters.propertyType}
                         onChange={(e) => handleInputChange('propertyType', null, e.target.value)}
@@ -125,18 +125,22 @@ export default function FilterModal({ filters, onChange, onClose, onApply }) {
 
                 {/* Amenities */}
                 <h4>Amenities:</h4>
-                {Object.keys(localFilters.amenities).map(amenity => (
-                    <div className="filter-section" key={amenity}>
-                        <label>
-                            <input
-                                type="checkbox"
-                                checked={localFilters.amenities[amenity] || false}
-                                onChange={(e) => handleInputChange('amenities', amenity, e.target.checked ? true : null)}
-                            />
-                            {amenity.charAt(0).toUpperCase() + amenity.slice(1)}
-                        </label>
-                    </div>
-                ))}
+                {Object.keys(localFilters.amenities).map(amenity => {
+                    // Add spaces before uppercase letters
+                    const formattedAmenity = amenity.replace(/([a-z])([A-Z])/g, '$1 $2');
+                    return (
+                        <div className="filter-section" key={amenity}>
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    checked={localFilters.amenities[amenity] || false}
+                                    onChange={(e) => handleInputChange('amenities', amenity, e.target.checked ? true : null)}
+                                />
+                                {formattedAmenity.charAt(0).toUpperCase() + formattedAmenity.slice(1)}
+                            </label>
+                        </div>
+                    );
+                })}
 
                 <div className="modal-actions">
                     <button className="cancel" onClick={onClose}>Cancel</button>
