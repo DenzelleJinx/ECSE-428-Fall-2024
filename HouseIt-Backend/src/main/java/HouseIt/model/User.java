@@ -47,7 +47,7 @@ public class User
   private AccountStatus status;
   private float rating;
 
-  @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Notification> notifications;
 
   //------------------------

@@ -38,7 +38,6 @@ public class Notification
     private String message;
     private NotificationType type;
     @ManyToOne
-    @JoinColumn(name = "user_id")
     private User sender;
 
     //------------------------
