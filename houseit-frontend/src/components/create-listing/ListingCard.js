@@ -92,6 +92,7 @@ function ListingCard({ listing, onRentOut }) {
     const [showPhoneNumber, setShowPhoneNumber] = useState(false);
     const [callString, setCallString] = useState('Number Unavailable');
     const [currentUserName, setCurrentUserName] = useState(null);
+    const [landlordData, setLandLordData] = useState(null);
 
     const [openDialog, setOpenDialog] = React.useState(false); // State for dialog visibility
     const [dialogMessage, setDialogMessage] = React.useState(''); // Message to display in the dialog
@@ -102,12 +103,19 @@ function ListingCard({ listing, onRentOut }) {
     };
 
     useEffect(() => {
-        const checkAuth = () => {
+        const checkAuth = async () => {
             const user = JSON.parse(localStorage.getItem('currentUser'));
             setIsLandlord(user && user.accountType === 'landlord');
             setIsStudent(user && user.accountType === 'student');
             setIsAuthenticated(user != null);
             setCurrentUserName(user && user.username);
+
+            const landlordResponse = await Axios.get(`http://localhost:8080/users/id/${listing.landlordId}`);
+            setLandLordData(landlordResponse.data);  // Extract landlord data
+            setCallString(`Call ${landlordResponse.data.phoneNumber}`);
+            if (callString === 'Call ') {
+                setCallString("Number Unavailable");
+            }
         };
 
         checkAuth();
@@ -124,20 +132,14 @@ function ListingCard({ listing, onRentOut }) {
                 console.error('User not logged in.');
                 return;
             }
-            const landlordResponse = await Axios.get(`http://localhost:8080/users/id/${listing.landlordId}`);
-            const landlord = landlordResponse.data;  // Extract landlord data
-
-            console.log(landlord.phoneNumber);
-            setCallString(`Call ${landlord.phoneNumber}`);
-            if (callString === '') {
-                setCallString("Number Unavailable");
-            }
 
             const body = {
                 type: "CONTACT",
                 senderUsername: currentUserName
             };
-            const response = await Axios.post(`http://localhost:8080/users/${landlord.username}/notifications`, body);
+            console.log(body);
+            console.log(landlordData.username);
+            const response = await Axios.post(`http://localhost:8080/users/${landlordData.username}/notifications`, body);
             console.log('Notification successful:', response.data);
             if (response.status === 201) {
                 setDialogMessage('Your message has been sent to the landlord.');
