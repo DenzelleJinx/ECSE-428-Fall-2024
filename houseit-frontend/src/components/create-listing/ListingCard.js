@@ -19,9 +19,7 @@ import PropertyListing from "../view-listings/ImagePopup";
 
 function ListingCard({ listing, onRentOut }) {
     const [isHovered, setIsHovered] = useState(false);
-    const [showPhoneNumber, setShowPhoneNumber] = useState(false);
-    const [contactErrorMessage, setContactErrorMessage] = useState('');
-
+    
     const cardStyles = {
         border: '1px solid #ddd',
         borderRadius: '8px',
@@ -33,7 +31,6 @@ function ListingCard({ listing, onRentOut }) {
         maxWidth: '400px',
         boxShadow: isHovered ? '0 4px 12px rgba(255, 0, 0, 0.3)' : '0 4px 8px rgba(0, 0, 0, 0.1)',
     };
-
 
     const infoStyles = {
         padding: '10px',
@@ -82,18 +79,19 @@ function ListingCard({ listing, onRentOut }) {
         margin: '2px'
     }
 
-    const openUtilitiesModal = () => setShowUtilitiesModal(true);
-    const closeUtilitiesModal = () => setShowUtilitiesModal(false);
-    const [showUtilitiesModal, setShowUtilitiesModal] = useState(false);
-
     const [isLandlord, setIsLandlord] = useState(false);
     const [isStudent, setIsStudent] = useState(false);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [currentUserName, setCurrentUserName] = useState(null);
     const [isContactingLandlord, setIsContactingLandlord] = useState(false);
     const [isRentingOut, setIsRentingOut] = useState(false);
+
+    const openUtilitiesModal = () => setShowUtilitiesModal(true);
+    const closeUtilitiesModal = () => setShowUtilitiesModal(false);
+    const [showUtilitiesModal, setShowUtilitiesModal] = useState(false);
+    
     const [showPhoneNumber, setShowPhoneNumber] = useState(false);
     const [callString, setCallString] = useState('Number Unavailable');
+    const [currentUserName, setCurrentUserName] = useState(null);
     const [contactErrorMessage, setContactErrorMessage] = useState('');
 
     const [openDialog, setOpenDialog] = React.useState(false); // State for dialog visibility
@@ -103,7 +101,6 @@ function ListingCard({ listing, onRentOut }) {
     const handleDialogClose = () => {
         setOpenDialog(false);
     };
-    
 
     useEffect(() => {
         const checkAuth = () => {
@@ -118,12 +115,6 @@ function ListingCard({ listing, onRentOut }) {
     }, []);
 
     const handleToggle = () => {
-        const user = JSON.parse(localStorage.getItem('currentUser'));
-        // Don't allow contact button if not logged in
-        if (user == null) {
-            setContactErrorMessage("Log in to contact lister.")
-            return;
-        }
         setShowPhoneNumber(!showPhoneNumber);
     };
 
