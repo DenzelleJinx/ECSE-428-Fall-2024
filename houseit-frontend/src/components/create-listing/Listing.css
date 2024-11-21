@@ -8,6 +8,16 @@
     margin-top: 4rem;
 }
 
+.search-bar {
+    width: 100%;
+    max-width: 400px;
+    margin: 20px auto;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
 .listing-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
