@@ -12,6 +12,7 @@ export function useListings() {
             try {
                 const response = await axios.get('http://localhost:8080/listing');
                 // console.log(response.data)
+                setListings(response.data);
                 setError(null);
             } catch (err) {
                 setError('Error fetching listings');
