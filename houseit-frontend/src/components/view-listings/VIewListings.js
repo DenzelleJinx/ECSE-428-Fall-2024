@@ -6,6 +6,10 @@ import Navbar from '../navbar/Navbar';
 import Axios from 'axios';
 import StatusDialog from '../status-dialog/StatusDialog';
 import FilterModal from '../filter-modal/FilterModal';
+import { Box, Button, TextField, InputAdornment, IconButton } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
+import ClearIcon from '@mui/icons-material/Clear';
+import FilterAltIcon from '@mui/icons-material/FilterAlt';  // Filter icon
 
 export default function Listing() {
     // Use the custom hook to fetch listings
@@ -98,6 +102,10 @@ export default function Listing() {
         setFilters(newFilters);
     };
 
+    const handleClear = () => {
+        setSearchQuery('');
+      };
+
     const handleRentOut = async (listingId) => {
         try {
             const response = await Axios.put(`http://localhost:8080/listing/${listingId}/complete`);
@@ -125,19 +133,53 @@ export default function Listing() {
             <header className="dashboard-header">
                 <h2>Listings</h2>
                 <div className="actions">
-                    <input
+                    {/*<input
                         type="text"
                         className="search-bar"
                         placeholder="Search"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                    />
-                    <button
-                        className="filter-button"
-                        onClick={() => setIsFilterModalOpen(true)}
-                    >
-                        Filters
-                    </button>
+                    /> */}
+                    <Box sx={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
+                        <TextField
+                            variant="outlined"
+                            placeholder="Search..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            slotProps= {{
+                                input: {
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <SearchIcon />
+                                        </InputAdornment>
+                                    ),
+                                    endAdornment: searchQuery && (
+                                        <InputAdornment position="end">
+                                            <IconButton onClick={handleClear}>
+                                                <ClearIcon />
+                                            </IconButton>
+                                        </InputAdornment>
+                                    )
+                                }
+                            }}
+                            sx={{
+                                height: '36px',
+                                '& .MuiOutlinedInput-root': {
+                                  height: '100%',
+                                },
+                                '& .MuiInputBase-input': {
+                                  padding: '8px',
+                                },
+                                flexGrow: 0.25,
+                              }}
+                        />
+                        <IconButton
+                            sx={{ height: '36px', width: '36px' }}
+                            onClick={() => setIsFilterModalOpen(true)}
+                        >
+                            <FilterAltIcon />
+                        </IconButton>
+                    </Box>
                 </div>
             </header>
             <div className="listing-grid">
