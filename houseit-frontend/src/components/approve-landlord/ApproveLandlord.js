@@ -213,7 +213,7 @@ export default function ApproveLandlord(props) {
                 >
                     <Card variant="outlined">
                         <Typography component="h2" variant="h5" sx={{ width: '100%', fontSize: 'clamp(1rem, 5vw, 1rem)' }}>
-                            Listing Info
+                            Landlord Info
                         </Typography>
                         <Box component="form" onSubmit={(e) => e.preventDefault()} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                             <FormControl fullWidth>

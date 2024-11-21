@@ -147,6 +147,8 @@ function ListingCard({ listing, onRentOut }) {
                 setOpenDialog(true);
             }
 
+            setShowPhoneNumber(false);
+
         } catch (error) {
             console.error('Error sending notification:', error);
             setDialogMessage('An error occurred while contacting the landlord. Please try again later.');
