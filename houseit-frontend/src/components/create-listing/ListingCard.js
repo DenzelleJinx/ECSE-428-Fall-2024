@@ -19,7 +19,7 @@ import PropertyListing from "../view-listings/ImagePopup";
 
 function ListingCard({ listing, onRentOut }) {
     const [isHovered, setIsHovered] = useState(false);
-    
+
     const cardStyles = {
         border: '1px solid #ddd',
         borderRadius: '8px',
@@ -92,7 +92,6 @@ function ListingCard({ listing, onRentOut }) {
     const [showPhoneNumber, setShowPhoneNumber] = useState(false);
     const [callString, setCallString] = useState('Number Unavailable');
     const [currentUserName, setCurrentUserName] = useState(null);
-    const [contactErrorMessage, setContactErrorMessage] = useState('');
 
     const [openDialog, setOpenDialog] = React.useState(false); // State for dialog visibility
     const [dialogMessage, setDialogMessage] = React.useState(''); // Message to display in the dialog
@@ -122,7 +121,7 @@ function ListingCard({ listing, onRentOut }) {
     const handleNotify = async () => {
         try {
             if (currentUserName == null) {
-                console.error('User not logged in');
+                console.error('User not logged in.');
                 return;
             }
             const landlordResponse = await Axios.get(`http://localhost:8080/users/id/${listing.landlordId}`);
@@ -246,9 +245,6 @@ function ListingCard({ listing, onRentOut }) {
                                 >
                                     Contact
                                 </Button>
-                                <p style={{ color: "var(--template-palette-error-main)" }}>
-                                    {contactErrorMessage}
-                                </p>
                             </div>
                         ) : (
                             <div>
