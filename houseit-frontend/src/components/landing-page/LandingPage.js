@@ -8,6 +8,7 @@ import AppTheme from '../../shared-theme/AppTheme';
 import CssBaseline from '@mui/material/CssBaseline';
 import ColorModeSelect from '../../shared-theme/ColorModeSelect';
 import Navbar from '../navbar/Navbar';
+import StatusDialog from '../status-dialog/StatusDialog';
 
 const primaryColor = "#D50032";
 const secondaryColor = "#FFFFFF";
@@ -22,16 +23,23 @@ const StyledButton = styled(Button)({
 
 function LandingPage(props) {
     const [isLandlord, setIsLandlord] = useState(false);
+    const [isLandlordApproved, setIsLandlordApproved] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [openDialog, setOpenDialog] = React.useState(false); // State for dialog visibility
+    const [dialogMessage, setDialogMessage] = React.useState(''); // Message to display in the dialog
+    const [dialogSeverity, setDialogSeverity] = React.useState('error'); // Severity of the message: 'success' or 'error'
 
     useEffect(() => {
         const checkAuth = () => {
             const user = JSON.parse(localStorage.getItem('currentUser'));
             setIsLandlord(user && user.accountType === 'landlord');
+            if (isLandlord) {
+                setIsLandlordApproved(user && user.accountStatus === 'ACTIVE');
+            }
         };
         
         checkAuth();
-    }, []);
+    },);
 
     const navigate = useNavigate();
 
@@ -40,7 +48,13 @@ function LandingPage(props) {
     };
 
     const handleListingClick = () => {
-        navigate('/createlisting');
+        if (!isLandlordApproved) {
+            setDialogMessage('Your landlord account is pending approval. Please wait for an admin to approve your account.');
+            setDialogSeverity('error');
+            setOpenDialog(true);
+        } else {
+            navigate('/createlisting');
+        }
     };
 
     const handleViewListingsClick = () => {
@@ -49,6 +63,10 @@ function LandingPage(props) {
 
     const handleLogoClick = () => {
         navigate('/');
+    };
+
+    const handleDialogClose = () => {
+        setOpenDialog(false);
     };
 
     return (
@@ -101,6 +119,13 @@ function LandingPage(props) {
                         )}
                     </Box>
                 </Container>
+                <StatusDialog
+                    open={openDialog}
+                    onClose={handleDialogClose}
+                    severity={dialogSeverity}
+                    title={dialogSeverity === 'success' ? 'Success' : 'An Error Occurred'}
+                    message={dialogMessage}
+                />
             </div>
         </AppTheme>
     );

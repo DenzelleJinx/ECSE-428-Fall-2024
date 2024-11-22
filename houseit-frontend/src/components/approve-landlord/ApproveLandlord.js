@@ -9,46 +9,44 @@ import {
     Typography,
     Stack,
     Card as MuiCard,
-    MenuItem,
-    Select,
-    FormControlLabel,
-    Checkbox,
-    Card,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import AppTheme from '../../shared-theme/AppTheme';
 import ColorModeSelect from '../../shared-theme/ColorModeSelect';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../navbar/Navbar';
+import axios from 'axios';
+import StatusDialog from '../status-dialog/StatusDialog';
 
-const isNumeric = (string) => /^[+-]?\d+(\.\d+)?$/.test(string)
-
+const isNumeric = (string) => /^[+-]?\d+(\.\d+)?$/.test(string);
 
 export default function ApproveLandlord(props) {
+    const [userNameError, setUserNameError] = useState(false);
+    const [userNameErrorMessage, setUserNameErrorMessage] = useState('');
+    const [emailError, setEmailError] = useState(false);
+    const [emailErrorMessage, setEmailErrorMessage] = useState('');
+    const [reasonError, setReasonError] = useState(false);
+    const [reasonErrorMessage, setReasonErrorMessage] = useState('');
+    const [phoneNumberError, setPhoneNumberError] = useState(false);
+    const [phoneNumberErrorMessage, setPhoneNumberErrorMessage] = useState('');
+
+    const [openDialog, setOpenDialog] = useState(false); // State for dialog visibility
+    const [dialogMessage, setDialogMessage] = useState(''); // Message to display in the dialog
+    const [dialogSeverity, setDialogSeverity] = useState('error'); // Severity of the message: 'success' or 'error'
+
+    const navigate = useNavigate();
+
     useEffect(() => {
         const checkAuth = () => {
             const user = JSON.parse(localStorage.getItem('currentUser'));
-            if (!user || user.accountType !== 'landlord') {
-                // Redirect to home page if not authenticated as landlord
+            if (!user || user.accountType !== 'admin') {
+                // Redirect to home page if not authenticated as admin
                 navigate('/');
             }
         };
-        
+
         checkAuth();
     }, []);
-    const primaryColor = "#D50032";
-    const secondaryColor = "#FFFFFF";
-
-
-    const [userNameError, setUserNameError] = React.useState(false);
-    const [userNameErrorMessage, setUserNameErrorMessage] = React.useState('');
-    const [emailError, setEmailError] = React.useState(false);
-    const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
-    const [reasonError, setReasonError] = React.useState(false);
-    const [reasonErrorMessage, setReasonErrorMessage] = React.useState('');
-    //const [phoneNumber, setPhoneNumber] = React.useState('');
-    const [phoneNumberError, setPhoneNumberError] = React.useState(false);
-    const [phoneNumberErrorMessage, setPhoneNumberErrorMessage] = React.useState('');
 
     const validateInputs = () => {
         const userName = document.getElementById('Username');
@@ -67,7 +65,6 @@ export default function ApproveLandlord(props) {
             setReasonErrorMessage('');
         }
 
-
         if (!email || !email.value || !/\S+@\S+\.\S+/.test(email.value)) {
             setEmailError(true);
             setEmailErrorMessage('Please enter a valid email address.');
@@ -76,7 +73,6 @@ export default function ApproveLandlord(props) {
             setEmailError(false);
             setEmailErrorMessage('');
         }
-
 
         if (!userName || !userName.value || userName.value.length < 1) {
             setUserNameError(true);
@@ -87,11 +83,11 @@ export default function ApproveLandlord(props) {
             setUserNameErrorMessage('');
         }
 
-        if (!phoneNumber ||  !phoneNumber.value || phoneNumber.length < 1) {
+        if (!phoneNumber || !phoneNumber.value || phoneNumber.length < 1) {
             setPhoneNumberError(true);
             setPhoneNumberErrorMessage('Phone number is required for landlords.');
             isValid = false;
-        } else if (!isNumeric(phoneNumber.value)){
+        } else if (!isNumeric(phoneNumber.value)) {
             setPhoneNumberError(true);
             setPhoneNumberErrorMessage('Phone number must be a number');
             isValid = false;
@@ -103,14 +99,72 @@ export default function ApproveLandlord(props) {
         return isValid;
     };
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
+    const handleAction = async (actionType) => {
+        // actionType: 'approve' or 'decline'
+        const email = document.getElementById('Email').value;
+        const reason = document.getElementById('Reason').value;
 
-        if (!validateInputs()) {
-            return;
+        try {
+            const axiosClient = axios.create({
+                baseURL: 'http://localhost:8080',
+            });
+
+            const userResponse = await axiosClient.get(`/users/${email}`);
+            if (userResponse.status === 200) {
+                const userId = userResponse.data.id;
+
+                let actionResponse;
+                if (actionType === 'approve') {
+                    actionResponse = await axiosClient.put(`/admin/approve-landlord/${userId}`);
+                } else if (actionType === 'decline') {
+                    actionResponse = await axiosClient.put(`/admin/reject-landlord/${userId}`);
+                }
+
+                if (actionResponse.status === 200) {
+                    setDialogMessage(
+                        actionType === 'approve'
+                            ? 'Landlord approved successfully.'
+                            : 'Landlord rejected successfully.'
+                    );
+                    setDialogSeverity('success');
+                    setOpenDialog(true);
+                }
+
+                // Send a notification to the landlord
+                try {
+                    // Now, send a POST request to the landlord's notifications endpoint
+                    const notificationBody = {
+                        type: "OTHER",
+                        message: `Your account has been ${actionType}d. ${reason}`,
+                        senderUsername: "admin"
+                    };
+        
+                    console.log("Sending notification to landlord:", userResponse.data.username, notificationBody, "by", "admin");
+                    
+        
+                    // Make a POST request to the landlord's notifications endpoint
+                    const response = await axiosClient.post(`http://localhost:8080/users/${userResponse.data.username}/notifications`, notificationBody);
+        
+                } catch (error) {
+                    console.error("Error contacting landlord:", error);
+                    setDialogMessage('An error occurred while contacting the landlord. Please try again later.');
+                    setDialogSeverity('error');
+                    setOpenDialog(true);
+                }
+            } else {
+                setDialogMessage('Landlord User not found');
+                setDialogSeverity('error');
+                setOpenDialog(true);
+            }
+        } catch (error) {
+            if (error.response && error.response.data) {
+                console.error('error:', error.response.data);
+            }
         }
+    };
 
-        //TODO !!!
+    const handleDialogClose = () => {
+        setOpenDialog(false);
     };
 
     const Card = styled(MuiCard)(({ theme }) => ({
@@ -126,85 +180,42 @@ export default function ApproveLandlord(props) {
         [theme.breakpoints.up('sm')]: {
             width: '450px',
         },
-        ...theme.applyStyles('dark', {
-            boxShadow:
-                'hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px',
-        }),
     }));
 
     const ApproveLandlordContainer = styled(Stack)(({ theme }) => ({
-        marginTop: theme.spacing(12), // Adds space at the top
+        marginTop: theme.spacing(12),
         height: 'auto',
         padding: theme.spacing(2),
         [theme.breakpoints.up('sm')]: {
             padding: theme.spacing(4),
         },
-        '&::before': {
-            content: '""',
-            display: 'block',
-            position: 'absolute',
-            zIndex: -1,
-            inset: 0,
-            backgroundImage:
-                'radial-gradient(ellipse at 50% 50%, hsl(210, 100%, 97%), hsl(0, 0%, 100%))',
-            backgroundRepeat: 'no-repeat',
-            ...theme.applyStyles('dark', {
-                backgroundImage:
-                    'radial-gradient(at 50% 50%, hsla(210, 100%, 16%, 0.5), hsl(220, 30%, 5%))',
-            }),
-        },
     }));
-
-    const navigate = useNavigate();
-
-    const handleSignUpClick = () => {
-        navigate('/signup');
-    };
-
-    const handleListingClick = () => {
-        navigate('/approvelandlord');
-    };
-    const handleLogoClick = () => {
-        navigate('/');
-    };
 
     return (
         <AppTheme {...props}>
             <CssBaseline enableColorScheme />
-            <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' , marginTop: "4rem"}} />
+            <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem', marginTop: '4rem' }} />
             <Navbar />
             <ApproveLandlordContainer direction="column" justifyContent="space-between">
-                <Box textAlign='center'>
-                    <Typography
-                        component="h1"
-                        variant="h4"
-                        sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
-                    >
+                <Box textAlign="center">
+                    <Typography component="h1" variant="h4" sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}>
                         Approve a Landlord
                     </Typography>
                 </Box>
                 <div
                     style={{
-                        margin: "0 25%",
-                        display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "center",
-                        padding: "2em",
+                        margin: '0 25%',
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'center',
+                        padding: '2em',
                     }}
                 >
                     <Card variant="outlined">
-                        <Typography
-                            component="h2"
-                            variant="h5"
-                            sx={{ width: '100%', fontSize: 'clamp(1rem, 5vw, 1rem)' }}
-                        >
-                            Listing Info
+                        <Typography component="h2" variant="h5" sx={{ width: '100%', fontSize: 'clamp(1rem, 5vw, 1rem)' }}>
+                            Landlord Info
                         </Typography>
-                        <Box
-                            component="form"
-                            onSubmit={handleSubmit}
-                            sx={{ display: 'flex', flexDirection: 'column', gap: 2, }} // Adjusted marginBottom
-                        >
+                        <Box component="form" onSubmit={(e) => e.preventDefault()} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                             <FormControl fullWidth>
                                 <FormLabel htmlFor="Username">Username</FormLabel>
                                 <TextField
@@ -212,7 +223,6 @@ export default function ApproveLandlord(props) {
                                     fullWidth
                                     id="Username"
                                     placeholder="Username"
-                                    //inputProps={{ readOnly: true }}
                                     error={userNameError}
                                     helperText={userNameErrorMessage}
                                     color={userNameError ? 'error' : 'primary'}
@@ -226,7 +236,6 @@ export default function ApproveLandlord(props) {
                                     placeholder="Email"
                                     type="Email"
                                     id="Email"
-                                    //inputProps={{ readOnly: true }}
                                     autoComplete="Email"
                                     variant="outlined"
                                     error={emailError}
@@ -242,10 +251,7 @@ export default function ApproveLandlord(props) {
                                     placeholder="Enter phone number"
                                     type="phoneNumber"
                                     id="phone-number"
-                                    autoComplete="Phone Number"
                                     variant="outlined"
-                                    //value={phoneNumber}
-                                    //onChange={(e) => setPhoneNumber(e.target.value)}
                                     error={phoneNumberError}
                                     helperText={phoneNumberErrorMessage}
                                     color={phoneNumberError ? 'error' : 'primary'}
@@ -258,39 +264,47 @@ export default function ApproveLandlord(props) {
                                     fullWidth
                                     name="Reason"
                                     placeholder="Reason"
-                                    type="Reason"
                                     id="Reason"
-                                    autoComplete="Reason"
                                     variant="outlined"
                                     error={reasonError}
                                     helperText={reasonErrorMessage}
                                     color={reasonError ? 'error' : 'primary'}
                                 />
                             </FormControl>
+                            <Box sx={{ marginTop: 3, display: 'flex', justifyContent: 'space-between' }}>
+                                <Button
+                                    color="success"
+                                    variant="contained"
+                                    onClick={() => {
+                                        if (validateInputs()) {
+                                            handleAction('approve');
+                                        }
+                                    }}
+                                >
+                                    Approve
+                                </Button>
+                                <Button
+                                    color="error"
+                                    variant="contained"
+                                    onClick={() => {
+                                        if (validateInputs()) {
+                                            handleAction('decline');
+                                        }
+                                    }}
+                                >
+                                    Decline
+                                </Button>
+                            </Box>
                         </Box>
                     </Card>
                 </div>
-                <Box textAlign='center'>
-                    <Button
-                        type="approveLandlord"
-                        fullWidth={false}
-                        variant="contained"
-                        onClick={validateInputs}
-                        sx={{ marginBottom: 2 }} // Adjust the spacing here
-                    >
-                        Approve
-                    </Button>
-                    <Button
-                        type="declineLandlord"
-                        fullWidth={false}
-                        variant="contained"
-                        onClick={validateInputs}
-                        sx={{ marginBottom: 2 }} // Adjust the spacing here
-                    >
-                        Decline
-                    </Button>
-                </Box>
             </ApproveLandlordContainer>
+            <StatusDialog
+                open={openDialog}
+                onClose={handleDialogClose}
+                message={dialogMessage}
+                severity={dialogSeverity}
+            />
         </AppTheme>
     );
 }
