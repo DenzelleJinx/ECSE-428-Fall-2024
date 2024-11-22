@@ -23,6 +23,7 @@ import { useNavigate } from 'react-router-dom';
 import mcgillLogo from '../../assets/mcgill-logo.png';
 import Navbar from '../navbar/Navbar';
 import axios from 'axios';
+import './Listing.css'
 
 
 const isNumeric = (string) => /^[+-]?\d+(\.\d+)?$/.test(string)
@@ -433,44 +434,41 @@ export default function CreateListing(props) {
         display: 'flex',
         flexDirection: 'column',
         alignSelf: 'center',
-        width: '1000px',
-        maxHeight: '1500px', // Set a max height for the card
-        padding: theme.spacing(4),
+        width: '90%',
+        maxWidth: '600px',
+        padding: theme.spacing(3),
         gap: theme.spacing(2),
         boxShadow:
             'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
-        [theme.breakpoints.up('sm')]: {
-            width: '450px',
+        [theme.breakpoints.up('md')]: {
+            maxWidth: '800px',
         },
-        ...theme.applyStyles('dark', {
-            boxShadow:
-                'hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px',
-        }),
     }));
 
-        const CreateListingContainer = styled(Stack)(({ theme }) => ({
-            marginTop: theme.spacing(12), // Adds space at the top
-            height: 'auto',
-            padding: theme.spacing(2),
-            [theme.breakpoints.up('sm')]: {
-                padding: theme.spacing(4),
-            },
-            '&::before': {
-                content: '""',
-                display: 'block',
-                position: 'absolute',
-                zIndex: -1,
-                inset: 0,
-                backgroundImage:
-                    'radial-gradient(ellipse at 50% 50%, hsl(210, 100%, 97%), hsl(0, 0%, 100%))',
-                backgroundRepeat: 'no-repeat',
-                ...theme.applyStyles('dark', {
-                    backgroundImage:
-                        'radial-gradient(at 50% 50%, hsla(210, 100%, 16%, 0.5), hsl(220, 30%, 5%))',
-                }),
-            },
-        }));
-
+    const CreateListingContainer = styled(Stack)(({ theme }) => ({
+        marginTop: theme.spacing(12),
+        padding: theme.spacing(2),
+        [theme.breakpoints.up('sm')]: {
+            padding: theme.spacing(4),
+        },
+        '&::before': {
+            content: '""',
+            display: 'block',
+            position: 'absolute',
+            zIndex: -1,
+            inset: 0,
+            backgroundImage:
+                'radial-gradient(ellipse at 50% 50%, hsl(210, 100%, 97%), hsl(0, 0%, 100%))',
+        },
+    }));
+    styled(Box)(({ theme }) => ({
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+        gap: theme.spacing(2),
+        [theme.breakpoints.down('sm')]: {
+            gridTemplateColumns: '1fr',
+        },
+    }));
     const navigate = useNavigate();
 
     const handleSignUpClick = () => {
