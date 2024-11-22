@@ -42,7 +42,7 @@ export default function UpdateListing(props) {
         checkAuth();
 
         // TODO: Remove this when done testing
-        const isTesting = true;
+        const isTesting = false;
         if (isTesting) {
             // this code block sets test values to make your life easier
             console.log("using test values");
@@ -81,6 +81,54 @@ export default function UpdateListing(props) {
             street.value = "test street";
             city.value = "test city";
             postalCode.value = "A1A1A1";
+            gym.checked = false;
+            laundry.checked = false;
+            petsAllowed.checked = false;
+            parking.checked = false;
+            internetIncluded.checked = false;
+            waterCost.value = 1;
+            electricityCost.value = 1;
+            heatingCost.value = 1;
+            document.getElementById('image-1').value = "https://liveatencore.com/wp-content/uploads/2018/12/14-dec-2018-UNIT-2.png";
+            document.getElementById('image-3').value = "https://images1.apartments.com/i2/waLNySi3DU4Z-hW66noKuBfuS1SgQEozHk5sIrcJbBo/117/4346-46-39th-pl-unit-ph-1-queens-ny-building-photo.jpg?p=1";
+            document.getElementById('image-4').value = "https://images.rentals.ca/property-pictures/medium/montreal-qc/809658/apartment-220293668.jpg";
+        } else{
+            console.log("using listing values");
+            const title = document.getElementById('Title');
+            const description = document.getElementById('Description');
+            const bedrooms = document.getElementById('Bedrooms');
+            const bathrooms = document.getElementById('Bathrooms');
+            const price = document.getElementById('Price');
+            const squareFootage = document.getElementById('SquareFootage');
+            const wheelchairAccessible = document.getElementById('wheelchair-accessible');
+            const smokingAllowed = document.getElementById('smoking-allowed');
+            const apartment = document.getElementById('ApartmentNumber');
+            const streetNumber = document.getElementById('StreetNumber');
+            const street = document.getElementById('Street');
+            const city = document.getElementById('City');
+            const postalCode = document.getElementById('PostalCode');
+            const gym = document.getElementById('gym');
+            const laundry = document.getElementById('laundry');
+            const petsAllowed = document.getElementById('pets-allowed');
+            const parking = document.getElementById('parking');
+            const internetIncluded = document.getElementById('internet-included');
+            const waterCost = document.getElementById('water-cost');
+            const electricityCost = document.getElementById('electricity-cost');
+            const heatingCost = document.getElementById('heating-cost');
+            title.value = JSON.parse(localStorage.getItem('title'));
+            description.value = JSON.parse(localStorage.getItem('Description'));
+            setPropertyType("HOUSE");
+            bedrooms.value = 1;
+            bathrooms.value = 1;
+            price.value = 1;
+            squareFootage.value = 1;
+            wheelchairAccessible.checked = false;
+            smokingAllowed.checked = false;
+            apartment.value = 1;
+            streetNumber.value = 1;
+            street.value = JSON.parse(localStorage.getItem('Street'));
+            city.value = JSON.parse(localStorage.getItem('City'));
+            postalCode.value = JSON.parse(localStorage.getItem('PostalCode'));
             gym.checked = false;
             laundry.checked = false;
             petsAllowed.checked = false;
