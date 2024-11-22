@@ -32,6 +32,7 @@ public class Listing
   @Id
   @GeneratedValue
   private int id;
+  private int landlordId;
   private String title;
   private String description;
   private int monthlyPrice;
@@ -64,8 +65,9 @@ public class Listing
     propertyImages = new ArrayList<Image>();
   }
 
-  public Listing(String aTitle, String aDescription, int aMonthlyPrice, float aPropertyRating, int aBedrooms, int aBathrooms, PropertyType aPropertyType, int aSquareFootage, boolean aWheelchairAccessible, boolean aHidden, boolean aSmokingAllowed, Address aAddress, Landlord aPoster, Amenities aAmenitiesOffered)
+  public Listing(int alandlordId, String aTitle, String aDescription, int aMonthlyPrice, float aPropertyRating, int aBedrooms, int aBathrooms, PropertyType aPropertyType, int aSquareFootage, boolean aWheelchairAccessible, boolean aHidden, boolean aSmokingAllowed, Address aAddress, Landlord aPoster, Amenities aAmenitiesOffered)
   {
+    landlordId = alandlordId;
     title = aTitle;
     description = aDescription;
     monthlyPrice = aMonthlyPrice;
@@ -99,6 +101,19 @@ public class Listing
     public void setCompleted(boolean completed) {
       this.completed = completed;
 }
+
+  public boolean setLandlordId(int aLandlordId)
+  {
+    boolean wasSet = false;
+    landlordId = aLandlordId;
+    wasSet = true;
+    return wasSet;
+  }
+
+  public int getLandlordId()
+  {
+    return landlordId;
+  }
 
   public boolean setTitle(String aTitle)
   {

@@ -26,6 +26,7 @@ public class LandlordDAOTests {
     private float rating = 5.0f;
     private Landlord landlord;
 
+    @BeforeEach
     @AfterEach
     public void tearDown() {
         landlordDAO.deleteAll();

@@ -25,6 +25,7 @@ public class StudentDAOTests {
     private float rating = 5.0f;
     private Student student;
 
+    @BeforeEach
     @AfterEach
     public void tearDown() {
         studentDAO.deleteAll();
