@@ -254,6 +254,9 @@ export default function CreateListing() {
         setServerErrorMessage('');
         setServerSuccessMessage('');
         
+        if (!formData.address.apartment && formData.propertyType === "HOUSE") {
+            formData.address.apartment = "N/A";
+        }
         // Validate inputs
         if (!validateInputs()) {
             setDialogMessage('Please fill in all required fields.');
