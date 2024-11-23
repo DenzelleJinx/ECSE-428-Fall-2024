@@ -67,21 +67,21 @@ const CreateListingContainer = styled(Stack)(({ theme }) => ({
 
 export default function CreateListing() {
     const emptyForm = {
-        title: 'dsadas',
-        description: 'fsdfsd',
+        title: '',
+        description: '',
         propertyType: 'APARTMENT',
-        bedrooms: '1',
-        bathrooms: '1',
-        price: '23',
-        squareFootage: '24',
+        bedrooms: '',
+        bathrooms: '',
+        price: '',
+        squareFootage: '',
         wheelchairAccessible: false,
         smokingAllowed: false,
         address: {
-            apartment: '12a',
-            streetNumber: '1342',
-            street: 'asdasd',
-            city: 'asdasd',
-            postalCode: '123456',
+            apartment: '',
+            streetNumber: '',
+            street: '',
+            city: '',
+            postalCode: '',
         },
         amenities: {
             gym: false,
