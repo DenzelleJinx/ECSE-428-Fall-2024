@@ -297,7 +297,7 @@ export default function CreateListing() {
             wheelchairAccessible: formData.wheelchairAccessible,
             smokingAllowed: formData.smokingAllowed,
             address: {
-                apartment: formData.address.apartment,
+                apartmentNumber: formData.address.apartment,
                 streetNumber: formData.address.streetNumber,
                 street: formData.address.street,
                 city: formData.address.city,
