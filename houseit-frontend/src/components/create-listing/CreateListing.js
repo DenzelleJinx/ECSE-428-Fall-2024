@@ -270,7 +270,7 @@ export default function CreateListing() {
         for (let i = 0; i < 10; i++) {
             const img = formData.images[i];
             if (img) {
-                propertyImages.push(img);
+                propertyImages.push({url : img});
             }
         }
 
@@ -315,7 +315,7 @@ export default function CreateListing() {
                 } : null,
             propertyImages: propertyImages
         };
-        console.log(payload);
+        // console.log(payload);
 
         // Send request and handle response
         try {
@@ -358,7 +358,6 @@ export default function CreateListing() {
                         Create a Listing
                     </Typography>
                 </Box>
-                <p>{JSON.stringify(formData, null, 2)}</p>
                 <div
                     style={{
                         margin: "0 25%",
@@ -654,7 +653,7 @@ export default function CreateListing() {
                                     fullWidth
                                     id="waterCost"
                                     type="number"                  
-                                    value={formData.utilities.waterCost ?? ''}
+                                    value={formData.utilities.waterCost}
                                     onChange={(e) => handleNestedChange(e, 'utilities')}
                                     error={!!errors.waterCost}
                                     helperText={errors.waterCost}
@@ -667,7 +666,7 @@ export default function CreateListing() {
                                     fullWidth
                                     id="electricityCost"
                                     type="number"
-                                    value={formData.utilities.electricityCost ?? ''}
+                                    value={formData.utilities.electricityCost}
                                     onChange={(e) => handleNestedChange(e, 'utilities')}
                                     error={!!errors.electricityCost}
                                     helperText={errors.electricityCost}
@@ -680,7 +679,7 @@ export default function CreateListing() {
                                     fullWidth
                                     id="heatingCost"
                                     type="number"
-                                    value={formData.utilities.heatingCost ?? ''}
+                                    value={formData.utilities.heatingCost}
                                     onChange={(e) => handleNestedChange(e, 'utilities')}
                                     error={!!errors.heatingCost}
                                     helperText={errors.heatingCost}
