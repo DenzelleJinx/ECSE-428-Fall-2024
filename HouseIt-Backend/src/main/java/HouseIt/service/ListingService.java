@@ -91,8 +91,10 @@ public class ListingService {
         amenitiesOffered = amenitiesService.createAmenities(amenitiesOffered);
         newListing.setAmenitiesOffered(amenitiesOffered);
 
-        utilitiesCosts = utilitiesService.createUtilities(utilitiesCosts);
-        newListing.setUtilitiesCosts(utilitiesCosts);
+        if (utilitiesCosts != null) {
+            utilitiesCosts = utilitiesService.createUtilities(utilitiesCosts);
+            newListing.setUtilitiesCosts(utilitiesCosts);
+        }
 
         List<Image> newPropertyImages = new ArrayList<>();
         for (Image img : propertyImages) {
