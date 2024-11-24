@@ -40,6 +40,12 @@ jobs:
           sleep 1
         done
 
+    - name: Create Database
+      run: |
+        psql -h 127.0.0.1 -U postgres -c "CREATE DATABASE house_it;"
+      env:
+        PGPASSWORD: ECSE428
+
     - name: Navigate to Backend Directory
       working-directory: ./HouseIt-Backend
       run: pwd
@@ -52,6 +58,6 @@ jobs:
       working-directory: ./HouseIt-Backend
       run: ./gradlew test
       env:
-        SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/testdb
+        SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/house_it
         SPRING_DATASOURCE_USERNAME: postgres
         SPRING_DATASOURCE_PASSWORD: ECSE428
