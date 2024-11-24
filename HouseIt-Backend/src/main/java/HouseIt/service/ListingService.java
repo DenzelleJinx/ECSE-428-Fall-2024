@@ -18,6 +18,8 @@ import HouseIt.model.Listing;
 import HouseIt.model.Utilities;
 import HouseIt.model.Image;
 import HouseIt.dto.ListingDTO;
+import HouseIt.model.Student; 
+import HouseIt.dao.StudentDAO;
 
 @Service
 public class ListingService {
@@ -39,6 +41,9 @@ public class ListingService {
 
     @Autowired
     private ImageService imageService;
+
+    @Autowired
+    private StudentDAO studentDAO;
 
 
     public Listing completeListing(int id) {
@@ -223,7 +228,7 @@ public class ListingService {
     public List<Listing> getSavedListingsForStudent(int studentId) {
         Student student = studentDAO.findById(studentId)
                 .orElseThrow(() -> new IllegalArgumentException("No student found with ID: " + studentId));
-        return student.getSavedListings(); // Get saved listings associated with this student
+        return student.getFavoritedListings(); // Get saved listings associated with this student
     }
 
 
