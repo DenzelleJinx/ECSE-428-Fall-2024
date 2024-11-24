@@ -15,8 +15,11 @@ import { Button, Modal, Box, Typography } from '@mui/material';
 import apartmentImage from '../../assets/sample-bedroom.png';
 import PropertyListing from "../view-listings/ImagePopup";
 
-function ListingCard({ listing}) {
+import { useNavigate } from 'react-router-dom';
+
+function ListingCard({ listing, onRentOut }) {
     const [isHovered, setIsHovered] = useState(false);
+    const navigate = useNavigate();
 
     const cardStyles = {
         border: '1px solid #ddd',
@@ -70,6 +73,10 @@ function ListingCard({ listing}) {
     const openUtilitiesModal = () => setShowUtilitiesModal(true);
     const closeUtilitiesModal = () => setShowUtilitiesModal(false);
     const [showUtilitiesModal, setShowUtilitiesModal] = useState(false);
+
+    const handleNavigation = (path) => {
+        navigate(path);
+    };
 
 
     return (
@@ -215,7 +222,22 @@ function ListingCard({ listing}) {
                 >
                     Additional Information
                 </Button>
-
+                {isLandlord && (
+                    <Button
+                    variant="contained"
+                    color="primary"
+                    style={{
+                    margin: '10px 0',
+                    backgroundColor: '#3A3B3C',
+                    color: 'white',
+                    textTransform: 'none',
+                }}
+                    fullWidth
+                    onClick={() => handleNavigation('/updatelisting')}
+                    >
+                    Update
+                    </Button>)
+                }
                 {/* Utilities Modal */}
                 <Modal open={showUtilitiesModal} onClose={closeUtilitiesModal}>
                     <Box sx={modalStyles}>
