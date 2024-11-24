@@ -40,7 +40,7 @@ jobs:
       run: chmod +x ./HouseIt-Backend/gradlew
 
     - name: Run Backend Tests
-      working-directory: ./ECSE-428-Fall-2024/HouseIt-Backend
+      working-directory: ./HouseIt-Backend
       run: ./gradlew clean build --info
       env:
         SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/house_it
