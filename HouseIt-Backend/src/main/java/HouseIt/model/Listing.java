@@ -37,6 +37,7 @@ public class Listing
   private String description;
   private int monthlyPrice;
   private float propertyRating;
+  private int ratingCount;
   private int bedrooms;
   private int bathrooms;
   private PropertyType propertyType;
@@ -147,6 +148,14 @@ public class Listing
     return wasSet;
   }
 
+  public boolean setRatingCount(int aRatingCount)
+  {
+    boolean wasSet = false;
+    ratingCount = aRatingCount;
+    wasSet = true;
+    return wasSet;
+  }
+
   public boolean setBedrooms(int aBedrooms)
   {
     boolean wasSet = false;
@@ -230,6 +239,11 @@ public class Listing
   public float getPropertyRating()
   {
     return propertyRating;
+  }
+
+  public int getRatingCount()
+  {
+    return ratingCount;
   }
 
   public int getBedrooms()
@@ -456,6 +470,7 @@ public class Listing
             "description" + ":" + getDescription()+ "," +
             "monthlyPrice" + ":" + getMonthlyPrice()+ "," +
             "propertyRating" + ":" + getPropertyRating()+ "," +
+            "ratingCount" + ":" + getRatingCount()+ "," +
             "bedrooms" + ":" + getBedrooms()+ "," +
             "bathrooms" + ":" + getBathrooms()+ "," +
             "squareFootage" + ":" + getSquareFootage()+ "," +

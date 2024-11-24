@@ -217,6 +217,27 @@ public class ListingService {
         return listingDAO.findAll();
     }
 
+    public Listing rateListing(int listingId, int rating) {
+
+        Listing listing = listingDAO.findListingById(listingId);
+        if (listing == null) {
+            throw new IllegalArgumentException("No such listing with id: " + listingId);
+        }
+
+        if (rating < 1 || rating > 5) {
+            throw new IllegalArgumentException("Rating must be between 1 and 5 inclusive.");
+        }
+
+        float avgRating = listing.getPropertyRating();
+        int ratingCount = listing.getRatingCount();
+        avgRating = (avgRating * ratingCount + rating) / (ratingCount + 1);
+        ratingCount++;
+
+        listing.setPropertyRating(avgRating);
+        listing.setRatingCount(ratingCount);
+        return listingDAO.save(listing);
+    }
+
     public ListingDTO convertToDTO(Listing listing) {
 
         ListingDTO dto = new ListingDTO();
