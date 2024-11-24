@@ -12,7 +12,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:14
+        image: postgres:17
         env:
           POSTGRES_DB: house_it
           POSTGRES_USER: postgres
@@ -37,35 +37,23 @@ jobs:
 
     - name: Grant execute permission for gradlew
       run: chmod +x HouseIt-Backend/gradlew
-    
-    - name: Validate Gradle wrapper
-      uses: gradle/wrapper-validation-action@v1
 
-    - name: Build with Gradle
+    - name: Build and Test
       working-directory: ./HouseIt-Backend
-      run: ./gradlew build
+      run: |
+        ./gradlew clean
+        ./gradlew build
       env:
-        SPRING_PROFILES_ACTIVE: test
         SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/house_it
         SPRING_DATASOURCE_USERNAME: postgres
         SPRING_DATASOURCE_PASSWORD: ECSE428
-        SPRING_JPA_HIBERNATE_DDL_AUTO: create-drop
 
-    - name: Run tests
-      working-directory: ./HouseIt-Backend
-      run: ./gradlew test
-      env:
-        SPRING_PROFILES_ACTIVE: test
-        SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/house_it
-        SPRING_DATASOURCE_USERNAME: postgres
-        SPRING_DATASOURCE_PASSWORD: ECSE428
-        SPRING_JPA_HIBERNATE_DDL_AUTO: create-drop
-
-    - name: Upload test reports
+    - name: Archive test results
       if: always()
       uses: actions/upload-artifact@v3
       with:
-        name: test-reports
+        name: test-results
         path: |
           HouseIt-Backend/build/reports/tests/
+          HouseIt-Backend/build/test-results/
           HouseIt-Backend/build/reports/cucumber/
