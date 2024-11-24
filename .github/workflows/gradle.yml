@@ -38,10 +38,10 @@ jobs:
       uses: gradle/gradle-build-action@v2
 
     - name: Grant execute permissions for gradlew
-      run: chmod +x ./ECSE-428-Fall-2024/HouseIt-Backend/gradlew
+      run: chmod +x ./HouseIt-Backend/gradlew
 
     - name: Execute Gradle build
-      working-directory: ./ECSE-428-Fall-2024/HouseIt-Backend
+      working-directory: ./HouseIt-Backend
       run: ./gradlew clean build
       env:
         SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/house_it
