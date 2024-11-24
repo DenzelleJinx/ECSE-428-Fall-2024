@@ -10,24 +10,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:17
-        env:
-          POSTGRES_DB: house_it
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: ECSE428
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
@@ -35,23 +20,25 @@ jobs:
         distribution: 'temurin'
         cache: 'gradle'
 
-    - name: Grant execute permission for gradlew
-      run: chmod +x HouseIt-Backend/gradlew
+    - name: Install PostgreSQL
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y postgresql-17
 
-    - name: Clean and Build
-      working-directory: ./HouseIt-Backend
+    - name: Configure PostgreSQL
+      run: |
+        sudo service postgresql start
+        sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'ECSE428';"
+        sudo -u postgres psql -c "CREATE DATABASE house_it;"
+        sudo -u postgres psql -c "\l"  # To confirm the database exists
+
+    - name: Grant execute permissions for gradlew
+      run: chmod +x ./ECSE-428-Fall-2024/HouseIt-Backend/gradlew
+
+    - name: Run Backend Tests
+      working-directory: ./ECSE-428-Fall-2024/HouseIt-Backend
       run: ./gradlew clean build --info
       env:
         SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/house_it
         SPRING_DATASOURCE_USERNAME: postgres
         SPRING_DATASOURCE_PASSWORD: ECSE428
-
-    - name: Upload test results
-      if: always()
-      uses: actions/upload-artifact@v3
-      with:
-        name: test-results
-        path: |
-          HouseIt-Backend/build/reports/tests/
-          HouseIt-Backend/build/test-results/
-          HouseIt-Backend/build/reports/cucumber/
