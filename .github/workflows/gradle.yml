@@ -37,7 +37,7 @@ jobs:
         sudo -u postgres psql -c "\l"  # To confirm the database exists
 
     - name: Grant execute permissions for gradlew
-      run: chmod +x /HouseIt-Backend/gradlew
+      run: chmod +x ./HouseIt-Backend/gradlew
 
     - name: Run Backend Tests
       working-directory: ./ECSE-428-Fall-2024/HouseIt-Backend
