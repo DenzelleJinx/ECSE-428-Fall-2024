@@ -211,13 +211,6 @@ const Navbar = (props) => {
                                     >
                                         Account
                                     </Button>
-                                    <Button
-                                        color="inherit"
-                                        sx={{ color: secondaryColor }}
-                                        onClick={() => navigate('/updateListing')}
-                                    >
-                                        Update Listings
-                                    </Button>
                                     <Menu
                                         anchorEl={accountMenuAnchor}
                                         open={Boolean(accountMenuAnchor)}

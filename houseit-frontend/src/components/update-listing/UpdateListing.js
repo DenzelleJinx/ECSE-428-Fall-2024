@@ -28,7 +28,7 @@ import axios from 'axios';
 const isNumeric = (string) => /^[+-]?\d+(\.\d+)?$/.test(string)
 
 
-export default function UpdateListing(props) {
+function UpdateListing(props) {
 
     useEffect(() => {
         const checkAuth = () => {
@@ -94,6 +94,7 @@ export default function UpdateListing(props) {
             document.getElementById('image-4').value = "https://images.rentals.ca/property-pictures/medium/montreal-qc/809658/apartment-220293668.jpg";
         } else{
             console.log("using listing values");
+            const listing = JSON.parse(localStorage.getItem('currentListing'));
             const title = document.getElementById('Title');
             const description = document.getElementById('Description');
             const bedrooms = document.getElementById('Bedrooms');
@@ -115,28 +116,33 @@ export default function UpdateListing(props) {
             const waterCost = document.getElementById('water-cost');
             const electricityCost = document.getElementById('electricity-cost');
             const heatingCost = document.getElementById('heating-cost');
-            title.value = JSON.parse(localStorage.getItem('title'));
-            description.value = JSON.parse(localStorage.getItem('Description'));
-            setPropertyType("HOUSE");
-            bedrooms.value = 1;
-            bathrooms.value = 1;
-            price.value = 1;
-            squareFootage.value = 1;
-            wheelchairAccessible.checked = false;
-            smokingAllowed.checked = false;
-            apartment.value = 1;
-            streetNumber.value = 1;
-            street.value = JSON.parse(localStorage.getItem('Street'));
-            city.value = JSON.parse(localStorage.getItem('City'));
-            postalCode.value = JSON.parse(localStorage.getItem('PostalCode'));
-            gym.checked = false;
-            laundry.checked = false;
-            petsAllowed.checked = false;
-            parking.checked = false;
-            internetIncluded.checked = false;
-            waterCost.value = 1;
-            electricityCost.value = 1;
-            heatingCost.value = 1;
+            title.value = listing.title;
+            description.value = listing.description;
+            setPropertyType(listing.propertyType);
+            bedrooms.value = listing.bedrooms;
+            bathrooms.value = listing.bathrooms;
+            price.value = listing.monthlyPrice;
+            squareFootage.value = listing.squareFootage;
+            wheelchairAccessible.checked = listing.wheelchairAccessible;
+            smokingAllowed.checked = listing.smokingAllowed;
+            if (apartment.value == "undefined"){
+                apartment.value = listing.address.streetNumber;
+            } else {
+                apartment.value = listing.address.apartment;
+            }
+            streetNumber.value = listing.address.streetNumber;
+            street.value = listing.address.street;
+            city.value = listing.address.city;
+            postalCode.value = listing.address.postalCode;
+            gym.checked = listing.amenitiesOffered.gym;
+            laundry.checked = listing.amenitiesOffered.laundry;
+            petsAllowed.checked = listing.amenitiesOffered.petsAllowed;
+            parking.checked = listing.amenitiesOffered.parking;
+            internetIncluded.checked = listing.amenitiesOffered.internetIncluded;
+            waterCost.value = listing.utilitiesCosts.waterCost;
+            electricityCost.value = listing.utilitiesCosts.electricityCost;
+            heatingCost.value = listing.utilitiesCosts.heatingCost;
+            //TODO fix images
             document.getElementById('image-1').value = "https://liveatencore.com/wp-content/uploads/2018/12/14-dec-2018-UNIT-2.png";
             document.getElementById('image-3').value = "https://images1.apartments.com/i2/waLNySi3DU4Z-hW66noKuBfuS1SgQEozHk5sIrcJbBo/117/4346-46-39th-pl-unit-ph-1-queens-ny-building-photo.jpg?p=1";
             document.getElementById('image-4').value = "https://images.rentals.ca/property-pictures/medium/montreal-qc/809658/apartment-220293668.jpg";
@@ -400,7 +406,7 @@ export default function UpdateListing(props) {
         const waterCost = document.getElementById('water-cost');
         const electricityCost = document.getElementById('electricity-cost');
         const heatingCost = document.getElementById('heating-cost');
-
+        const listing = JSON.parse(localStorage.getItem('currentListing'));
         // Validate inputs
         if (!validateInputs()) {
             return;
@@ -419,12 +425,14 @@ export default function UpdateListing(props) {
             }
         }
 
-        // Get lanlord ID
+        // Get landlord ID
         const user = JSON.parse(localStorage.getItem('currentUser'));
         if (!user || user.accountType !== 'landlord') {
-            setServerErrorMessage('You must be logged in as a landlord to create a listing.');
+            setServerErrorMessage('You must be logged in as a landlord to update a listing.');
             return;
         }
+        // Get listing ID
+        const listingID = listing.id;
 
         // Build the payload
         const payload = {
@@ -465,9 +473,15 @@ export default function UpdateListing(props) {
             const axiosClient = axios.create({
                 baseURL: "http://localhost:8080",
             });
-            const response = await axiosClient.post('/listing', payload);
-            console.log('Listing updated successfully:', response.data); // TODO: Remove this when done testing
-            setServerSuccessMessage('Listing updated successfully');
+            const listingResponse = await axiosClient.get(`/listing/${listingID}`);
+            if (listingResponse.status === 200) {
+                const listingID = listingResponse.data.id;
+
+                const response = await axiosClient.put(`/listing/${listingID}`, payload);
+                console.log('Listing updated successfully:', response.data); // TODO: Remove this when done testing
+                setServerSuccessMessage('Listing updated successfully');
+            }
+
         } catch (error) {
             let errorMessage = null
             if (error.response && typeof error.response.data === 'string') {
@@ -475,6 +489,7 @@ export default function UpdateListing(props) {
             }
             setServerErrorMessage(errorMessage ? errorMessage : 'An error occurred during signup. Please try again.');
         }
+
     };
 
     const Card = styled(MuiCard)(({ theme }) => ({
@@ -968,3 +983,5 @@ export default function UpdateListing(props) {
         </AppTheme>
     );
 }
+
+export default UpdateListing;

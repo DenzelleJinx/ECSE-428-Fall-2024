@@ -218,9 +218,10 @@ function ListingCard({ listing, onRentOut }) {
         }
     };
 
-    const handleNavigation = (path) => {
-        navigate(path);
-    };
+    const handleUpdate = () => {
+        localStorage.setItem('currentListing', JSON.stringify(listing));
+        navigate('/updatelisting');
+    }
 
 
     return (
@@ -319,7 +320,7 @@ function ListingCard({ listing, onRentOut }) {
                 <p><em>{listing.description}</em></p>
                 <div>
                     <p>
-                        {listing.address.apartmentNumber} {listing.address.streetNumber} {listing.address.street}, {listing.address.city}, {listing.address.postalCode}
+                        {listing.address.apartment} {listing.address.streetNumber} {listing.address.street}, {listing.address.city}, {listing.address.postalCode}
                     </p>
                 </div>
                 <div style={{
@@ -441,7 +442,7 @@ function ListingCard({ listing, onRentOut }) {
                     textTransform: 'none',
                 }}
                     fullWidth
-                    onClick={() => handleNavigation('/updatelisting')}
+                    onClick={handleUpdate}
                     >
                     Update
                     </Button>)
