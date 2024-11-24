@@ -39,11 +39,10 @@ const Navbar = (props) => {
         const checkAuth = () => {
             try {
                 const user = JSON.parse(localStorage.getItem('currentUser'));
-                console.log(user.username);
                 if (user) {
-                    setIsLandlord(user && user.accountType === 'landlord');
-                    setIsStudent(user && user.accountType === 'student');
-                    setIsAdmin(user && user.accountType === 'admin');
+                    setIsLandlord(user.accountType === 'landlord');
+                    setIsStudent(user.accountType === 'student');
+                    setIsAdmin(user.accountType === 'admin');
                     setIsLoggedIn(true);
                     setLoggedInUsername(user.username);
                 } else {
@@ -54,21 +53,21 @@ const Navbar = (props) => {
             }
         };
 
-        // Define the API URL for notifications
         const fetchNotifications = async () => {
             try {
-                // Make a GET request to fetch notifications
-                const response = await Axios.get(`http://localhost:8080/users/${loggedInUsername}/notifications`);
-                setNotifications(response.data.notifications); // Update state with the notifications data
+                if (loggedInUsername) {
+                    const response = await Axios.get(`http://localhost:8080/users/${loggedInUsername}/notifications`);
+                    setNotifications(response.data.notifications);
+                }
             } catch (error) {
                 console.error("Error fetching notifications:", error);
-                setNotifications([]); // Fallback to an empty array if there's an error
+                setNotifications([]);
             }
         };
-    
-        fetchNotifications(); // Call the function
+
+        fetchNotifications();
         checkAuth();
-    }, [loggedInUsername]); // Run the effect when the component mounts or when loggedInUsername changes
+    }, [loggedInUsername]);
 
     const handleNavigation = (path) => {
         navigate(path);
@@ -78,9 +77,6 @@ const Navbar = (props) => {
         setAnchorEl(event.currentTarget);
     };
 
-    const handleApproveLandlordClick = () => {
-        navigate('/approvelandlord');
-    }
     const handleNotificationClose = () => {
         setAnchorEl(null);
     };
@@ -93,37 +89,24 @@ const Navbar = (props) => {
         setAccountMenuAnchor(null);
     };
 
-    const handleUpdateAccountClick = () => {
-        navigate('/update-account');
-        handleAccountMenuClose();
-    };
-
-    const handleViewAccountClick = () => {
-        navigate('/view-account');
-        handleAccountMenuClose();
-    };
-
-    const handlelLogoutClick = () => {
+    const handleLogoutClick = () => {
         localStorage.removeItem('currentUser');
-
         setIsLoggedIn(false);
         setIsLandlord(false);
         setIsStudent(false);
         setIsAdmin(false);
         setLoggedInUsername('');
-
         navigate('/login');
     };
 
-    // Function to generate a notification message based on its type
     const generateNotificationMessage = (notification) => {
         switch (notification.type) {
             case 'CONTACT':
                 return `You have a new contact request from ${notification.senderUsername}.`;
             case 'REVIEW':
-                return (notification.senderUsername + ": " + notification.message) || 'You have a new notification.';
+                return `${notification.senderUsername}: ${notification.message || 'You have a new notification.'}`;
             case 'OTHER':
-                return (notification.senderUsername + ": " + notification.message) || 'You have a new notification.';
+                return `${notification.senderUsername}: ${notification.message || 'You have a new notification.'}`;
             default:
                 return 'You have a new notification.';
         }
@@ -151,7 +134,6 @@ const Navbar = (props) => {
             >
                 <AppBar position="fixed" sx={{ backgroundColor: primaryColor }}>
                     <Toolbar sx={{ justifyContent: 'space-between' }}>
-                        {/* Logo and Title */}
                         <div
                             onClick={() => handleNavigation('/')}
                             style={{
@@ -181,96 +163,77 @@ const Navbar = (props) => {
                             </Typography>
                         </div>
 
-                        {/* Navigation Buttons */}
                         <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                            {isAdmin && (
-                            <Button color="inherit" sx={{ color: secondaryColor }} onClick={handleApproveLandlordClick}>
-                                Approve Landlords
-                            </Button>
-                        )}
-                        <Button
+                            <Button
                                 color="inherit"
                                 sx={{ color: secondaryColor }}
-                                onClick={() => handleNavigation('/viewListings')}
+                                onClick={() => handleNavigation('/viewlistings')}
                             >
                                 View Listings
                             </Button>
-                            {isLoggedIn && (
-                                <>
-                                    <Button
-                                        color="inherit"
-                                        sx={{ color: secondaryColor }}
-                                        onClick={() => navigate('/saved-listings')}
-                                    >
-                                        View Saved Listings
-                                    </Button>
-                                    <Button
-                                        color="inherit"
-                                        sx={{ color: secondaryColor }}
-                                        onClick={handleAccountMenuOpen}
-                                    >
-                                        Account
-                                    </Button>
-                                    <Menu
-                                        anchorEl={accountMenuAnchor}
-                                        open={Boolean(accountMenuAnchor)}
-                                        onClose={handleAccountMenuClose}
-                                    >
-                                        <MenuItem onClick={handleUpdateAccountClick}>Update Account</MenuItem>
-                                        <MenuItem onClick={handleViewAccountClick}>View Account</MenuItem>
-                                    </Menu>
-                                    {/* Notifications Dropdown */}
-                                    <IconButton
-                                        color="inherit"
-                                        onClick={handleNotificationClick}
-                                    >
-                                        <Badge badgeContent={notifications.length} color="secondary">
-                                            <NotificationsIcon />
-                                        </Badge>
-                                    </IconButton>
-                                    {/* Notifications Dropdown */}
-                                    <Menu
-                                        anchorEl={anchorEl}
-                                        open={Boolean(anchorEl)}
-                                        onClose={handleNotificationClose}
-                                    >
-                                        {notifications.length === 0 ? (
-                                            <MenuItem>No notifications</MenuItem>
-                                        ) : (
-                                            notifications.map((notification, index) => (
-                                                <MenuItem key={index} onClick={handleNotificationClose}>
-                                                    {generateNotificationMessage(notification)} {/* Assuming notification has a "message" field */}
-                                                </MenuItem>
-                                            ))
-                                        )}
-                                    </Menu>
-                                    <Button
-                                        color="inherit"
-                                        sx={{ color: secondaryColor }}
-                                        onClick={handlelLogoutClick}
-                                    >
-                                        Log Out
-                                    </Button>
-                                </>
+                            {isLandlord && (
+                                <Button
+                                    color="inherit"
+                                    sx={{ color: secondaryColor }}
+                                    onClick={() => handleNavigation('/my-listings')}
+                                >
+                                    My Listings
+                                </Button>
                             )}
-                            {!isLoggedIn && (
-                                <>
-                                    <Button
-                                        color="inherit"
-                                        sx={{ color: secondaryColor }}
-                                        onClick={() => handleNavigation('/login')}
-                                    >
-                                        Login
-                                    </Button>
-                                    <Button
-                                        color="inherit"
-                                        sx={{ color: secondaryColor }}
-                                        onClick={() => handleNavigation('/signup')}
-                                    >
-                                        Sign Up
-                                    </Button>
-                                </>
+                            {isStudent && (
+                                <Button
+                                    color="inherit"
+                                    sx={{ color: secondaryColor }}
+                                    onClick={() => handleNavigation('/saved-listings')}
+                                >
+                                    Saved Listings
+                                </Button>
                             )}
+                            <Button
+                                color="inherit"
+                                sx={{ color: secondaryColor }}
+                                onClick={handleAccountMenuOpen}
+                            >
+                                Account
+                            </Button>
+                            <Menu
+                                anchorEl={accountMenuAnchor}
+                                open={Boolean(accountMenuAnchor)}
+                                onClose={handleAccountMenuClose}
+                            >
+                                <MenuItem onClick={() => handleNavigation('/update-account')}>Update Account</MenuItem>
+                                <MenuItem onClick={() => handleNavigation('/view-account')}>View Account</MenuItem>
+                            </Menu>
+                            <IconButton
+                                color="inherit"
+                                onClick={handleNotificationClick}
+                            >
+                                <Badge badgeContent={notifications.length} color="secondary">
+                                    <NotificationsIcon />
+                                </Badge>
+                            </IconButton>
+                            <Menu
+                                anchorEl={anchorEl}
+                                open={Boolean(anchorEl)}
+                                onClose={handleNotificationClose}
+                            >
+                                {notifications.length === 0 ? (
+                                    <MenuItem>No notifications</MenuItem>
+                                ) : (
+                                    notifications.map((notification, index) => (
+                                        <MenuItem key={index} onClick={handleNotificationClose}>
+                                            {generateNotificationMessage(notification)}
+                                        </MenuItem>
+                                    ))
+                                )}
+                            </Menu>
+                            <Button
+                                color="inherit"
+                                sx={{ color: secondaryColor }}
+                                onClick={handleLogoutClick}
+                            >
+                                Log Out
+                            </Button>
                         </div>
                     </Toolbar>
                 </AppBar>

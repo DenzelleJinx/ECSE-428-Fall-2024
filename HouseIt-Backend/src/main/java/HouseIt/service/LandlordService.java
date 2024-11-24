@@ -166,4 +166,14 @@ public class LandlordService {
 
         return l;
     }
+    
+    @Transactional
+    public List<Listing> getListingsByLandlordId(int landlordId) {
+    // Retrieve the landlord by ID
+    Landlord landlord = landlordDAO.findById(landlordId)
+            .orElseThrow(() -> new IllegalArgumentException("No landlord found with ID: " + landlordId));
+
+    // Return the landlord's listings
+    return landlord.getProperties();
+}
 }

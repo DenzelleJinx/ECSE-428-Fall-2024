@@ -52,5 +52,19 @@ public class LandlordController {
 
         return ResponseEntity.ok(updatedDto);
     }
+
+     @GetMapping("/{landlordId}/my-listings")
+    public ResponseEntity<?> getListingsByLandlordId(@PathVariable int landlordId) {
+    try {
+        List<Listing> listings = listingService.getListingsByLandlordId(landlordId);
+        List<ListingDTO> listingDTOs = listings.stream()
+                .map(listingService::convertToDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(listingDTOs);
+    } catch (IllegalArgumentException e) {
+        return ResponseEntity.status(404).body(e.getMessage());
+    }
+    }
+
     
 }
