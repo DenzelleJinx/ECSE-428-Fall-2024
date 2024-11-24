@@ -35,6 +35,7 @@ public class AddressDAOTests {
         addressDAO.save(address);
     }
 
+    @BeforeEach
     @AfterEach
     public void tearDown() {
         addressDAO.deleteAll();

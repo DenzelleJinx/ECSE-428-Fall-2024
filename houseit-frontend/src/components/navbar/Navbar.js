@@ -30,6 +30,10 @@ const Navbar = (props) => {
     const [anchorEl, setAnchorEl] = useState(null);
     const [accountMenuAnchor, setAccountMenuAnchor] = useState(null);
 
+    const [openDialog, setOpenDialog] = useState(false); // State for dialog visibility
+    const [dialogMessage, setDialogMessage] = useState(''); // Message to display in the dialog
+    const [dialogSeverity, setDialogSeverity] = useState('error'); // Severity of the message: 'success' or 'error'
+
     // Fetch notifications when the component mounts
     useEffect(() => {
         const checkAuth = () => {
@@ -117,9 +121,9 @@ const Navbar = (props) => {
             case 'CONTACT':
                 return `You have a new contact request from ${notification.senderUsername}.`;
             case 'REVIEW':
-                return notification.message || 'You have a new notification.';
+                return (notification.senderUsername + ": " + notification.message) || 'You have a new notification.';
             case 'OTHER':
-                return notification.message || 'You have a new notification.';
+                return (notification.senderUsername + ": " + notification.message) || 'You have a new notification.';
             default:
                 return 'You have a new notification.';
         }

@@ -93,7 +93,6 @@ export default function SignUp(props) {
 
   const closeDialog = () => {
     setDialogOpen(false);
-    navigate('/login');
   }
 
   const validateInputs = () => {
@@ -181,6 +180,8 @@ export default function SignUp(props) {
         console.log('Signup successful:', response.data);
         setServerErrorMessage('');
       }
+      
+      navigate('/login');
       
       
     } catch (error) {

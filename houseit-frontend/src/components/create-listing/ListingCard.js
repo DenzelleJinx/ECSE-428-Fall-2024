@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import BedIcon from '@mui/icons-material/Bed';
 import BathtubIcon from '@mui/icons-material/Bathtub';
 import HomeIcon from '@mui/icons-material/Home';
@@ -10,6 +10,8 @@ import WaterIcon from '@mui/icons-material/Opacity';
 import BoltIcon from '@mui/icons-material/Bolt';
 import FireIcon from '@mui/icons-material/Whatshot';
 import { Button, Modal, Box, Typography } from '@mui/material';
+import Axios from 'axios';
+import StatusDialog from '../status-dialog/StatusDialog';
 
 
 import apartmentImage from '../../assets/sample-bedroom.png';
@@ -33,7 +35,6 @@ function ListingCard({ listing, onRentOut }) {
         boxShadow: isHovered ? '0 4px 12px rgba(255, 0, 0, 0.3)' : '0 4px 8px rgba(0, 0, 0, 0.1)',
     };
 
-
     const infoStyles = {
         padding: '10px',
         display: 'flex',
@@ -49,8 +50,8 @@ function ListingCard({ listing, onRentOut }) {
         margin: '0px',
         color: '#3A3B3C',
         fontFamily: "'Roboto', sans-serif", // Material-UI default font
-
     };
+
     const priceButtonContainerStyles = {
         display: 'flex',
         alignItems: 'center',
@@ -70,9 +71,152 @@ function ListingCard({ listing, onRentOut }) {
         borderRadius: 2,
     };
 
+    const phoneStyles = {
+        fontSize: '1.25em',
+        color: 'white',
+        backgroundColor: 'black',
+        borderWidth: '1px',
+        padding: '4px',
+        textAlign: 'center',
+        borderRadius: '4px',
+        margin: '2px'
+    }
+
+    const [isLandlord, setIsLandlord] = useState(false);
+    const [isStudent, setIsStudent] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [isContactingLandlord, setIsContactingLandlord] = useState(false);
+    const [isRentingOut, setIsRentingOut] = useState(false);
+
     const openUtilitiesModal = () => setShowUtilitiesModal(true);
     const closeUtilitiesModal = () => setShowUtilitiesModal(false);
     const [showUtilitiesModal, setShowUtilitiesModal] = useState(false);
+    
+    const [showPhoneNumber, setShowPhoneNumber] = useState(false);
+    const [callString, setCallString] = useState('Number Unavailable');
+    const [currentUserName, setCurrentUserName] = useState(null);
+    const [landlordData, setLandLordData] = useState(null);
+
+    const [openDialog, setOpenDialog] = React.useState(false); // State for dialog visibility
+    const [dialogMessage, setDialogMessage] = React.useState(''); // Message to display in the dialog
+    const [dialogSeverity, setDialogSeverity] = React.useState('error'); // Severity of the message: 'success' or 'error'
+
+    const handleDialogClose = () => {
+        setOpenDialog(false);
+    };
+
+    useEffect(() => {
+        const checkAuth = async () => {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            setIsLandlord(user && user.accountType === 'landlord');
+            setIsStudent(user && user.accountType === 'student');
+            setIsAuthenticated(user != null);
+            setCurrentUserName(user && user.username);
+
+            const landlordResponse = await Axios.get(`http://localhost:8080/users/id/${listing.landlordId}`);
+            setLandLordData(landlordResponse.data);  // Extract landlord data
+            setCallString(`Call ${landlordResponse.data.phoneNumber}`);
+            if (callString === 'Call ') {
+                setCallString("Number Unavailable");
+            }
+        };
+
+        checkAuth();
+    }, []);
+
+    const handleToggle = () => {
+        setShowPhoneNumber(!showPhoneNumber);
+    };
+
+    // Sends notifications
+    const handleNotify = async () => {
+        try {
+            if (currentUserName == null) {
+                console.error('User not logged in.');
+                return;
+            }
+
+            const body = {
+                type: "CONTACT",
+                senderUsername: currentUserName
+            };
+            console.log(body);
+            console.log(landlordData.username);
+            const response = await Axios.post(`http://localhost:8080/users/${landlordData.username}/notifications`, body);
+            console.log('Notification successful:', response.data);
+            if (response.status === 201) {
+                setDialogMessage('Your message has been sent to the landlord.');
+                setDialogSeverity('success');
+                setOpenDialog(true);
+            }
+
+            setShowPhoneNumber(false);
+
+        } catch (error) {
+            console.error('Error sending notification:', error);
+            setDialogMessage('An error occurred while contacting the landlord. Please try again later.');
+            setDialogSeverity('error');
+            setOpenDialog(true);
+        }
+    };
+
+    /* const handleContactLandlord = async () => {
+        try {
+            const landlordResponse = await Axios.get(`http://localhost:8080/users/id/${listing.landlordId}`);
+            const landlord = landlordResponse.data;  // Extract landlord data
+
+            // Now, send a POST request to the landlord's notifications endpoint
+            const notificationBody = {
+                type: "CONTACT",
+                senderUsername: currentUserName
+            };
+
+            console.log("Sending notification to landlord:", landlord.username, notificationBody);
+            // Make a GET request to fetch notifications
+            const response = await Axios.post(`http://localhost:8080/users/${landlord.username}/notifications`, notificationBody);
+
+            if (response.status === 201) {
+                setDialogMessage('Your message has been sent to the landlord.');
+                setDialogSeverity('success');
+                setOpenDialog(true);
+            }
+        } catch (error) {
+            console.error("Error contacting landlord:", error);
+            setDialogMessage('An error occurred while contacting the landlord. Please try again later.');
+            setDialogSeverity('error');
+            setOpenDialog(true);
+        }
+
+    }; */
+
+    const handleRentOut = async () => {
+        try {
+            const landlordResponse = await Axios.get(`http://localhost:8080/users/id/${listing.landlordId}`);
+            const landlord = landlordResponse.data;  // Extract landlord data
+
+            // Now, send a POST request to the landlord's notifications endpoint
+            const notificationBody = {
+                type: "OTHER",
+                message: `Your listing has been rented out by ${currentUserName}.`,
+                senderUsername: currentUserName
+            };
+
+            console.log("Sending notification to landlord:", landlord.username, notificationBody, "by", currentUserName);
+            
+
+            // Make a GET request to fetch notifications
+            const response = await Axios.post(`http://localhost:8080/users/${landlord.username}/notifications`, notificationBody);
+
+            if (response.status === 201) {
+                onRentOut(listing.id);
+            }
+        } catch (error) {
+            console.error("Error contacting landlord:", error);
+            setDialogMessage('An error occurred while contacting the landlord. Please try again later.');
+            setDialogSeverity('error');
+            setOpenDialog(true);
+        }
+    };
 
     const handleNavigation = (path) => {
         navigate(path);
@@ -91,22 +235,86 @@ function ListingCard({ listing, onRentOut }) {
             <div style={infoStyles}>
                 <div style={priceButtonContainerStyles}>
                     <p style={priceStyles}>${listing.monthlyPrice} monthly</p>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        size="small"
-                        sx={{
-                            backgroundColor: "red",
-                            color: "white",
-                            "&:hover": {
-                                backgroundColor: "darkred", // Hover effect
-                            },
-                            textTransform: "none",
-                        }}
-                    >
-                        Contact Landlord
-                    </Button>
-                </div>
+                    {isStudent && (
+                    <div>
+                        {!showPhoneNumber ? (
+                            <div>
+                                <Button
+                                    onClick={handleToggle}
+                                    variant="contained"
+                                    color="primary"
+                                    size="small"
+                                    sx={{
+                                        backgroundColor: "#d50032",
+                                        color: "white",
+                                        "&:hover": {
+                                            backgroundColor: "#b71c1c", // Hover effect
+                                        },
+                                        fontSize: "1.1em",
+                                        textTransform: "none",
+                                    }}
+                                >
+                                    Contact
+                                </Button>
+                            </div>
+                        ) : (
+                            <div>
+                                <p style={phoneStyles}>{callString}</p>
+                                <Button
+                                    onClick={handleNotify}
+                                    variant="contained"
+                                    color="primary"
+                                    size="small"
+                                    sx={{
+                                        backgroundColor: "#d50032",
+                                        "&:hover": {
+                                            backgroundColor: "#b71c1c", // Hover effect
+                                        },
+                                        fontSize: "1.1em",
+                                        textTransform: "none",
+                                        margin: "2px",
+                                    }}
+                                >
+                                    Notify
+                                </Button>
+                                <Button
+                                    onClick={handleToggle}
+                                    variant="contained"
+                                    color="primary"
+                                    size="small"
+                                    sx={{
+                                        textTransform: "none",
+                                        fontSize: "1.1em",
+                                        margin: "2px",
+                                    }}
+                                >
+                                    Nevermind
+                                </Button>
+                            </div>
+                        )}
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            onClick={handleRentOut}
+                            disabled={listing.completed}
+                            style={{
+                                marginTop: "10px",
+                                backgroundColor: "green",
+                                color: "white",
+                                textTransform: "none",
+                            }}
+                        >
+                            Rent Out
+                        </Button>
+                        <StatusDialog
+                            open={openDialog}
+                            onClose={handleDialogClose}
+                            message={dialogMessage}
+                            severity={dialogSeverity}
+                        />
+                    </div>
+                )}
+            </div>
                 <p style={priceStyles}>{listing.title}</p>
                 <p><em>{listing.description}</em></p>
                 <div>

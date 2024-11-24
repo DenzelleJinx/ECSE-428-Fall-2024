@@ -38,6 +38,7 @@ public class AmenitiesDAOTests {
         amenitiesDAO.save(amenities);
     }
 
+    @BeforeEach
     @AfterEach
     public void tearDown() {
         amenitiesDAO.deleteAll();
