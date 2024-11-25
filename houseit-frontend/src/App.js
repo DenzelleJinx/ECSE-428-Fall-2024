@@ -7,7 +7,7 @@ import LandingPage from "./components/landing-page/LandingPage";
 import CreateListing from "./components/create-listing/CreateListing";
 import ApproveLandlord from "./components/approve-landlord/ApproveLandlord";
 import UpdateListing from "./components/update-listing/UpdateListing";
-import ViewListings from "./components/view-listings/VIewListings";
+import ViewListings from "./components/view-listings/ViewListings";
 import MyListings  from './components/view-my-listings/MyListings';
 import SavedListings from './components/view-saved-listings/savedListings';
 

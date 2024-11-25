@@ -96,11 +96,19 @@ public class ListingService {
         amenitiesOffered = amenitiesService.createAmenities(amenitiesOffered);
         newListing.setAmenitiesOffered(amenitiesOffered);
 
-        utilitiesCosts = utilitiesService.createUtilities(utilitiesCosts);
-        newListing.setUtilitiesCosts(utilitiesCosts);
+        if (utilitiesCosts != null) {
+            utilitiesCosts = utilitiesService.createUtilities(utilitiesCosts);
+            newListing.setUtilitiesCosts(utilitiesCosts);
+        }
 
+        if (propertyImages.size() > 10) {
+            throw new IllegalArgumentException("Maximum number of images is 10.");
+        }
         List<Image> newPropertyImages = new ArrayList<>();
         for (Image img : propertyImages) {
+            if (newPropertyImages.stream().map(Image::getUrl).anyMatch(img.getUrl()::equals)) {
+                throw new IllegalArgumentException("Duplicate image URL found: " + img.getUrl());
+            }
             Image image = imageService.createImage(img);
             newPropertyImages.add(image);
         }
@@ -196,8 +204,14 @@ public class ListingService {
         utilitiesCosts = utilitiesService.updateUtilities(utilitiesCosts);
         existingListing.setUtilitiesCosts(utilitiesCosts);
 
+        if (propertyImages.size() > 10) {
+            throw new IllegalArgumentException("Maximum number of images is 10.");
+        }
         List<Image> newPropertyImages = new ArrayList<>();
         for (Image img : propertyImages) {
+            if (newPropertyImages.stream().map(Image::getUrl).anyMatch(img.getUrl()::equals)) {
+                throw new IllegalArgumentException("Duplicate image URL found: " + img.getUrl());
+            }
             Image image = imageService.updateImage(img);
             newPropertyImages.add(image);
         }
