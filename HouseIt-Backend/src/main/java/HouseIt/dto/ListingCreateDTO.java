@@ -166,26 +166,11 @@ public class ListingCreateDTO {
 
   public boolean setPropertyImages( Image... newPropertyImages)
   {
-    boolean wasSet = false;
-    ArrayList<Image> verifiedPropertyImages = new ArrayList<Image>();
-    for (Image aPropertyImage : newPropertyImages)
-    {
-      if (verifiedPropertyImages.contains(aPropertyImage))
-      {
-        continue;
-      }
-      verifiedPropertyImages.add(aPropertyImage);
-    }
-
-    if (verifiedPropertyImages.size() != newPropertyImages.length || verifiedPropertyImages.size() > maximumNumberOfPropertyImages())
-    {
-      return wasSet;
-    }
-
     propertyImages.clear();
-    propertyImages.addAll(verifiedPropertyImages);
-    wasSet = true;
-    return wasSet;
+    for (Image aPropertyImage : newPropertyImages) {
+      propertyImages.add(aPropertyImage);
+    }
+    return true;
   }
 
 }
