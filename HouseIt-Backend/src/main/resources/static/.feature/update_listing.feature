@@ -1,4 +1,3 @@
-# I'm assuming only landlords can update listings
 Feature: Updating a Listing
     As a registered landlord user
     I want to be able to update listing information
@@ -38,11 +37,3 @@ Scenario: Update Listing Location (Error Flow: Attempting to Change Listing Loca
     And the user attempts to change the listing location
     Then the listing location will be grayed out
     And the user will be unable to edit the listing location text
-
-Scenario: Close listing
-    When the user chooses to edit the listing
-    And the user chooses to close the listing
-    Then the listing will be marked as closed
-    And the listing will no longer be visible on the home page
-    And the listing will be visible in the landlord's listings
-    And the listing will be marked as closed
