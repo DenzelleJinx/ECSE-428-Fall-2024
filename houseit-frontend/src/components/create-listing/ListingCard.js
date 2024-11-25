@@ -17,8 +17,11 @@ import StatusDialog from '../status-dialog/StatusDialog';
 import apartmentImage from '../../assets/sample-bedroom.png';
 import PropertyListing from "../view-listings/ImagePopup";
 
+import { useNavigate } from 'react-router-dom';
+
 function ListingCard({ listing, onRentOut }) {
     const [isHovered, setIsHovered] = useState(false);
+    const navigate = useNavigate();
 
     const cardStyles = {
         border: '1px solid #ddd',
@@ -215,6 +218,11 @@ function ListingCard({ listing, onRentOut }) {
         }
     };
 
+    const handleUpdate = () => {
+        localStorage.setItem('currentListing', JSON.stringify(listing));
+        navigate('/updatelisting');
+    }
+
 
     return (
         <div
@@ -312,7 +320,7 @@ function ListingCard({ listing, onRentOut }) {
                 <p><em>{listing.description}</em></p>
                 <div>
                     <p>
-                        {listing.address.apartmentNumber} {listing.address.streetNumber} {listing.address.street}, {listing.address.city}, {listing.address.postalCode}
+                        {listing.address.apartment} {listing.address.streetNumber} {listing.address.street}, {listing.address.city}, {listing.address.postalCode}
                     </p>
                 </div>
                 <div style={{
@@ -423,7 +431,22 @@ function ListingCard({ listing, onRentOut }) {
                 >
                     Additional Information
                 </Button>
-
+                {isLandlord && (
+                    <Button
+                    variant="contained"
+                    color="primary"
+                    style={{
+                    margin: '10px 0',
+                    backgroundColor: '#3A3B3C',
+                    color: 'white',
+                    textTransform: 'none',
+                }}
+                    fullWidth
+                    onClick={handleUpdate}
+                    >
+                    Update
+                    </Button>)
+                }
                 {/* Utilities Modal */}
                 <Modal open={showUtilitiesModal} onClose={closeUtilitiesModal}>
                     <Box sx={modalStyles}>
