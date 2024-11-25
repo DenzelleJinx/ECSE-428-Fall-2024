@@ -1,4 +1,4 @@
-import React, { useEffect , useRef } from 'react';
+import React, { useEffect , useRef, useState } from 'react';
 import {
     Box,
     Button,
@@ -13,24 +13,106 @@ import {
     Select,
     FormControlLabel,
     Checkbox,
-    Card,
+    InputAdornment
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import AppTheme from '../../shared-theme/AppTheme';
 import ColorModeSelect from '../../shared-theme/ColorModeSelect';
-import ImageUpload from '../../components/image-upload/ImageUpload';
 import { useNavigate } from 'react-router-dom';
-import mcgillLogo from '../../assets/mcgill-logo.png';
 import Navbar from '../navbar/Navbar';
 import StatusDialog from '../../components/status-dialog/StatusDialog';
 import axios from 'axios';
 
+const Card = styled(MuiCard)(({ theme }) => ({
+    display: 'flex',
+    flexDirection: 'column',
+    alignSelf: 'center',
+    width: '1000px',
+    maxHeight: '1500px', // Set a max height for the card
+    padding: theme.spacing(4),
+    gap: theme.spacing(2),
+    boxShadow:
+        'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
+    [theme.breakpoints.up('sm')]: {
+        width: '450px',
+    },
+    ...theme.applyStyles('dark', {
+        boxShadow:
+            'hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px',
+    }),
+}));
 
-const isNumeric = (string) => /^[+-]?\d+(\.\d+)?$/.test(string)
+const CreateListingContainer = styled(Stack)(({ theme }) => ({
+    marginTop: theme.spacing(12), // Adds space at the top
+    height: 'auto',
+    padding: theme.spacing(2),
+    [theme.breakpoints.up('sm')]: {
+        padding: theme.spacing(4),
+    },
+    '&::before': {
+        content: '""',
+        display: 'block',
+        position: 'absolute',
+        zIndex: -1,
+        inset: 0,
+        backgroundImage:
+            'radial-gradient(ellipse at 50% 50%, hsl(210, 100%, 97%), hsl(0, 0%, 100%))',
+        backgroundRepeat: 'no-repeat',
+        ...theme.applyStyles('dark', {
+            backgroundImage:
+                'radial-gradient(at 50% 50%, hsla(210, 100%, 16%, 0.5), hsl(220, 30%, 5%))',
+        }),
+    },
+}));
 
+export default function CreateListing() {
+    const emptyForm = {
+        title: '',
+        description: '',
+        propertyType: 'APARTMENT',
+        bedrooms: '',
+        bathrooms: '',
+        price: '',
+        squareFootage: '',
+        wheelchairAccessible: false,
+        smokingAllowed: false,
+        address: {
+            apartment: '',
+            streetNumber: '',
+            street: '',
+            city: '',
+            postalCode: '',
+        },
+        amenities: {
+            gym: false,
+            laundry: false,
+            petsAllowed: false,
+            parking: false,
+            internetIncluded: false,
+        },
+        utilities: {
+            waterCost: '',
+            electricityCost: '',
+            heatingCost: '',
+        },
+        images: [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+        ]
+    }
+    const [formData, setFormData] = useState(emptyForm);
+    const [errors, setErrors] = useState({});
 
-export default function CreateListing(props) {
-
+    const navigate = useNavigate();
     useEffect(() => {
         const checkAuth = () => {
             const user = JSON.parse(localStorage.getItem('currentUser'));
@@ -41,106 +123,71 @@ export default function CreateListing(props) {
         };
         
         checkAuth();
+    }, [navigate])
 
-        // TODO: Remove this when done testing
-        const isTesting = true;
-        if (isTesting) {
-            // this code block sets test values to make your life easier
-            console.log("using test values");
-            const title = document.getElementById('Title');
-            const description = document.getElementById('Description');
-            const bedrooms = document.getElementById('Bedrooms');
-            const bathrooms = document.getElementById('Bathrooms');
-            const price = document.getElementById('Price');
-            const squareFootage = document.getElementById('SquareFootage');
-            const wheelchairAccessible = document.getElementById('wheelchair-accessible');
-            const smokingAllowed = document.getElementById('smoking-allowed');
-            const apartment = document.getElementById('ApartmentNumber');
-            const streetNumber = document.getElementById('StreetNumber');
-            const street = document.getElementById('Street');
-            const city = document.getElementById('City');
-            const postalCode = document.getElementById('PostalCode');
-            const gym = document.getElementById('gym');
-            const laundry = document.getElementById('laundry');
-            const petsAllowed = document.getElementById('pets-allowed');
-            const parking = document.getElementById('parking');
-            const internetIncluded = document.getElementById('internet-included');
-            const waterCost = document.getElementById('water-cost');
-            const electricityCost = document.getElementById('electricity-cost');
-            const heatingCost = document.getElementById('heating-cost');
-            title.value = "test";
-            description.value = "test desc";
-            setPropertyType("HOUSE");
-            bedrooms.value = 1;
-            bathrooms.value = 1;
-            price.value = 1;
-            squareFootage.value = 1;
-            wheelchairAccessible.checked = false;
-            smokingAllowed.checked = false;
-            apartment.value = 1;
-            streetNumber.value = 1;
-            street.value = "test street";
-            city.value = "test city";
-            postalCode.value = "A1A1A1";
-            gym.checked = false;
-            laundry.checked = false;
-            petsAllowed.checked = false;
-            parking.checked = false;
-            internetIncluded.checked = false;
-            waterCost.value = 1;
-            electricityCost.value = 1;
-            heatingCost.value = 1;
-            document.getElementById('image-1').value = "https://liveatencore.com/wp-content/uploads/2018/12/14-dec-2018-UNIT-2.png";
-            document.getElementById('image-3').value = "https://images1.apartments.com/i2/waLNySi3DU4Z-hW66noKuBfuS1SgQEozHk5sIrcJbBo/117/4346-46-39th-pl-unit-ph-1-queens-ny-building-photo.jpg?p=1";
-            document.getElementById('image-4').value = "https://images.rentals.ca/property-pictures/medium/montreal-qc/809658/apartment-220293668.jpg";
+    const handleInputChange = (e, integerInput=false) => {
+        const { id, value, type, checked } = e.target;
+        // console.log(e.target);
+        // console.log(id, value);
+
+        // If it needs to be an integer and it is one
+        // Or if it doesn't need to be an integer
+        if ((integerInput && /^\d*$/.test(value)) || (!integerInput)) {
+            setFormData((prevState) => ({
+                ...prevState,
+                [id]: type === 'checkbox' ? checked : value,
+            }));
+            return;
         }
-    })
-
-    const primaryColor = "#D50032";
-    const secondaryColor = "#FFFFFF";
-    const formRef = useRef(null);
-    const [propertyType, setPropertyType] = React.useState('');
-
-    const handlePropertyTypeChange = (event) => {
-        setPropertyType(event.target.value);
     };
+
+    const handleNestedChange = (e, group, integerInput=false) => {
+        const { id, value, type, checked } = e.target;
+        // console.log(e.target);
+        // console.log(id, value);
+        if ((integerInput && /^\d*$/.test(value)) || (!integerInput)) {
+            setFormData((prevState) => ({
+                ...prevState,
+                [group]: {
+                    ...prevState[group],
+                    [id]: type === 'checkbox' ? checked : value,
+                },
+            }));
+        }
+    };
+
+    // For some unknown, evil, malevolently orchestrated reason,
+    // Select objects from mui send the obsolete name property as event identifiers
+    // instead of the regular id. 
+    const handlePropertyChange = (e) => {
+        const { name, value } = e.target;
+
+        setFormData((prevState) => ({
+            ...prevState,
+            [name]: value,
+        }));
+        return;
+    }
+
+    const handleImageChange = (index, value) => {
+        setFormData((prevFormData) => {
+            const updatedImages = [...prevFormData.images];
+            updatedImages[index] = value;
+            return {
+                ...prevFormData,
+                images: updatedImages,
+            };
+        });
+    };
+    
+    
+
+    const formRef = useRef(null);
+
 
     const handleDialogClose = () => {
         setOpenDialog(false);
     };
-
-    const [descriptionError, setDescriptionError] = React.useState(false);
-    const [descriptionErrorMessage, setDescriptionErrorMessage] = React.useState('');
-    const [bedroomsError, setBedroomsError] = React.useState(false);
-    const [bedroomsErrorMessage, setBedroomsErrorMessage] = React.useState('');
-    const [bathroomsError, setBathroomsError] = React.useState(false);
-    const [bathroomsErrorMessage, setBathroomsErrorMessage] = React.useState('');
-    const [titleError, setTitleError] = React.useState(false);
-    const [titleErrorMessage, setTitleErrorMessage] = React.useState('');
-    const [propertyTypeError, setPropertyTypeError] = React.useState(false);
-    const [propertyTypeErrorMessage, setPropertyTypeErrorMessage] = React.useState('');
-    const [priceError, setPriceError] = React.useState(false);
-    const [priceErrorMessage, setPriceErrorMessage] = React.useState('');
-    const [squareFootageError, setSquareFootageError] = React.useState(false);
-    const [squareFootageErrorMessage, setSquareFootageErrorMessage] = React.useState('');
-
-    const [apartmentError, setApartmentError] = React.useState(false);
-    const [apartmentErrorMessage, setApartmentErrorMessage] = React.useState('');
-    const [streetNumberError, setStreetNumberError] = React.useState(false);
-    const [streetNumberErrorMessage, setStreetNumberErrorMessage] = React.useState('');
-    const [streetError, setStreetError] = React.useState(false);
-    const [streetErrorMessage, setStreetErrorMessage] = React.useState('');
-    const [cityError, setCityError] = React.useState(false);
-    const [cityErrorMessage, setCityErrorMessage] = React.useState('');
-    const [postalCodeError, setPostalCodeError] = React.useState(false);
-    const [postalCodeErrorMessage, setPostalCodeErrorMessage] = React.useState('');
-
-    const [waterCostError, setWaterCostError] = React.useState(false);
-    const [waterCostErrorMessage, setWaterCostErrorMessage] = React.useState('');
-    const [electricityCostError, setElectricityCostError] = React.useState(false);
-    const [electricityCostErrorMessage, setElectricityCostErrorMessage] = React.useState('');
-    const [heatingCostError, setHeatingCostError] = React.useState(false);
-    const [heatingCostErrorMessage, setHeatingCostErrorMessage] = React.useState('');
 
     const [serverErrorMessage, setServerErrorMessage] = React.useState('');
     const [serverSuccessMessage, setServerSuccessMessage] = React.useState('');
@@ -149,187 +196,55 @@ export default function CreateListing(props) {
     const [dialogMessage, setDialogMessage] = React.useState(''); // Message to display in the dialog
     const [dialogSeverity, setDialogSeverity] = React.useState('error'); // Severity of the message: 'success' or 'error'
 
-    const validateInputs = () => {        
-        const title = document.getElementById('Title');
-        const description = document.getElementById('Description');
-        const bedrooms = document.getElementById('Bedrooms');
-        const bathrooms = document.getElementById('Bathrooms');
-        const price = document.getElementById('Price');
-        const squareFootage = document.getElementById('SquareFootage');
-        const apartment = document.getElementById('ApartmentNumber');
-        const streetNumber = document.getElementById('StreetNumber');
-        const street = document.getElementById('Street');
-        const city = document.getElementById('City');
-        const postalCode = document.getElementById('PostalCode');
-
-        const waterCost = document.getElementById('water-cost');
-        const electricityCost = document.getElementById('electricity-cost');
-        const heatingCost = document.getElementById('heating-cost');
-
-        let isValid = true;
-
-        if (!description || !description.value || description.value >= 256 || description.value < 1) {
-            setDescriptionError(true);
-            setDescriptionErrorMessage('A description needs to be between 1 and 256 characters.');
-            isValid = false;
-        } else {
-            setDescriptionError(false);
-            setDescriptionErrorMessage('');
-        }
-
-        if (!bedrooms || !bedrooms.value || bedrooms.value < 1) {
-            setBedroomsError(true);
-            setBedroomsErrorMessage('There must be at least 1 bedroom.');
-            isValid = false;
-        } else if (!isNumeric(bedrooms.value)){
-            setBedroomsError(true);
-            setBedroomsErrorMessage('The number of bedrooms has to be an integer.');
-            isValid = false;
-        } else {
-            setBedroomsError(false);
-            setBedroomsErrorMessage('');
-        }
-
-        if (!bathrooms || !bathrooms.value || bathrooms.value < 1) {
-            setBathroomsError(true);
-            setBathroomsErrorMessage('There must be at least 1 bathroom.');
-            isValid = false;
-        } else if (!isNumeric(bathrooms.value)){
-            setBathroomsError(true);
-            setBathroomsErrorMessage('The number of bathrooms has to be an integer.');
-            isValid = false;
-        } else {
-            setBathroomsError(false);
-            setBathroomsErrorMessage('');
-        }
-
-        if (!price || !price.value || price.value < 1) {
-            setPriceError(true);
-            setPriceErrorMessage('The minimum price must be at least 1$/month.');
-            isValid = false;
-        } else if (!isNumeric(price.value)){
-            setPriceError(true);
-            setPriceErrorMessage('The price has to be an integer.');
-            isValid = false;
-        } else {
-            setPriceError(false);
-            setPriceErrorMessage('');
-        }
-
-        if (!squareFootage || !squareFootage.value || squareFootage.value < 1) {
-            setSquareFootageError(true);
-            setSquareFootageErrorMessage('The minimum square footage must be at least 1 ft^2.');
-            isValid = false;
-        } else if (!isNumeric(squareFootage.value)){
-            setSquareFootageError(true);
-            setSquareFootageErrorMessage('The square footage has to be an integer.');
-            isValid = false;
-        } else {
-            setSquareFootageError(false);
-            setSquareFootageErrorMessage('');
-        }
-
-        if (!title || !title.value || title.value.length < 1) {
-            setTitleError(true);
-            setTitleErrorMessage('Title is required.');
-            isValid = false;
-        } else {
-            setTitleError(false);
-            setTitleErrorMessage('');
-        }
-
-        if (!propertyType || propertyType.value === '') {
-            setPropertyTypeError(true);
-            setPropertyTypeErrorMessage('Listing Type is required.');
-            isValid = false;
-        } else {
-            setPropertyTypeError(false);
-            setPropertyTypeErrorMessage('');
-        }
-
-        if (!apartment || !apartment.value || apartment.value < 1) {
-            setApartmentError(true);
-            setApartmentErrorMessage('The address must have a apartment number greater than 1');
-            isValid = false;
-        } else if (!isNumeric(apartment.value)){
-            setApartmentError(true);
-            setApartmentErrorMessage('The apartment number has to be an integer.');
-            isValid = false;
-        } else {
-            setApartmentError(false);
-            setApartmentErrorMessage('');
-        }
-
-        if (!streetNumber || !streetNumber.value || streetNumber.value < 1) {
-            setStreetNumberError(true);
-            setStreetNumberErrorMessage('The address must have a street number greater than 1');
-            isValid = false;
-        } else if (!isNumeric(streetNumber.value)){
-            setStreetNumberError(true);
-            setStreetNumberErrorMessage('The street number has to be an integer.');
-            isValid = false;
-        } else {
-            setStreetNumberError(false);
-            setStreetNumberErrorMessage('');
-        }
-
-        if (!street || !street.value || street.value >= 256 || street.value < 1) {
-            setStreetError(true);
-            setStreetErrorMessage('A street name needs to be between 1 and 256 characters.');
-            isValid = false;
-        } else {
-            setStreetError(false);
-            setStreetErrorMessage('');
-        }
-
-        if (!city || !city.value || city.value >= 256 || city.value < 1) {
-            setCityError(true);
-            setCityErrorMessage('A city name needs to be between 1 and 256 characters.');
-            isValid = false;
-        } else {
-            setCityError(false);
-            setCityErrorMessage('');
-        }
-
-        if (!postalCode || !postalCode.value || postalCode.value > 6 || postalCode.value <= 5) {
-            setPostalCodeError(true);
-            setPostalCodeErrorMessage('A postal code name needs to have 6 characters.');
-            isValid = false;
-        } else {
-            setPostalCodeError(false);
-            setPostalCodeErrorMessage('');
-        }
-
-        if ((waterCost && waterCost.value) || (electricityCost && electricityCost.value) || (heatingCost && heatingCost.value)) {
-            if (!waterCost || !waterCost.value || waterCost.value < 0) {
-                setWaterCostError(true);
-                setWaterCostErrorMessage('The water cost must be a positive number.');
-                isValid = false;
-            } else {
-                setWaterCostError(false);
-                setWaterCostErrorMessage('');
+    const validateInputs = () => {
+        const newErrors = {};
+        if (!formData.title) newErrors.title = 'Title is required.';
+        if (!formData.description || formData.description.length > 256)
+            newErrors.description = 'Description must be between 1 and 256 characters.';
+        if (!formData.bedrooms || isNaN(formData.bedrooms) || formData.bedrooms < 1)
+            newErrors.bedrooms = 'There must be at least 1 bedroom.';
+        if (!formData.bathrooms || isNaN(formData.bathrooms) || formData.bathrooms < 1)
+            newErrors.bathrooms = 'There must be at least 1 bathroom.';
+        if (!formData.price || isNaN(formData.price) || formData.price < 1)
+            newErrors.price = 'Price must be at least $1/month.';
+        if (!formData.squareFootage || isNaN(formData.squareFootage) || formData.squareFootage < 1)
+            newErrors.squareFootage = 'Square footage must be at least 1 ft<sup>2</sup>.';
+        if (!formData.address.apartment) newErrors.apartment = 'The address must have an apartment number.';
+        if (!formData.address.streetNumber || isNaN(formData.address.streetNumber) || formData.address.streetNumber < 1)
+            newErrors.streetNumber = 'Address must have a street number greater than 1.';
+        if (!formData.address.street || formData.address.street.length > 256)
+            newErrors.street = 'Street name must be between 1 and 256 characters.';
+        if (!formData.address.city || formData.address.city.length > 256)
+            newErrors.city = 'City name must be between 1 and 256 characters.';
+        if (!formData.address.postalCode || formData.address.postalCode.length !== 6)
+            newErrors.postalCode = 'Postal code must be exactly 6 characters.';
+        // If at least one of the utilities exists
+        if (formData.utilities.waterCost !== "" || formData.utilities.electricityCost !== "" || formData.utilities.heatingCost !== "")
+        {
+            // But not all of them at the same time
+            if (!(!!formData.utilities.waterCost && !!formData.utilities.electricityCost && !!formData.utilities.heatingCost))
+            {
+                // Set the remaining utilities to 0
+                if (!formData.utilities.waterCost) {
+                    formData.utilities.waterCost = "0";
+                }
+                if (!formData.utilities.electricityCost) {
+                    formData.utilities.electricityCost = "0";
+                }
+                if (!formData.utilities.heatingCost) {
+                    formData.utilities.heatingCost = "0";
+                }
             }
-
-            if (!electricityCost || !electricityCost.value || electricityCost.value < 0) {
-                setElectricityCostError(true);
-                setElectricityCostErrorMessage('The electricity cost must be a positive number.');
-                isValid = false;
-            } else {
-                setElectricityCostError(false);
-                setElectricityCostErrorMessage('');
-            }
-
-            if (!heatingCost || !heatingCost.value || heatingCost.value < 0) {
-                setHeatingCostError(true);
-                setHeatingCostErrorMessage('The heating cost must be a positive number.');
-                isValid = false;
-            } else {
-                setHeatingCostError(false);
-                setHeatingCostErrorMessage('');
-            }
+            // Now check if any are negative
+            if (formData.utilities.waterCost < 0)
+                newErrors.waterCost = 'The water cost cannot be a negative number.';
+            if (formData.utilities.electricityCost < 0)
+                newErrors.waterCost = 'The electricity cost cannot be a negative number.';
+            if (formData.utilities.heatingCost < 0)
+                newErrors.waterCost = 'The heating cost cannot be a negative number.';
         }
-
-        return isValid;
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
     };
 
     const handleSubmit = async (event) => {
@@ -339,33 +254,11 @@ export default function CreateListing(props) {
         setServerErrorMessage('');
         setServerSuccessMessage('');
         
-        // Get form values
-        const title = document.getElementById('Title');
-        const description = document.getElementById('Description');
-        const bedrooms = document.getElementById('Bedrooms');
-        const bathrooms = document.getElementById('Bathrooms');
-        const price = document.getElementById('Price');
-        const squareFootage = document.getElementById('SquareFootage');
-        const wheelchairAccessible = document.getElementById('wheelchair-accessible');
-        const smokingAllowed = document.getElementById('smoking-allowed');
-        const apartment = document.getElementById('ApartmentNumber');
-        const streetNumber = document.getElementById('StreetNumber');
-        const street = document.getElementById('Street');
-        const city = document.getElementById('City');
-        const postalCode = document.getElementById('PostalCode');
-        const gym = document.getElementById('gym');
-        const laundry = document.getElementById('laundry');
-        const petsAllowed = document.getElementById('pets-allowed');
-        const parking = document.getElementById('parking');
-        const internetIncluded = document.getElementById('internet-included');
-        const waterCost = document.getElementById('water-cost');
-        const electricityCost = document.getElementById('electricity-cost');
-        const heatingCost = document.getElementById('heating-cost');
-        
+        if (!formData.address.apartment && formData.propertyType === "HOUSE") {
+            formData.address.apartment = "N/A";
+        }
         // Validate inputs
-        const isValid = validateInputs();
-
-        if (!isValid) {
+        if (!validateInputs()) {
             setDialogMessage('Please fill in all required fields.');
             setDialogSeverity('error');
             setOpenDialog(true);
@@ -373,15 +266,14 @@ export default function CreateListing(props) {
         }
         
         // Check whether to include utilities or leave utilities as null
-        const includeUtilities = waterCost && electricityCost && heatingCost && 
-        waterCost.value && electricityCost.value && heatingCost.value;
-        
+        const includeUtilities = formData.utilities.waterCost && formData.utilities.electricityCost && formData.utilities.heatingCost
+
         // Get property images
         const propertyImages = [];
-        for (let i = 1; i <= 10; i++) {
-            const img = document.getElementById(`image-${i}`);
-            if (img && img.value) {
-                propertyImages.push({ url: img.value });
+        for (let i = 0; i < 10; i++) {
+            const img = formData.images[i];
+            if (img) {
+                propertyImages.push({url : img});
             }
         }
 
@@ -391,40 +283,42 @@ export default function CreateListing(props) {
             setServerErrorMessage('You must be logged in as a landlord to create a listing.');
             return;
         }
-
+        
         // Build the payload
         const payload = {
             landlordId: user.id,
-            title: title.value,
-            description: description.value,
-            propertyType: propertyType,
-            bedrooms: bedrooms.value,
-            bathrooms: bathrooms.value,
-            monthlyPrice: price.value,
-            squareFootage: squareFootage.value,
-            wheelchairAccessible: wheelchairAccessible.checked,
-            smokingAllowed: smokingAllowed.checked,
+            title: formData.title,
+            description: formData.description,
+            propertyType: formData.propertyType,
+            bedrooms: parseInt(formData.bedrooms),
+            bathrooms: parseInt(formData.bathrooms),
+            monthlyPrice: parseInt(formData.price),
+            squareFootage: parseInt(formData.squareFootage),
+            wheelchairAccessible: formData.wheelchairAccessible,
+            smokingAllowed: formData.smokingAllowed,
             address: {
-                apartmentNumber : apartment.value,
-                streetNumber: streetNumber.value,
-                street: street.value,
-                city: city.value,
-                postalCode: postalCode.value
+                apartmentNumber: formData.address.apartment,
+                streetNumber: formData.address.streetNumber,
+                street: formData.address.street,
+                city: formData.address.city,
+                postalCode: formData.address.postalCode,
             },
             amenitiesOffered: {
-                gym: gym.checked,
-                laundry: laundry.checked,
-                petsAllowed: petsAllowed.checked,
-                parking: parking.checked,
-                internetIncluded: internetIncluded.checked
+                gym: formData.amenities.gym,
+                laundry: formData.amenities.laundry,
+                petsAllowed: formData.amenities.petsAllowed,
+                parking: formData.amenities.parking,
+                internetIncluded: formData.amenities.internetIncluded,
             },
-            utilitiesCosts: includeUtilities ? {
-                waterCost: waterCost.value,
-                electricityCost: electricityCost.value,
-                heatingCost: heatingCost.value
-            } : null,
+            utilitiesCosts: includeUtilities ?
+                {
+                    waterCost: parseFloat(formData.utilities.waterCost),
+                    electricityCost: parseFloat(formData.utilities.electricityCost),
+                    heatingCost: parseFloat(formData.utilities.heatingCost),
+                } : null,
             propertyImages: propertyImages
         };
+        // console.log(payload);
 
         // Send request and handle response
         try {
@@ -432,74 +326,28 @@ export default function CreateListing(props) {
               baseURL: "http://localhost:8080",
             });
             const response = await axiosClient.post('/listing', payload);
-            console.log('Listing created successfully:', response.data); // TODO: Remove this when done testing
-            setServerSuccessMessage('Listing created successfully');
-          } catch (error) {
+            // console.log('Listing created successfully:', response.data);
+            
+            // Changed from using server error message to instead use dialog message
+            setDialogMessage('Listing created successfully.');
+            setDialogSeverity('success');
+            setOpenDialog(true);
+
+            // Clear form
+            // setFormData(emptyForm) //TODO : uncomment
+        } catch (error) {
             let errorMessage = null
             if (error.response && typeof error.response.data === 'string') {
                 errorMessage = error.response.data
             }
-            setServerErrorMessage(errorMessage ? errorMessage : 'An error occurred during signup. Please try again.');
-          }
+            setServerErrorMessage(errorMessage ? errorMessage : 'An error occurred during listing creation. Please try again.');
+        }
     };
 
-    const Card = styled(MuiCard)(({ theme }) => ({
-        display: 'flex',
-        flexDirection: 'column',
-        alignSelf: 'center',
-        width: '1000px',
-        maxHeight: '1500px', // Set a max height for the card
-        padding: theme.spacing(4),
-        gap: theme.spacing(2),
-        boxShadow:
-            'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
-        [theme.breakpoints.up('sm')]: {
-            width: '450px',
-        },
-        ...theme.applyStyles('dark', {
-            boxShadow:
-                'hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px',
-        }),
-    }));
-
-        const CreateListingContainer = styled(Stack)(({ theme }) => ({
-            marginTop: theme.spacing(12), // Adds space at the top
-            height: 'auto',
-            padding: theme.spacing(2),
-            [theme.breakpoints.up('sm')]: {
-                padding: theme.spacing(4),
-            },
-            '&::before': {
-                content: '""',
-                display: 'block',
-                position: 'absolute',
-                zIndex: -1,
-                inset: 0,
-                backgroundImage:
-                    'radial-gradient(ellipse at 50% 50%, hsl(210, 100%, 97%), hsl(0, 0%, 100%))',
-                backgroundRepeat: 'no-repeat',
-                ...theme.applyStyles('dark', {
-                    backgroundImage:
-                        'radial-gradient(at 50% 50%, hsla(210, 100%, 16%, 0.5), hsl(220, 30%, 5%))',
-                }),
-            },
-        }));
-
-    const navigate = useNavigate();
-
-    const handleSignUpClick = () => {
-        navigate('/signup');
-    };
-
-    const handleListingClick = () => {
-        navigate('/createlisting');
-    };
-    const handleLogoClick = () => {
-        navigate('/');
-    };
+    
 
     return (
-        <AppTheme {...props}>
+        <AppTheme>
             <CssBaseline enableColorScheme />
             <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' , marginTop: "4rem"}} />
             <Navbar />
@@ -537,41 +385,40 @@ export default function CreateListing(props) {
                             sx={{ display: 'flex', flexDirection: 'column', gap: 2, }} // Adjusted marginBottom
                         >
                             <FormControl required fullWidth>
-                                <FormLabel htmlFor="Title">Title</FormLabel>
+                                <FormLabel htmlFor="title">Title</FormLabel>
                                 <TextField
-                                    name="Title"
-                                    required
                                     fullWidth
-                                    id="Title"
+                                    id="title"
                                     placeholder="Title"
-                                    error={titleError}
-                                    helperText={titleErrorMessage}
-                                    color={titleError ? 'error' : 'primary'}
+                                    value={formData.title}
+                                    onChange={handleInputChange}
+                                    error={!!errors.title}
+                                    helperText={errors.title}
+                                    color={!!errors.title ? 'error' : 'primary'}
                                 />
                             </FormControl>
                             <FormControl required fullWidth>
-                                <FormLabel htmlFor="Description">Description</FormLabel>
+                                <FormLabel htmlFor="description">Description</FormLabel>
                                 <TextField
-                                    required
                                     fullWidth
-                                    id="Description"
+                                    id="description"
                                     placeholder="Enter description here"
-                                    name="Description"
                                     autoComplete="Description"
                                     variant="outlined"
-                                    error={descriptionError}
-                                    helperText={descriptionErrorMessage}
-                                    color={descriptionError ? 'error' : 'primary'}
+                                    value={formData.description}
+                                    onChange={handleInputChange}
+                                    error={!!errors.description}
+                                    helperText={errors.description}
+                                    color={!!errors.description ? 'error' : 'primary'}
                                 />
                             </FormControl>
                             <FormControl required fullWidth>
-                                <FormLabel htmlFor="property-type">Property Type</FormLabel>
+                                <FormLabel htmlFor="propertyType">Property Type</FormLabel>
                                 <Select
-                                    id="property-type"
-                                    value={propertyType}
-                                    error={propertyTypeError}
-                                    color={propertyTypeError ? 'error' : 'primary'}
-                                    onChange={handlePropertyTypeChange}
+                                    id="propertyType"
+                                    name="propertyType"
+                                    value={formData.propertyType}
+                                    onChange={(e) => handlePropertyChange(e)}
                                 >
                                     <MenuItem value={"STUDIO"}>Studio</MenuItem>
                                     <MenuItem value={"DORM"}>Dorm</MenuItem>
@@ -581,67 +428,72 @@ export default function CreateListing(props) {
                                 </Select>
                             </FormControl>
                             <FormControl required fullWidth>
-                                <FormLabel htmlFor="Bedrooms">Bedrooms</FormLabel>
+                                <FormLabel htmlFor="bedrooms">Bedrooms</FormLabel>
                                 <TextField
-                                    required
                                     fullWidth
-                                    name="Bedrooms"
                                     placeholder="Number of Bedrooms"
-                                    type="Bedrooms"
-                                    id="Bedrooms"
-                                    autoComplete="Bedrooms"
+                                    /* type="number"
+                                    This type allows - + and . to not trigger onChange which is problematic
+                                    Just pass true to integerInput in handleInputChange*/
+                                    id="bedrooms"
                                     variant="outlined"
-                                    error={bedroomsError}
-                                    helperText={bedroomsErrorMessage}
-                                    color={bedroomsError ? 'error' : 'primary'}
+                                    value={formData.bedrooms}
+                                    onChange={(e) => handleInputChange(e, true)}
+                                    error={!!errors.bedrooms}
+                                    helperText={errors.bedrooms}
+                                    color={!!errors.bedrooms ? 'error' : 'primary'}
                                 />
                             </FormControl>
                             <FormControl required fullWidth>
-                                <FormLabel htmlFor="Bathrooms">Bathrooms</FormLabel>
+                                <FormLabel htmlFor="bathrooms">Bathrooms</FormLabel>
                                 <TextField
-                                    required
                                     fullWidth
-                                    name="Bathrooms"
                                     placeholder="Number of Bathrooms"
-                                    type="Bathrooms"
-                                    id="Bathrooms"
-                                    autoComplete="Bathrooms"
+                                    id="bathrooms"
                                     variant="outlined"
-                                    error={bathroomsError}
-                                    helperText={bathroomsErrorMessage}
-                                    color={bathroomsError ? 'error' : 'primary'}
+                                    value={formData.bathrooms}
+                                    onChange={(e) => handleInputChange(e, true)}
+                                    error={!!errors.bathrooms}
+                                    helperText={errors.bathrooms}
+                                    color={!!errors.bathrooms ? 'error' : 'primary'}
                                 />
                             </FormControl>
                             <FormControl required fullWidth>
-                                <FormLabel htmlFor="Price">Price</FormLabel>
+                                <FormLabel htmlFor="price">Price</FormLabel>
                                 <TextField
-                                    required
                                     fullWidth
-                                    name="Price"
-                                    placeholder="Monthly Price"
-                                    type="Price"
-                                    id="Price"
-                                    autoComplete="Price"
+                                    placeholder="Monthly Price"                                    
+                                    id="price"                                    
                                     variant="outlined"
-                                    error={priceError}
-                                    helperText={priceErrorMessage}
-                                    color={priceError ? 'error' : 'primary'}
+                                    value={formData.price}
+                                    onChange={(e) => handleInputChange(e, true)}
+                                    error={!!errors.price}
+                                    helperText={errors.price}
+                                    color={!!errors.price ? 'error' : 'primary'}
+                                    slotProps= {{
+                                        input: {
+                                            endAdornment: (
+                                                <InputAdornment position="end">
+                                                    $
+                                                </InputAdornment>
+                                            )
+                                        }
+                                    }}
                                 />
                             </FormControl>
                             <FormControl required fullWidth>
-                                <FormLabel htmlFor="squareFootage">SquareFootage</FormLabel>
+                                <FormLabel htmlFor="squareFootage">Square Footage</FormLabel>
                                 <TextField
-                                    required
                                     fullWidth
-                                    name="Square Footage"
-                                    placeholder="Square Footage (ft^2)"
-                                    type="SquareFootage"
-                                    id="SquareFootage"
+                                    placeholder="Square Footage (ft²)"
+                                    id="squareFootage"
                                     autoComplete="SquareFootage"
                                     variant="outlined"
-                                    error={squareFootageError}
-                                    helperText={squareFootageErrorMessage}
-                                    color={squareFootageError ? 'error' : 'primary'}
+                                    value={formData.squareFootage}
+                                    onChange={(e) => handleInputChange(e, true)}
+                                    error={!!errors.squareFootage}
+                                    helperText={errors.squareFootage}
+                                    color={!!errors.squareFootage ? 'error' : 'primary'}
                                 />
                             </FormControl>
                             <div
@@ -655,8 +507,14 @@ export default function CreateListing(props) {
                                     maxwidth: "500px",
                                 }}
                             >
-                                <FormControlLabel control={<Checkbox id="wheelchair-accessible" />} label="Wheelchair Accessible" />
-                                <FormControlLabel control={<Checkbox id="smoking-allowed"/>} label="Smoking Allowed" />
+                                <FormControlLabel
+                                control={<Checkbox id="wheelchairAccessible" onChange={(e) => handleInputChange(e)}/>}
+                                label="Wheelchair Accessible"
+                                />
+                                <FormControlLabel
+                                control={<Checkbox id="smokingAllowed" onChange={(e) => handleInputChange(e)}/>}
+                                label="Smoking Allowed"
+                                />
                             </div>
                         </Box>
                     </Card>
@@ -674,68 +532,69 @@ export default function CreateListing(props) {
                             onSubmit={handleSubmit}
                             sx={{ display: 'flex', flexDirection: 'column', gap: 2, }} // Adjusted marginBottom
                         >
-                            <FormControl fullWidth>
+                            <FormControl required fullWidth>
                                 <FormLabel htmlFor="ApartmentNumber">Apartment Number</FormLabel>
                                 <TextField
-                                    name="ApartmentNumber"
                                     fullWidth
-                                    id="ApartmentNumber"
+                                    id="apartment"
                                     placeholder="Apartment Number"
-                                    error={apartmentError}
-                                    helperText={apartmentErrorMessage}
-                                    color={apartmentError ? 'error' : 'primary'}
+                                    value={formData.address.apartment}
+                                    onChange={(e) => handleNestedChange(e, 'address')}
+                                    error={!!errors.apartment}
+                                    helperText={errors.apartment}
+                                    color={!!errors.apartment ? 'error' : 'primary'}
                                 />
                             </FormControl>
                             <FormControl required fullWidth>
                                 <FormLabel htmlFor="StreetNumber">Street Number</FormLabel>
                                 <TextField
-                                    name="StreetNumber"
-                                    required
                                     fullWidth
-                                    id="StreetNumber"
+                                    id="streetNumber"
                                     placeholder="Street Number"
-                                    error={streetNumberError}
-                                    helperText={streetNumberErrorMessage}
-                                    color={streetNumberError ? 'error' : 'primary'}
+                                    value={formData.address.streetNumber}
+                                    onChange={(e) => handleNestedChange(e, 'address', true)}
+                                    error={!!errors.streetNumber}
+                                    helperText={errors.streetNumber}
+                                    color={!!errors.streetNumber ? 'error' : 'primary'}
                                 />
                             </FormControl>
                             <FormControl required fullWidth>
-                                <FormLabel htmlFor="Street">Street</FormLabel>
+                                <FormLabel htmlFor="street">Street</FormLabel>
                                 <TextField
-                                    name="Street"
-                                    required
                                     fullWidth
-                                    id="Street"
+                                    id="street"
                                     placeholder="Street"
-                                    error={streetError}
-                                    helperText={streetErrorMessage}
-                                    color={streetError ? 'error' : 'primary'}
+                                    value={formData.address.street}
+                                    onChange={(e) => handleNestedChange(e, 'address')}
+                                    error={!!errors.street}
+                                    helperText={errors.street}
+                                    color={!!errors.street ? 'error' : 'primary'}
                                 />
                             </FormControl>
                             <FormControl required fullWidth>
                                 <FormLabel htmlFor="City">City</FormLabel>
                                 <TextField
-                                    name="City"
-                                    required
                                     fullWidth
-                                    id="City"
+                                    id="city"
                                     placeholder="City"
-                                    error={cityError}
-                                    helperText={cityErrorMessage}
-                                    color={cityError ? 'error' : 'primary'}
+                                    value={formData.address.city}
+                                    onChange={(e) => handleNestedChange(e, 'address')}
+                                    error={!!errors.city}
+                                    helperText={errors.city}
+                                    color={!!errors.city ? 'error' : 'primary'}
                                 />
                             </FormControl>
                             <FormControl required fullWidth>
-                                <FormLabel htmlFor="PostalCode">Postal Code</FormLabel>
+                                <FormLabel htmlFor="postalCode">Postal Code</FormLabel>
                                 <TextField
-                                    name="PostalCode"
-                                    required
                                     fullWidth
-                                    id="PostalCode"
+                                    id="postalCode"
                                     placeholder="Postal Code"
-                                    error={postalCodeError}
-                                    helperText={postalCodeErrorMessage}
-                                    color={postalCodeError ? 'error' : 'primary'}
+                                    value={formData.address.postalCode}
+                                    onChange={(e) => handleNestedChange(e, 'address')}
+                                    error={!!errors.postalCode}
+                                    helperText={errors.postalCode}
+                                    color={!!errors.postalCode ? 'error' : 'primary'}
                                 />
                             </FormControl>
                         </Box>
@@ -754,12 +613,27 @@ export default function CreateListing(props) {
                             onSubmit={handleSubmit}
                             sx={{ display: 'flex', flexDirection: 'column', gap: 2, }} // Adjusted marginBottom
                         >
-                            <FormControlLabel control={<Checkbox id="gym" />} label="Gym" />
-                            <FormControlLabel control={<Checkbox id="laundry"/>} label="Laundry" />
-                            <FormControlLabel control={<Checkbox id="pets-allowed"/>} label="Pets Allowed" />
-                            <FormControlLabel control={<Checkbox id="parking"/>} label="Parking" />
-                            <FormControlLabel control={<Checkbox id="internet-included"/>} label="Internet Included" />
-                        </Box>
+                        <FormControlLabel
+                        control={<Checkbox id="gym" onChange={(e) => handleNestedChange(e, "amenities")} />}
+                        label="Gym"
+                        />
+                        <FormControlLabel
+                            control={<Checkbox id="laundry" onChange={(e) => handleNestedChange(e, "amenities")} />}
+                            label="Laundry"
+                        />
+                        <FormControlLabel
+                            control={<Checkbox id="petsAllowed" onChange={(e) => handleNestedChange(e, "amenities")} />}
+                            label="Pets Allowed"
+                        />
+                        <FormControlLabel
+                            control={<Checkbox id="parking" onChange={(e) => handleNestedChange(e, "amenities")} />}
+                            label="Parking"
+                        />
+                        <FormControlLabel
+                            control={<Checkbox id="internetIncluded" onChange={(e) => handleNestedChange(e, "amenities")} />}
+                            label="Internet Included"
+                        />
+                    </Box>
                     </Card>
                     <br />
                     <Card variant="outlined">
@@ -775,37 +649,44 @@ export default function CreateListing(props) {
                             onSubmit={handleSubmit}
                             sx={{ display: 'flex', flexDirection: 'column', gap: 2, }} // Adjusted marginBottom
                         >
+                            {/* Utilities can actually be floats so using type="number" here is fine */}
                             <FormControl fullWidth>
-                                <FormLabel htmlFor="water-cost">Water Cost</FormLabel>
+                                <FormLabel htmlFor="waterCost">Water Cost</FormLabel>
                                 <TextField
-                                    name="water-cost"
                                     fullWidth
-                                    id="water-cost"
-                                    error={waterCostError}
-                                    helperText={waterCostErrorMessage}
-                                    color={waterCostError ? 'error' : 'primary'}
+                                    id="waterCost"
+                                    type="number"                  
+                                    value={formData.utilities.waterCost}
+                                    onChange={(e) => handleNestedChange(e, 'utilities')}
+                                    error={!!errors.waterCost}
+                                    helperText={errors.waterCost}
+                                    color={!!errors.waterCost ? 'error' : 'primary'}
                                 />
                             </FormControl>
                             <FormControl fullWidth>
-                                <FormLabel htmlFor="electricity-cost">Electricity Cost</FormLabel>
+                                <FormLabel htmlFor="electricityCost">Electricity Cost</FormLabel>
                                 <TextField
-                                    name="electricity-cost"
                                     fullWidth
-                                    id="electricity-cost"
-                                    error={electricityCostError}
-                                    helperText={electricityCostErrorMessage}
-                                    color={electricityCostError ? 'error' : 'primary'}
+                                    id="electricityCost"
+                                    type="number"
+                                    value={formData.utilities.electricityCost}
+                                    onChange={(e) => handleNestedChange(e, 'utilities')}
+                                    error={!!errors.electricityCost}
+                                    helperText={errors.electricityCost}
+                                    color={!!errors.electricityCost ? 'error' : 'primary'}
                                 />
                             </FormControl>
                             <FormControl fullWidth>
-                                <FormLabel htmlFor="heating-cost">Heating Cost</FormLabel>
+                                <FormLabel htmlFor="heatingCost">Heating Cost</FormLabel>
                                 <TextField
-                                    name="heating-cost"
                                     fullWidth
-                                    id="heating-cost"
-                                    error={heatingCostError}
-                                    helperText={heatingCostErrorMessage}
-                                    color={heatingCostError ? 'error' : 'primary'}
+                                    id="heatingCost"
+                                    type="number"
+                                    value={formData.utilities.heatingCost}
+                                    onChange={(e) => handleNestedChange(e, 'utilities')}
+                                    error={!!errors.heatingCost}
+                                    helperText={errors.heatingCost}
+                                    color={!!errors.heatingCost ? 'error' : 'primary'}
                                 />
                             </FormControl>
                         </Box>
@@ -828,81 +709,91 @@ export default function CreateListing(props) {
                             <FormControl fullWidth>
                                 <FormLabel htmlFor="image-1">Image 1</FormLabel>
                                 <TextField
-                                    name="image-1"
                                     fullWidth
                                     id="image-1"
+                                    value={formData.images[0]}
+                                    onChange={(e) => handleImageChange(0, e.target.value)}
                                 />
                             </FormControl>
                             <FormControl fullWidth>
                                 <FormLabel htmlFor="image-2">Image 2</FormLabel>
                                 <TextField
-                                    name="image-2"
                                     fullWidth
                                     id="image-2"
+                                    value={formData.images[1]}
+                                    onChange={(e) => handleImageChange(1, e.target.value)}
                                 />
                             </FormControl>
                             <FormControl fullWidth>
                                 <FormLabel htmlFor="image-3">Image 3</FormLabel>
                                 <TextField
-                                    name="image-3"
                                     fullWidth
                                     id="image-3"
+                                    value={formData.images[2]}
+                                    onChange={(e) => handleImageChange(2, e.target.value)}
                                 />
                             </FormControl>
                             <FormControl fullWidth>
                                 <FormLabel htmlFor="image-4">Image 4</FormLabel>
                                 <TextField
-                                    name="image-4"
                                     fullWidth
                                     id="image-4"
+                                    value={formData.images[3]}
+                                    onChange={(e) => handleImageChange(3, e.target.value)}
                                 />
                             </FormControl>
                             <FormControl fullWidth>
                                 <FormLabel htmlFor="image-5">Image 5</FormLabel>
                                 <TextField
-                                    name="image-5"
                                     fullWidth
                                     id="image-5"
+                                    value={formData.images[4]}
+                                    onChange={(e) => handleImageChange(4, e.target.value)}
                                 />
                             </FormControl>
                             <FormControl fullWidth>
                                 <FormLabel htmlFor="image-6">Image 6</FormLabel>
                                 <TextField
-                                    name="image-6"
                                     fullWidth
                                     id="image-6"
+                                    value={formData.images[5]}
+                                    onChange={(e) => handleImageChange(5, e.target.value)}
                                 />
                             </FormControl>
                             <FormControl fullWidth>
                                 <FormLabel htmlFor="image-7">Image 7</FormLabel>
                                 <TextField
-                                    name="image-7"
                                     fullWidth
                                     id="image-7"
+                                    value={formData.images[6]}
+                                    onChange={(e) => handleImageChange(6, e.target.value)}
                                 />
                             </FormControl>
                             <FormControl fullWidth>
                                 <FormLabel htmlFor="image-8">Image 8</FormLabel>
                                 <TextField
-                                    name="image-8"
                                     fullWidth
                                     id="image-8"
+                                    value={formData.images[7]}
+                                    onChange={(e) => handleImageChange(7, e.target.value)}
                                 />
                             </FormControl>
                             <FormControl fullWidth>
                                 <FormLabel htmlFor="image-9">Image 9</FormLabel>
                                 <TextField
-                                    name="image-9"
                                     fullWidth
                                     id="image-9"
+                                    value={formData.images[8]}
+                                    onChange={(e) => handleImageChange(8, e.target.value)}
                                 />
                             </FormControl>
                             <FormControl fullWidth>
                                 <FormLabel htmlFor="image-10">Image 10</FormLabel>
                                 <TextField
-                                    name="image-10"
                                     fullWidth
                                     id="image-10"
+                                    value={formData.images[9]}
+                                    onChange={(e) => handleImageChange(9, e.target.value)}
                                 />
                             </FormControl>
                         </Box>
