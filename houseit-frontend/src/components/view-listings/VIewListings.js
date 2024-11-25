@@ -6,7 +6,7 @@ import Navbar from '../navbar/Navbar';
 import Axios from 'axios';
 import StatusDialog from '../status-dialog/StatusDialog';
 import FilterModal from '../filter-modal/FilterModal';
-import { Box, Button, TextField, InputAdornment, IconButton } from '@mui/material';
+import { Box, Button, TextField, InputAdornment, IconButton, Typography } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';  // Filter icon

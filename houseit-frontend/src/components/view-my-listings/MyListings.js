@@ -5,7 +5,6 @@ import Navbar from '../navbar/Navbar';
 import { Box, TextField, InputAdornment, IconButton, Typography } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
 
 export default function MyListings({ landlordId }) {
     const [listings, setListings] = useState([]);
@@ -19,7 +18,7 @@ export default function MyListings({ landlordId }) {
             try {
                 const response = await Axios.get(`http://localhost:8080/landlord/${landlordId}/listings`);
                 setListings(response.data);
-                setFilteredListings(response.data);
+                setFilteredListings(response.data); // Assuming no filters are initially applied
                 setLoading(false);
             } catch (error) {
                 console.error("Error fetching listings:", error);
@@ -40,19 +39,23 @@ export default function MyListings({ landlordId }) {
         setFilteredListings(filtered);
     }, [searchQuery, listings]);
 
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p>{error}</p>;
-    if (!listings.length) return <p>No listings found.</p>;
+    const handleClear = () => setSearchQuery('');
 
     return (
         <div className="dashboard">
             <Navbar />
             <header className="dashboard-header">
-                <Typography variant="h2" gutterBottom>
+                <Typography variant="h4" component="h2" style={{ margin: "20px 0" }}>
                     My Listings
                 </Typography>
-                <Box sx={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
+                <Box sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    width: '50%', // Makes the search bar smaller and more centered
+                    margin: 'auto'
+                }}>
                     <TextField
+                        fullWidth
                         variant="outlined"
                         placeholder="Search..."
                         value={searchQuery}
@@ -65,25 +68,31 @@ export default function MyListings({ landlordId }) {
                             ),
                             endAdornment: (
                                 <InputAdornment position="end">
-                                    {searchQuery && (
-                                        <IconButton onClick={() => setSearchQuery('')}>
-                                            <ClearIcon />
-                                        </IconButton>
-                                    )}
+                                    <IconButton onClick={handleClear} edge="end">
+                                        <ClearIcon />
+                                    </IconButton>
                                 </InputAdornment>
                             ),
-                        }}
-                        sx={{
-                            width: '100%',
-                            maxWidth: '500px',
                         }}
                     />
                 </Box>
             </header>
             <div className="listing-grid">
-                {filteredListings.map(listing => (
-                    <ListingCard key={listing.id} listing={listing} />
-                ))}
+                {loading ? <p>Loading...</p> :
+                    filteredListings.length > 0 ? (
+                        <Box sx={{
+                            display: 'grid',
+                            gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
+                            gap: '16px',
+                            padding: 2
+                        }}>
+                            {filteredListings.map(listing => (
+                                <ListingCard key={listing.id} listing={listing} />
+                            ))}
+                        </Box>
+                    ) : <p>You currently have no listing</p>
+                }
+                {error && <p>{error}</p>}
             </div>
         </div>
     );
