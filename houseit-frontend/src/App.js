@@ -23,6 +23,7 @@ function App() {
               <Route path="/createlisting" element={<CreateListing />} />
               <Route path="/approvelandlord" element={<ApproveLandlord />} />
               <Route path="/viewlistings" element={<ViewListings />} />
+              <Route path="/updatelisting" element={<UpdateListing />} />
           </Routes>
       </Router>
   );

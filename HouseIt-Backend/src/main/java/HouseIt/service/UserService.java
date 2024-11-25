@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
@@ -26,14 +27,15 @@ public class UserService {
 
     @Autowired
     private NotificationService notificationService;
+    
     @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private PasswordEncoder passwordEncoder;
 
 
     @Transactional
     public Administrator createAdmin() {
         String rawPassword = "adminpassword";
-        String encodedPassword = bCryptPasswordEncoder.encode(rawPassword);
+        String encodedPassword = passwordEncoder.encode(rawPassword);
         
         User admin = getUserByEmail("admin@house.it");
         if (admin == null) {
