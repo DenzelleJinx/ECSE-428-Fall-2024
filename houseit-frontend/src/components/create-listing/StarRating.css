@@ -1,0 +1,65 @@
+.rating-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .rating-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem; 
+  }
+  
+  .rating-label {
+    font-weight: bold;
+    margin-right: 0.5rem; 
+    font-size: 0.8rem; 
+  }
+  
+  .stars-container {
+    display: flex;
+    cursor: pointer;
+  }
+  
+  .star {
+    width: 24px;
+    height: 24px;
+    fill: none;
+    stroke-width: 2px;
+    margin-right: 4px; 
+    transition: transform 0.2s ease-in-out; 
+  }
+  
+  .star-filled {
+    fill: gold;
+    stroke: gold;
+  }
+  
+  .star-empty {
+    fill: lightgray;
+    stroke: lightgray;
+  }
+  
+  .star-half {
+    fill: gold;
+    stroke: gold;
+  }
+  
+  .star:hover {
+    transform: scale(1.2); 
+    stroke: orange;
+    fill: orange;
+  }
+  
+  .error-message {
+    color: red;
+    font-size: 0.875rem; 
+    margin-top: 0.25rem; 
+    font-style: italic; 
+  }
+  
+  .stars-container:hover .star {
+    opacity: 0.8;
+  }
+  
+  

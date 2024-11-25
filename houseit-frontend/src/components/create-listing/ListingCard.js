@@ -12,9 +12,10 @@ import FireIcon from '@mui/icons-material/Whatshot';
 import { Button, Modal, Box, Typography } from '@mui/material';
 import Axios from 'axios';
 import StatusDialog from '../status-dialog/StatusDialog';
+import StarRating from './StarRating';
 
 
-import apartmentImage from '../../assets/sample-bedroom.png';
+// import apartmentImage from '../../assets/sample-bedroom.png';
 import PropertyListing from "../view-listings/ImagePopup";
 
 function ListingCard({ listing, onRentOut }) {
@@ -314,6 +315,10 @@ function ListingCard({ listing, onRentOut }) {
                     <p>
                         {listing.address.apartmentNumber} {listing.address.streetNumber} {listing.address.street}, {listing.address.city}, {listing.address.postalCode}
                     </p>
+                </div>
+                {/* property rating */}
+                <div>
+                    <StarRating rating={listing.propertyRating} listingId={listing.id} />
                 </div>
                 <div style={{
                     display: 'flex',
