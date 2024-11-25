@@ -22,7 +22,8 @@ public class UtilitiesDAOTests {
     private float electricityCost = 20.0f;
     private float heatingCost = 30.0f;
     private Utilities utilities;
-
+    
+    @BeforeEach
     @AfterEach
     public void tearDown() {
         utilitiesDAO.deleteAll();

@@ -40,12 +40,12 @@ public class UserController {
         return ResponseEntity.ok(new UserListDTO(userResponseDTOs));
     }
 
-    /* @GetMapping("/users/{id}")
+    @GetMapping("/users/id/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable("id") int id) {
         User user = userService.getUserById(id);
         UserDTO userDTO = new UserDTO(user);
         return ResponseEntity.ok(userDTO);
-    } */
+    }
 
     @GetMapping("/users/{email}")
     public ResponseEntity<UserDTO> getUserByEmail(@PathVariable("email") String email) {

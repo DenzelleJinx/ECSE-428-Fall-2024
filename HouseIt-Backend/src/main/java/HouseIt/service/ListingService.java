@@ -108,6 +108,7 @@ public class ListingService {
             throw new IllegalArgumentException("No such landlord with id: " + landlordId);
         }
 
+        newListing.setLandlordId(landlordId);
         // Save listing and assign to landlord
         newListing = listingDAO.save(newListing);
         landlord.addProperty(newListing);
@@ -220,6 +221,7 @@ public class ListingService {
 
         ListingDTO dto = new ListingDTO();
         dto.setId(listing.getId());
+        dto.setLandlordId(listing.getLandlordId());
         dto.setTitle(listing.getTitle());
         dto.setDescription(listing.getDescription());
         dto.setMonthlyPrice(listing.getMonthlyPrice());
@@ -231,6 +233,7 @@ public class ListingService {
         dto.setWheelchairAccessible(listing.getWheelchairAccessible());
         dto.setHidden(listing.getHidden());
         dto.setSmokingAllowed(listing.getSmokingAllowed());
+        dto.setCompleted(listing.isCompleted());
         dto.setAddress(listing.getAddress());
         dto.setAmenitiesOffered(listing.getAmenitiesOffered());
         dto.setUtilitiesCosts(listing.getUtilitiesCosts());

@@ -28,6 +28,7 @@ public class ImageDAOTests {
         imageDAO.save(image);
     }
 
+    @BeforeEach
     @AfterEach
     public void tearDown() {
         imageDAO.deleteAll();

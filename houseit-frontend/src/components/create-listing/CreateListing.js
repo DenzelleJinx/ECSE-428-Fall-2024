@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect , useRef } from 'react';
 import {
     Box,
     Button,
@@ -22,6 +22,7 @@ import ImageUpload from '../../components/image-upload/ImageUpload';
 import { useNavigate } from 'react-router-dom';
 import mcgillLogo from '../../assets/mcgill-logo.png';
 import Navbar from '../navbar/Navbar';
+import StatusDialog from '../../components/status-dialog/StatusDialog';
 import axios from 'axios';
 
 
@@ -97,11 +98,15 @@ export default function CreateListing(props) {
 
     const primaryColor = "#D50032";
     const secondaryColor = "#FFFFFF";
-
+    const formRef = useRef(null);
     const [propertyType, setPropertyType] = React.useState('');
 
     const handlePropertyTypeChange = (event) => {
         setPropertyType(event.target.value);
+    };
+
+    const handleDialogClose = () => {
+        setOpenDialog(false);
     };
 
     const [descriptionError, setDescriptionError] = React.useState(false);
@@ -139,6 +144,10 @@ export default function CreateListing(props) {
 
     const [serverErrorMessage, setServerErrorMessage] = React.useState('');
     const [serverSuccessMessage, setServerSuccessMessage] = React.useState('');
+
+    const [openDialog, setOpenDialog] = React.useState(false); // State for dialog visibility
+    const [dialogMessage, setDialogMessage] = React.useState(''); // Message to display in the dialog
+    const [dialogSeverity, setDialogSeverity] = React.useState('error'); // Severity of the message: 'success' or 'error'
 
     const validateInputs = () => {        
         const title = document.getElementById('Title');
@@ -354,7 +363,12 @@ export default function CreateListing(props) {
         const heatingCost = document.getElementById('heating-cost');
         
         // Validate inputs
-        if (!validateInputs()) {
+        const isValid = validateInputs();
+
+        if (!isValid) {
+            setDialogMessage('Please fill in all required fields.');
+            setDialogSeverity('error');
+            setOpenDialog(true);
             return;
         }
         
@@ -518,6 +532,7 @@ export default function CreateListing(props) {
                         </Typography>
                         <Box
                             component="form"
+                            ref={formRef} // Assign the ref to the form element
                             onSubmit={handleSubmit}
                             sx={{ display: 'flex', flexDirection: 'column', gap: 2, }} // Adjusted marginBottom
                         >
@@ -917,6 +932,13 @@ export default function CreateListing(props) {
                     </Button>
                 </Box>
             </CreateListingContainer>
+            <StatusDialog
+                open={openDialog}
+                onClose={handleDialogClose}
+                severity={dialogSeverity}
+                title={dialogSeverity === 'success' ? 'Success' : 'An Error Occurred'}
+                message={dialogMessage}
+            />
         </AppTheme>
     );
 }

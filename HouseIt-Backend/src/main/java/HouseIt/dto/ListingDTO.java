@@ -10,6 +10,7 @@ import HouseIt.model.Listing.PropertyType;
 public class ListingDTO {
    
     private int id;
+    private int landlordId;
     private String title;
     private String description;
     private int monthlyPrice;
@@ -21,6 +22,7 @@ public class ListingDTO {
     private boolean wheelchairAccessible;
     private boolean hidden;
     private boolean smokingAllowed;
+    private boolean completed;
     private Address address ;
     private Amenities amenitiesOffered ;
     private Utilities utilitiesCosts ;
@@ -33,6 +35,15 @@ public class ListingDTO {
     public void setId(int id) {
         this.id = id;
     }
+
+    // Landlord ID
+    public int getLandlordId() {
+        return landlordId;
+    }
+    public void setLandlordId(int landlordId) {
+        this.landlordId = landlordId;
+    }
+    
     // Title
     public String getTitle() {
         return title;
@@ -129,6 +140,15 @@ public class ListingDTO {
 
     public void setSmokingAllowed(boolean smokingAllowed) {
         this.smokingAllowed = smokingAllowed;
+    }
+
+    // Completed
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
     }
 
     // Address
