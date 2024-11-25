@@ -12,6 +12,10 @@ import {
   TextField,
   InputAdornment,
   IconButton,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from "@mui/icons-material/Clear";
@@ -29,7 +33,8 @@ export default function Listing() {
   const [filteredListings, setFilteredListings] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Populate local state when fetchedListings changes
+  // Define the filter modal state and filter state
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [filters, setFilters] = useState({
     address: "",
     bedrooms: { min: "", max: "" },
@@ -53,7 +58,7 @@ export default function Listing() {
     propertyRating: { min: "", max: "" },
   });
 
-  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const [deleteListingId, setDeleteListingId] = useState(null);
 
   useEffect(() => {
     if (fetchedListings) {
@@ -69,12 +74,9 @@ export default function Listing() {
   useEffect(() => {
     const lowercasedQuery = searchQuery.toLowerCase();
     const filtered = listings.filter((listing) => {
-      // Search Query Matching
       const matchesSearch =
         listing.title.toLowerCase().includes(lowercasedQuery) ||
         listing.description.toLowerCase().includes(lowercasedQuery);
-
-      // Filter Matching
       const matchesFilters =
         (filters.address
           ? listing.address.street
@@ -95,63 +97,7 @@ export default function Listing() {
           : true) &&
         (filters.propertyType
           ? listing.propertyType === filters.propertyType
-          : true) &&
-        (filters.smokingAllowed !== null
-          ? listing.smokingAllowed === filters.smokingAllowed
-          : true) &&
-        (filters.wheelchairAccessible !== null
-          ? listing.wheelchairAccessible === filters.wheelchairAccessible
-          : true) &&
-        (filters.amenities.gym !== null
-          ? listing.amenitiesOffered.gym === filters.amenities.gym
-          : true) &&
-        (filters.amenities.laundry !== null
-          ? listing.amenitiesOffered.laundry === filters.amenities.laundry
-          : true) &&
-        (filters.amenities.petsAllowed !== null
-          ? listing.amenitiesOffered.petsAllowed ===
-            filters.amenities.petsAllowed
-          : true) &&
-        (filters.amenities.parking !== null
-          ? listing.amenitiesOffered.parking === filters.amenities.parking
-          : true) &&
-        (filters.amenities.internetIncluded !== null
-          ? listing.amenitiesOffered.internetIncluded ===
-            filters.amenities.internetIncluded
-          : true) &&
-        (filters.utilities.waterCost.min
-          ? listing.utilities.waterCost >= filters.utilities.waterCost.min
-          : true) &&
-        (filters.utilities.waterCost.max
-          ? listing.utilities.waterCost <= filters.utilities.waterCost.max
-          : true) &&
-        (filters.utilities.electricityCost.min
-          ? listing.utilities.electricityCost >=
-            filters.utilities.electricityCost.min
-          : true) &&
-        (filters.utilities.electricityCost.max
-          ? listing.utilities.electricityCost <=
-            filters.utilities.electricityCost.max
-          : true) &&
-        (filters.utilities.heatingCost.min
-          ? listing.utilities.heatingCost >= filters.utilities.heatingCost.min
-          : true) &&
-        (filters.utilities.heatingCost.max
-          ? listing.utilities.heatingCost <= filters.utilities.heatingCost.max
-          : true) &&
-        (filters.squareFootage.min
-          ? listing.squareFootage >= filters.squareFootage.min
-          : true) &&
-        (filters.squareFootage.max
-          ? listing.squareFootage <= filters.squareFootage.max
-          : true) &&
-        (filters.propertyRating.min
-          ? listing.propertyRating >= filters.propertyRating.min
-          : true) &&
-        (filters.propertyRating.max
-          ? listing.propertyRating <= filters.propertyRating.max
           : true);
-
       return matchesSearch && matchesFilters;
     });
     setFilteredListings(filtered);
@@ -165,30 +111,31 @@ export default function Listing() {
     setSearchQuery("");
   };
 
-  const handleRentOut = async (listingId) => {
-    try {
-      const response = await Axios.put(
-        `http://localhost:8080/listing/${listingId}/complete`
-      );
-      if (response.status === 200) {
-        setDialogMessage(
-          "Your listing has been rented out. A notification has been sent to the landlord."
-        );
-        setDialogSeverity("success");
-        setOpenDialog(true);
-      }
+  const handleDeleteListing = (listingId) => {
+    // Show the confirmation dialog
+    setDeleteListingId(listingId);
+  };
 
+  const confirmDelete = async () => {
+    try {
+      //your API or delete the listing here
+      await Axios.delete(`http://localhost:8080/listing/${deleteListingId}`);
       setListings((prevListings) =>
-        prevListings.filter((listing) => listing.id !== listingId)
+        prevListings.filter((listing) => listing.id !== deleteListingId)
       );
+      setDialogMessage("Listing deleted successfully!");
+      setDialogSeverity("success");
+      setOpenDialog(true);
     } catch (error) {
-      console.error("Error renting out listing:", error);
-      setDialogMessage(
-        "An error occurred while renting out the listing. Please try again later."
-      );
+      setDialogMessage("Error deleting listing. Please try again later.");
       setDialogSeverity("error");
       setOpenDialog(true);
     }
+    setDeleteListingId(null); // Reset deleteListingId
+  };
+
+  const cancelDelete = () => {
+    setDeleteListingId(null); // Reset deleteListingId
   };
 
   if (loading) return <p>Loading...</p>;
@@ -260,11 +207,27 @@ export default function Listing() {
       {isFilterModalOpen && (
         <FilterModal
           filters={filters}
-          onChange={setFilters}
+          onChange={handleFilterChange}
           onClose={() => setIsFilterModalOpen(false)}
           onApply={handleFilterChange}
         />
       )}
+
+      {/* Confirmation Dialog for Deleting Listing */}
+      <Dialog open={deleteListingId !== null} onClose={cancelDelete}>
+        <DialogTitle>Delete Listing</DialogTitle>
+        <DialogContent>
+          <p>Are you sure you want to delete this listing?</p>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={cancelDelete} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={confirmDelete} color="error">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       {/* Floating "Delete Listing" Button */}
       <Button
@@ -283,10 +246,7 @@ export default function Listing() {
           alignItems: "center",
           borderRadius: "4px",
         }}
-        onClick={() => {
-          console.log("Delete Listing button clicked!");
-          // You can add the functionality to delete the listing here
-        }}
+        onClick={() => handleDeleteListing(123)} // Replace 123 with actual listing ID
       >
         Delete Listing
       </Button>
