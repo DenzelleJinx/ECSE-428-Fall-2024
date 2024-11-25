@@ -28,6 +28,7 @@ import axios from "axios";
 
 function ListingCard({ listing, onRentOut }) {
     const [isHovered, setIsHovered] = useState(false);
+    const [isSaved, setIsSaved] = useState(false);
 
   const cardStyles = {
     border: "1px solid #ddd",
@@ -112,6 +113,9 @@ function ListingCard({ listing, onRentOut }) {
     const handleDialogClose = () => {
         setOpenDialog(false);
     };
+    const navigate = useNavigate();
+    const [serverErrorMessage, setServerErrorMessage] = useState('');
+    const [serverSuccessMessage, setServerSuccessMessage] = useState('');
 
     useEffect(() => {
         const checkAuth = async () => {
@@ -134,6 +138,25 @@ function ListingCard({ listing, onRentOut }) {
 
     const handleToggle = () => {
         setShowPhoneNumber(!showPhoneNumber);
+    };
+    const handleSave = async () => {
+        try {
+            const response = await Axios.post(
+                `http://localhost:8080/users/${currentUserName}/saved-listings`,
+                { listingId: listing.id }
+            );
+            if (response.status === 201) {
+                setDialogMessage('Listing has been saved successfully.');
+                setDialogSeverity('success');
+                setIsSaved(true);
+            }
+        } catch (error) {
+            console.error('Error saving listing:', error);
+            setDialogMessage('An error occurred while saving the listing. Please try again.');
+            setDialogSeverity('error');
+        } finally {
+            setOpenDialog(true);
+        }
     };
 
     // Sends notifications
