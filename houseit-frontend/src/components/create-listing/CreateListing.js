@@ -405,7 +405,7 @@ export default function CreateListing(props) {
             wheelchairAccessible: wheelchairAccessible.checked,
             smokingAllowed: smokingAllowed.checked,
             address: {
-                apartmentNumber : apartment.value,
+                apartment: apartment.value,
                 streetNumber: streetNumber.value,
                 street: street.value,
                 city: city.value,
