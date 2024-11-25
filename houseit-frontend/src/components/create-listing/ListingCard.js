@@ -24,6 +24,8 @@ import PropertyListing from "../view-listings/ImagePopup";
 
 import { useNavigate } from "react-router-dom";
 
+import axios from "axios";
+
 function ListingCard({ listing, onRentOut }) {
   const [isHovered, setIsHovered] = useState(false);
   const navigate = useNavigate();
@@ -106,6 +108,9 @@ function ListingCard({ listing, onRentOut }) {
   const [openDialog, setOpenDialog] = React.useState(false); // State for dialog visibility
   const [dialogMessage, setDialogMessage] = React.useState(""); // Message to display in the dialog
   const [dialogSeverity, setDialogSeverity] = React.useState("error"); // Severity of the message: 'success' or 'error'
+
+  const [serverErrorMessage, setServerErrorMessage] = React.useState("");
+  const [serverSuccessMessage, setServerSuccessMessage] = React.useState("");
 
   const handleDialogClose = () => {
     setOpenDialog(false);
@@ -245,6 +250,43 @@ function ListingCard({ listing, onRentOut }) {
   const handleUpdate = () => {
     localStorage.setItem("currentListing", JSON.stringify(listing));
     navigate("/updatelisting");
+  };
+
+  const handleDelete = async (event) => {
+    localStorage.setItem("currentListing", JSON.stringify(listing));
+
+    event.preventDefault();
+
+    // Clear previous error messages
+    setServerErrorMessage("");
+    setServerSuccessMessage("");
+
+    // Get listing ID
+    const listingID = listing.id;
+
+    try {
+      const axiosClient = axios.create({
+        baseURL: "http://localhost:8080",
+      });
+      const listingResponse = await axiosClient.get(`/listing/${listingID}`);
+      if (listingResponse.status === 200) {
+        const listingID = listingResponse.data.id;
+
+        const response = await axiosClient.delete(`/listing/${listingID}`);
+        console.log("Listing deleted successfully:", response.data); // TODO: Remove this when done testing
+        setServerSuccessMessage("Listing deleted successfully");
+      }
+    } catch (error) {
+      let errorMessage = null;
+      if (error.response && typeof error.response.data === "string") {
+        errorMessage = error.response.data;
+      }
+      setServerErrorMessage(
+        errorMessage
+          ? errorMessage
+          : "An error occurred during signup. Please try again."
+      );
+    }
   };
 
   return (
@@ -501,10 +543,7 @@ function ListingCard({ listing, onRentOut }) {
               textTransform: "none",
             }}
             fullWidth
-            onClick={() => {
-              // Placeholder for delete functionality
-              console.log("Delete button clicked. Implement delete logic.");
-            }}
+            onClick={handleDelete}
           >
             Delete
           </Button>
