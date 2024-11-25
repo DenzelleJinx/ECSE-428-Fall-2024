@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import Axios from 'axios';
+import { useListings } from '../../hooks/useListings';
 import ListingCard from "../create-listing/ListingCard";
+import '../create-listing/Listing.css';
 import Navbar from '../navbar/Navbar';
-import { Box, TextField, InputAdornment, IconButton, Typography } from '@mui/material';
+import Axios from 'axios';
+import StatusDialog from '../status-dialog/StatusDialog';
+import FilterModal from '../filter-modal/FilterModal';
+import { Box, Button, TextField, InputAdornment, IconButton,} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
+import FilterAltIcon from '@mui/icons-material/FilterAlt'; 
 
 export default function MyListings({ landlordId }) {
     const [listings, setListings] = useState([]);
@@ -12,13 +17,40 @@ export default function MyListings({ landlordId }) {
     const [error, setError] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
     const [filteredListings, setFilteredListings] = useState([]);
+    const [openDialog, setOpenDialog] = useState(false);
+    const [dialogMessage, setDialogMessage] = useState('');
+    const [dialogSeverity, setDialogSeverity] = useState('error');
+    const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+    const [filters, setFilters] = useState({
+        address: '',
+        bedrooms: { min: '', max: '' },
+        bathrooms: { min: '', max: '' },
+        propertyType: '',
+        smokingAllowed: null,
+        wheelchairAccessible: null,
+        amenities: {
+            gym: null,
+            laundry: null,
+            petsAllowed: null,
+            parking: null,
+            internetIncluded: null,
+        },
+        utilities: {
+            waterCost: { min: '', max: '' },
+            electricityCost: { min: '', max: '' },
+            heatingCost: { min: '', max: '' },
+        },
+        squareFootage: { min: '', max: '' },
+        propertyRating: { min: '', max: '' },
+    });
+
 
     useEffect(() => {
         const fetchListings = async () => {
             try {
                 const response = await Axios.get(`http://localhost:8080/landlord/${landlordId}/listings`);
                 setListings(response.data);
-                setFilteredListings(response.data); // Assuming no filters are initially applied
+                setFilteredListings(response.data);
                 setLoading(false);
             } catch (error) {
                 console.error("Error fetching listings:", error);
@@ -40,60 +72,91 @@ export default function MyListings({ landlordId }) {
     }, [searchQuery, listings]);
 
     const handleClear = () => setSearchQuery('');
+    const handleFilterChange = (newFilters) => {
+        setFilters(newFilters);
+    };
 
     return (
         <div className="dashboard">
             <Navbar />
             <header className="dashboard-header">
-                <Typography variant="h4" component="h2" style={{ margin: "20px 0" }}>
-                    My Listings
-                </Typography>
-                <Box sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    width: '50%', // Makes the search bar smaller and more centered
-                    margin: 'auto'
-                }}>
-                    <TextField
-                        fullWidth
-                        variant="outlined"
-                        placeholder="Search..."
+                <h2>My Listings</h2>
+                <div className="actions">
+                    {/*<input
+                        type="text"
+                        className="search-bar"
+                        placeholder="Search"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <SearchIcon />
-                                </InputAdornment>
-                            ),
-                            endAdornment: (
-                                <InputAdornment position="end">
-                                    <IconButton onClick={handleClear} edge="end">
-                                        <ClearIcon />
-                                    </IconButton>
-                                </InputAdornment>
-                            ),
-                        }}
-                    />
-                </Box>
+                    /> */}
+                    <Box sx={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
+                        <TextField
+                            variant="outlined"
+                            placeholder="Search..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            slotProps= {{
+                                input: {
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <SearchIcon />
+                                        </InputAdornment>
+                                    ),
+                                    endAdornment: searchQuery && (
+                                        <InputAdornment position="end">
+                                            <IconButton onClick={handleClear}>
+                                                <ClearIcon />
+                                            </IconButton>
+                                        </InputAdornment>
+                                    )
+                                }
+                            }}
+                            sx={{
+                                height: '36px',
+                                '& .MuiOutlinedInput-root': {
+                                  height: '100%',
+                                },
+                                '& .MuiInputBase-input': {
+                                  padding: '8px',
+                                },
+                                flexGrow: 0.25,
+                              }}
+                        />
+                        <IconButton
+                            sx={{ height: '36px', width: '36px' }}
+                            onClick={() => setIsFilterModalOpen(true)}
+                        >
+                            <FilterAltIcon />
+                        </IconButton>
+                    </Box>
+                </div>
             </header>
             <div className="listing-grid">
-                {loading ? <p>Loading...</p> :
-                    filteredListings.length > 0 ? (
-                        <Box sx={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
-                            gap: '16px',
-                            padding: 2
-                        }}>
-                            {filteredListings.map(listing => (
-                                <ListingCard key={listing.id} listing={listing} />
-                            ))}
-                        </Box>
-                    ) : <p>You currently have no listing</p>
-                }
-                {error && <p>{error}</p>}
+                {filteredListings.map(listing => (
+                    <ListingCard
+                        key={listing.id}
+                        listing={listing}
+                    />
+                ))}
             </div>
+
+            {/* Status Dialog */}
+            <StatusDialog
+                open={openDialog}
+                onClose={() => setOpenDialog(false)}
+                severity={dialogSeverity}
+                message={dialogMessage}
+            />
+
+            {/* Filter Modal */}
+            {isFilterModalOpen && (
+                <FilterModal
+                    filters={filters}
+                    onChange={setFilters}
+                    onClose={() => setIsFilterModalOpen(false)}
+                    onApply={handleFilterChange}
+                />
+            )}
         </div>
     );
 }
