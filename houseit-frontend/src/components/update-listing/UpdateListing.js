@@ -116,6 +116,16 @@ function UpdateListing(props) {
             const waterCost = document.getElementById('water-cost');
             const electricityCost = document.getElementById('electricity-cost');
             const heatingCost = document.getElementById('heating-cost');
+            const img1 = document.getElementById('image-1');
+            const img2 = document.getElementById('image-2');
+            const img3 = document.getElementById('image-3');
+            const img4 = document.getElementById('image-4');
+            const img5 = document.getElementById('image-5');
+            const img6 = document.getElementById('image-6');
+            const img7 = document.getElementById('image-7');
+            const img8 = document.getElementById('image-8');
+            const img9 = document.getElementById('image-9');
+            const img10 = document.getElementById('image-10');
             title.value = listing.title;
             description.value = listing.description;
             setPropertyType(listing.propertyType);
@@ -125,10 +135,10 @@ function UpdateListing(props) {
             squareFootage.value = listing.squareFootage;
             wheelchairAccessible.checked = listing.wheelchairAccessible;
             smokingAllowed.checked = listing.smokingAllowed;
-            if (apartment.value == "undefined"){
+            if (!listing.address.apartmentNumber){
                 apartment.value = listing.address.streetNumber;
             } else {
-                apartment.value = listing.address.apartment;
+                apartment.value = listing.address.apartmentNumber;
             }
             streetNumber.value = listing.address.streetNumber;
             street.value = listing.address.street;
@@ -142,10 +152,39 @@ function UpdateListing(props) {
             waterCost.value = listing.utilitiesCosts.waterCost;
             electricityCost.value = listing.utilitiesCosts.electricityCost;
             heatingCost.value = listing.utilitiesCosts.heatingCost;
-            //TODO fix images
-            document.getElementById('image-1').value = "https://liveatencore.com/wp-content/uploads/2018/12/14-dec-2018-UNIT-2.png";
-            document.getElementById('image-3').value = "https://images1.apartments.com/i2/waLNySi3DU4Z-hW66noKuBfuS1SgQEozHk5sIrcJbBo/117/4346-46-39th-pl-unit-ph-1-queens-ny-building-photo.jpg?p=1";
-            document.getElementById('image-4').value = "https://images.rentals.ca/property-pictures/medium/montreal-qc/809658/apartment-220293668.jpg";
+            try {
+                img1.value = listing.propertyImages[0].url;
+            } catch (error) {}
+            try {
+                img2.value = listing.propertyImages[1].url;
+            } catch (error) {}
+            try {
+
+            } catch (error) {}
+            try {
+                img3.value = listing.propertyImages[2].url;
+            } catch (error) {}
+            try {
+                img4.value = listing.propertyImages[3].url;
+            } catch (error) {}
+            try {
+                img5.value = listing.propertyImages[4].url;
+            } catch (error) {}
+            try {
+                img6.value = listing.propertyImages[5].url;
+            } catch (error) {}
+            try {
+                img7.value = listing.propertyImages[6].url;
+            } catch (error) {}
+            try {
+                img8.value = listing.propertyImages[7].url;
+            } catch (error) {}
+            try {
+                img9.value = listing.propertyImages[8].url;
+            } catch (error) {}
+            try {
+                img10.value = listing.propertyImages[9].url;
+            } catch (error) {}
         }
     })
 
@@ -447,7 +486,7 @@ function UpdateListing(props) {
             wheelchairAccessible: wheelchairAccessible.checked,
             smokingAllowed: smokingAllowed.checked,
             address: {
-                apartment: apartment.value,
+                apartmentNumber: apartment.value,
                 streetNumber: streetNumber.value,
                 street: street.value,
                 city: city.value,
