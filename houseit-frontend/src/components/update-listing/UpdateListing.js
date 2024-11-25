@@ -70,53 +70,101 @@ const UpdateListingContainer = styled(Stack)(({ theme }) => ({
 
 export default function UpdateListing() {
 
+    const listing = JSON.parse(localStorage.getItem('currentListing'));
+
+    //formData.propertyType = listing.propertyType;
+
+    //if (!listing.address.apartmentNumber){
+    //    formData.address.apartment = listing.address.streetNumber;
+    //}
+    let img0 = "";
+    try {
+        img0 = listing.propertyImages[0].url;
+    } catch (error) {}
+    let img1 = "";
+    try {
+        img1 = listing.propertyImages[1].url;
+    } catch (error) {}
+    let img2 = "";
+    try {
+        img2 = listing.propertyImages[2].url;
+    } catch (error) {}
+    let img3 = "";
+    try {
+        img3 = listing.propertyImages[3].url;
+    } catch (error) {}
+    let img4 = "";
+    try {
+        img4 = listing.propertyImages[4].url;
+    } catch (error) {}
+    let img5 = "";
+    try {
+        img5 = listing.propertyImages[5].url;
+    } catch (error) {}
+    let img6 = "";
+    try {
+        img6 = listing.propertyImages[6].url;
+    } catch (error) {}
+    let img7 = "";
+    try {
+        img7 = listing.propertyImages[7].url;
+    } catch (error) {}
+    let img8 = "";
+    try {
+        img8 = listing.propertyImages[8].url;
+    } catch (error) {}
+    let img9 = "";
+    try {
+        img9 = listing.propertyImages[9].url;
+    } catch (error) {}
+
     const emptyForm = {
-        title: '',
-        description: '',
-        propertyType: 'APARTMENT',
-        bedrooms: '',
-        bathrooms: '',
-        price: '',
-        squareFootage: '',
-        wheelchairAccessible: false,
-        smokingAllowed: false,
+        title: listing.title,
+        description: listing.description,
+        propertyType: listing.propertyType,
+        bedrooms: listing.bedrooms,
+        bathrooms: listing.bathrooms,
+        price: listing.monthlyPrice,
+        squareFootage: listing.squareFootage,
+        wheelchairAccessible: listing.wheelchairAccessible,
+        smokingAllowed: listing.smokingAllowed,
         address: {
-            apartment: '',
-            streetNumber: '',
-            street: '',
-            city: '',
-            postalCode: '',
+            apartment: listing.address.apartmentNumber,
+            streetNumber: listing.address.streetNumber,
+            street: listing.address.street,
+            city: listing.address.city,
+            postalCode: listing.address.postalCode,
         },
         amenities: {
-            gym: false,
-            laundry: false,
-            petsAllowed: false,
-            parking: false,
-            internetIncluded: false,
+            gym: listing.amenitiesOffered.gym,
+            laundry: listing.amenitiesOffered.laundry,
+            petsAllowed: listing.amenitiesOffered.petsAllowed,
+            parking: listing.amenitiesOffered.parking,
+            internetIncluded: listing.amenitiesOffered.internetIncluded,
         },
         utilities: {
-            waterCost: '',
-            electricityCost: '',
-            heatingCost: '',
+            waterCost: listing.utilitiesCosts.waterCost,
+            electricityCost: listing.utilitiesCosts.electricityCost,
+            heatingCost: listing.utilitiesCosts.heatingCost,
         },
         images: [
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            ""
+            img0,
+            img1,
+            img2,
+            img3,
+            img4,
+            img5,
+            img6,
+            img7,
+            img8,
+            img9
         ]
     }
     const [formData, setFormData] = useState(emptyForm);
     const [errors, setErrors] = useState({});
 
     const navigate = useNavigate();
+    const delay = ms => new Promise(res => setTimeout(res, ms));
     useEffect(() => {
         const checkAuth = () => {
             const user = JSON.parse(localStorage.getItem('currentUser'));
@@ -185,35 +233,6 @@ export default function UpdateListing() {
     };
 
     const formRef = useRef(null);
-
-    const listing = JSON.parse(localStorage.getItem('currentListing'));
-    formData.title = listing.title;
-    formData.description = listing.description;
-    formData.propertyType = listing.propertyType;
-    formData.bedrooms = listing.bedrooms;
-    formData.bathrooms = listing.bathrooms;
-    formData.price = listing.monthlyPrice;
-    formData.squareFootage = listing.squareFootage;
-    formData.wheelchairAccessible = listing.wheelchairAccessible;
-    formData.smokingAllowed = listing.smokingAllowed;
-    if (!listing.address.apartmentNumber){
-        formData.address.apartment = listing.address.streetNumber;
-    } else {
-        formData.address.apartment = listing.address.apartmentNumber;
-    }
-    formData.address.streetNumber = listing.address.streetNumber;
-    formData.address.street = listing.address.street;
-    formData.address.city = listing.address.city;
-    formData.address.postalCode = listing.address.postalCode;
-    formData.amenities.gym = listing.amenitiesOffered.gym;
-    //formData.amenities.amenities.laundry = listing.amenitiesOffered.laundry;
-    //formData.amenities.amenities.petsAllowed = listing.amenitiesOffered.petsAllowed;
-    formData.amenities.parking = listing.amenitiesOffered.parking;
-    formData.amenities.internetIncluded = listing.amenitiesOffered.internetIncluded;
-    formData.utilities.waterCost = listing.utilitiesCosts.waterCost;
-    formData.utilities.electricityCost = listing.utilitiesCosts.electricityCost;
-    formData.utilities.heatingCost = listing.utilitiesCosts.heatingCost;
-    formData.images[0] = listing.images[0];
 
 
 
@@ -375,6 +394,8 @@ export default function UpdateListing() {
                 setDialogMessage('Listing updated successfully.')
                 setDialogSeverity('success');
                 setOpenDialog(true);
+                await delay(3000);
+                navigate('/viewListings')
             }
 
         } catch (error) {
@@ -384,7 +405,6 @@ export default function UpdateListing() {
             }
             setServerErrorMessage(errorMessage ? errorMessage : 'An error occurred during signup. Please try again.');
         }
-
     };
 
     return (
@@ -549,11 +569,11 @@ export default function UpdateListing() {
                                 }}
                             >
                                 <FormControlLabel
-                                    control={<Checkbox id="wheelchairAccessible" onChange={(e) => handleInputChange(e)}/>}
+                                    control={<Checkbox defaultChecked={listing.wheelchairAccessible} id="wheelchairAccessible" onChange={(e) => handleInputChange(e)}/>}
                                     label="Wheelchair Accessible"
                                 />
                                 <FormControlLabel
-                                    control={<Checkbox id="smokingAllowed" onChange={(e) => handleInputChange(e)}/>}
+                                    control={<Checkbox defaultChecked={listing.smokingAllowed} id="smokingAllowed" onChange={(e) => handleInputChange(e)}/>}
                                     label="Smoking Allowed"
                                 />
                             </div>
@@ -655,23 +675,23 @@ export default function UpdateListing() {
                             sx={{ display: 'flex', flexDirection: 'column', gap: 2, }} // Adjusted marginBottom
                         >
                             <FormControlLabel
-                                control={<Checkbox id="gym" onChange={(e) => handleNestedChange(e, "amenities")} />}
+                                control={<Checkbox defaultChecked={listing.amenitiesOffered.gym} id="gym" onChange={(e) => handleNestedChange(e, "amenities")} />}
                                 label="Gym"
                             />
                             <FormControlLabel
-                                control={<Checkbox id="laundry" onChange={(e) => handleNestedChange(e, "amenities")} />}
+                                control={<Checkbox defaultChecked={listing.amenitiesOffered.laundry} id="laundry" onChange={(e) => handleNestedChange(e, "amenities")} />}
                                 label="Laundry"
                             />
                             <FormControlLabel
-                                control={<Checkbox id="petsAllowed" onChange={(e) => handleNestedChange(e, "amenities")} />}
+                                control={<Checkbox defaultChecked={listing.amenitiesOffered.petsAllowed} id="petsAllowed" onChange={(e) => handleNestedChange(e, "amenities")} />}
                                 label="Pets Allowed"
                             />
                             <FormControlLabel
-                                control={<Checkbox id="parking" onChange={(e) => handleNestedChange(e, "amenities")} />}
+                                control={<Checkbox defaultChecked={listing.amenitiesOffered.parking} id="parking" onChange={(e) => handleNestedChange(e, "amenities")} />}
                                 label="Parking"
                             />
                             <FormControlLabel
-                                control={<Checkbox id="internetIncluded" onChange={(e) => handleNestedChange(e, "amenities")} />}
+                                control={<Checkbox defaultChecked={listing.amenitiesOffered.internetIncluded} id="internetIncluded" onChange={(e) => handleNestedChange(e, "amenities")} />}
                                 label="Internet Included"
                             />
                         </Box>
