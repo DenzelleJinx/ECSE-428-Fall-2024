@@ -314,9 +314,21 @@ export default function UpdateListing() {
         setServerErrorMessage('');
         setServerSuccessMessage('');
 
+        // Check whether to include utilities or leave utilities as null
+        const includeUtilities = formData.utilities.waterCost && formData.utilities.electricityCost && formData.utilities.heatingCost
+
+
         if (!formData.address.apartment && formData.propertyType === "HOUSE") {
             formData.address.apartment = "N/A";
         }
+
+        if (!includeUtilities) {
+            formData.utilities.waterCost = "N/A";
+            formData.utilities.electricityCost = "N/A";
+            formData.utilities.heatingCost = "N/A";
+        }
+
+
         // Validate inputs
         if (!validateInputs()) {
             setDialogMessage('Please fill in all required fields.');
@@ -324,9 +336,6 @@ export default function UpdateListing() {
             setOpenDialog(true);
             return;
         }
-
-        // Check whether to include utilities or leave utilities as null
-        const includeUtilities = formData.utilities.waterCost && formData.utilities.electricityCost && formData.utilities.heatingCost
 
         // Get property images
         const propertyImages = [];
@@ -377,7 +386,11 @@ export default function UpdateListing() {
                     waterCost: parseFloat(formData.utilities.waterCost),
                     electricityCost: parseFloat(formData.utilities.electricityCost),
                     heatingCost: parseFloat(formData.utilities.heatingCost),
-                } : null,
+                } : {
+                    waterCost: null,
+                    electricityCost: null,
+                    heatingCost: null,
+                },
             propertyImages: propertyImages
         };
 
@@ -403,7 +416,7 @@ export default function UpdateListing() {
             if (error.response && typeof error.response.data === 'string') {
                 errorMessage = error.response.data
             }
-            setServerErrorMessage(errorMessage ? errorMessage : 'An error occurred during signup. Please try again.');
+            setServerErrorMessage(errorMessage ? errorMessage : 'An error occurred during listing update. Please try again.');
         }
     };
 
