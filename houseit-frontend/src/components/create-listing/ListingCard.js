@@ -287,6 +287,7 @@ function ListingCard({ listing, onRentOut }) {
           : "An error occurred during signup. Please try again."
       );
     }
+    window.location.href = "/viewListings";
   };
 
   return (
