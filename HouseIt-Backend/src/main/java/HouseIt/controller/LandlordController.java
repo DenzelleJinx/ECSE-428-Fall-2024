@@ -10,11 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.GetMapping; 
-import java.util.List; 
-import java.util.stream.Collectors; 
-import HouseIt.model.Listing; 
-import HouseIt.dto.ListingDTO; 
-import HouseIt.service.ListingService;
+import java.util.List;
+import HouseIt.model.Listing;
 
 import HouseIt.dto.users.LandlordDTO;
 import HouseIt.model.Landlord;
@@ -30,9 +27,6 @@ public class LandlordController {
     
     @Autowired
     LandlordService landlordService;
-
-    @Autowired
-    private ListingService listingService;
 
     @PostMapping(value = {"", "/"})
     public ResponseEntity<LandlordDTO> createLandlord(
@@ -72,5 +66,25 @@ public class LandlordController {
         }
     }
 
+    @GetMapping("/{landlordId}")
+    public ResponseEntity<?> getLandlord(@PathVariable int landlordId) {
+        try {
+            Landlord landlord = landlordService.getLandlord(landlordId);
+            return ResponseEntity.ok(landlordService.convertToDTO(landlord));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    
+
+    @PutMapping("/{landlordId}/rate/{rating}")
+    public ResponseEntity<?> getLandlordRating(@PathVariable int landlordId, @PathVariable float rating) {
+        try {
+            Landlord landlord = landlordService.rateLandlord(landlordId, rating);
+            return ResponseEntity.ok(landlord);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
     
 }
