@@ -28,26 +28,33 @@ const Navbar = (props) => {
     const [isStudent, setIsStudent] = useState(false);
     const [isAdmin, setIsAdmin] = useState(false);
     const [loggedInUsername, setLoggedInUsername] = useState('');
+
+    const primaryColor = "#D50032";
+    const secondaryColor = "#FFFFFF";
+
     const [notifications, setNotifications] = useState([]);
     const [anchorEl, setAnchorEl] = useState(null);
     const [accountMenuAnchor, setAccountMenuAnchor] = useState(null);
     const [drawerOpen, setDrawerOpen] = useState(false);
 
+    const [openDialog, setOpenDialog] = useState(false); // State for dialog visibility
+    const [dialogMessage, setDialogMessage] = useState(''); // Message to display in the dialog
+    const [dialogSeverity, setDialogSeverity] = useState('error'); // Severity of the message: 'success' or 'error'
+
     const navigate = useNavigate();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md')); // Check if screen width is below 'md'
 
-    const primaryColor = "#D50032";
-    const secondaryColor = "#FFFFFF";
-
+    // Fetch notifications when the component mounts
     useEffect(() => {
         const checkAuth = () => {
             try {
                 const user = JSON.parse(localStorage.getItem('currentUser'));
+                console.log(user.username);
                 if (user) {
-                    setIsLandlord(user.accountType === 'landlord');
-                    setIsStudent(user.accountType === 'student');
-                    setIsAdmin(user.accountType === 'admin');
+                    setIsLandlord(user && user.accountType === 'landlord');
+                    setIsStudent(user && user.accountType === 'student');
+                    setIsAdmin(user && user.accountType === 'admin');
                     setIsLoggedIn(true);
                     setLoggedInUsername(user.username);
                 } else {
@@ -60,32 +67,74 @@ const Navbar = (props) => {
 
         const fetchNotifications = async () => {
             try {
+                // Make a GET request to fetch notifications
                 const response = await Axios.get(`http://localhost:8080/users/${loggedInUsername}/notifications`);
-                setNotifications(response.data.notifications);
+                setNotifications(response.data.notifications); // Update state with the notifications data
             } catch (error) {
                 console.error("Error fetching notifications:", error);
-                setNotifications([]);
+                setNotifications([]); // Fallback to an empty array if there's an error
             }
         };
 
-        fetchNotifications();
+        fetchNotifications(); // Call the function
         checkAuth();
-    }, [loggedInUsername]);
+    }, [loggedInUsername]); // Run the effect when the component mounts or when loggedInUsername changes
 
-    const handleNavigation = (path) => navigate(path);
-    const handleNotificationClick = (event) => setAnchorEl(event.currentTarget);
-    const handleNotificationClose = () => setAnchorEl(null);
-    const handleAccountMenuOpen = (event) => setAccountMenuAnchor(event.currentTarget);
-    const handleAccountMenuClose = () => setAccountMenuAnchor(null);
+    const handleNavigation = (path) => {
+        navigate(path);
+    };
+
+    const handleNotificationClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleApproveLandlordClick = () => {
+        navigate('/approvelandlord');
+    }
+    const handleNotificationClose = () => {
+        setAnchorEl(null);
+    };
+
+    const handleAccountMenuOpen = (event) => {
+        setAccountMenuAnchor(event.currentTarget);
+    };
+
+    const handleAccountMenuClose = () => {
+        setAccountMenuAnchor(null);
+    };
+
+    const handleUpdateAccountClick = () => {
+        navigate('/update-account');
+        handleAccountMenuClose();
+    };
+
+    const handleViewAccountClick = () => {
+        navigate('/view-account');
+        handleAccountMenuClose();
+    };
     const toggleDrawer = (open) => () => setDrawerOpen(open);
 
+    const handlelLogoutClick = () => {
+        localStorage.removeItem('currentUser');
+
+        setIsLoggedIn(false);
+        setIsLandlord(false);
+        setIsStudent(false);
+        setIsAdmin(false);
+        setLoggedInUsername('');
+
+        navigate('/login');
+    };
+
+    // Function to generate a notification message based on its type
     const generateNotificationMessage = (notification) => {
         switch (notification.type) {
             case 'CONTACT':
                 return `You have a new contact request from ${notification.senderUsername}.`;
             case 'REVIEW':
+                return (notification.senderUsername + ": " + notification.message) || 'You have a new notification.';
             case 'OTHER':
-                return `${notification.senderUsername}: ${notification.message}`;
+                return (notification.senderUsername + ": " + notification.message) || 'You have a new notification.';
             default:
                 return 'You have a new notification.';
         }
