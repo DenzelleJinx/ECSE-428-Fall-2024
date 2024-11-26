@@ -3,6 +3,8 @@ package HouseIt.service;
 import org.springframework.stereotype.Service;
 
 import java.util.stream.StreamSupport;
+import java.util.List; 
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -165,5 +167,12 @@ public class LandlordService {
         Landlord l = landlordDAO.findLandlordByEmail(email);
 
         return l;
+    }
+
+    @Transactional(readOnly = true)
+    public List<Listing> getListingsByLandlordId(int landlordId) {
+    return landlordDAO.findById(landlordId)
+                      .map(Landlord::getProperties)
+                      .orElseThrow(() -> new IllegalArgumentException("No landlord found with ID: " + landlordId));
     }
 }

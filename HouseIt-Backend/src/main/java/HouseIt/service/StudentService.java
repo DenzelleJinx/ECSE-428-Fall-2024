@@ -2,13 +2,17 @@ package HouseIt.service;
 
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
+import HouseIt.dao.ListingDAO;
 import HouseIt.dao.StudentDAO;
 import HouseIt.dto.users.StudentDTO;
+import HouseIt.model.Listing;
 import HouseIt.model.Student;
 import HouseIt.model.User.AccountStatus;
 import HouseIt.utils.ValidationUtils;
@@ -18,6 +22,8 @@ public class StudentService {
 
     @Autowired
     StudentDAO studentDAO;
+    @Autowired
+    ListingDAO listingDAO;
 
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -135,6 +141,49 @@ public class StudentService {
     public Student existsByEmail(String email) {
         Student student = studentDAO.findStudentByEmail(email);
         return student;
+    }
+
+    @Transactional
+    public Student addFavoritedListing(int studentId, int listingId) {
+        Student student = studentDAO.findStudentById(studentId);
+        Listing listing = listingDAO.findListingById(listingId);
+
+        if (student == null) {
+            throw new IllegalArgumentException("Student not found.");
+        }
+
+        if (listing == null) {
+            throw new IllegalArgumentException("Listing not found.");
+        }
+
+        student.addFavoritedListing(listing);
+        return studentDAO.save(student);
+    }
+
+    @Transactional
+    public Student removeFavoritedListing(int studentId, int listingId) {
+        Student student = studentDAO.findStudentById(studentId);
+        Listing listing = listingDAO.findListingById(listingId);
+
+        if (student == null) {
+            throw new IllegalArgumentException("Student not found.");
+        }
+
+        if (listing == null) {
+            throw new IllegalArgumentException("Listing not found.");
+        }
+
+        student.removeFavoritedListing(listing);
+        return studentDAO.save(student);
+    }
+
+    @Transactional
+    public List<Listing> getFavoritedListings(int studentId) {
+        Student student = studentDAO.findStudentById(studentId);
+        if (student == null) {
+            throw new IllegalArgumentException("Student not found.");
+        }
+        return student.getFavoritedListings();
     }
 
 }

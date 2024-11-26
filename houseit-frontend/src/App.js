@@ -7,25 +7,29 @@ import LandingPage from "./components/landing-page/LandingPage";
 import CreateListing from "./components/create-listing/CreateListing";
 import ApproveLandlord from "./components/approve-landlord/ApproveLandlord";
 import UpdateListing from "./components/update-listing/UpdateListing";
+import MyListings  from './components/view-my-listings/MyListings';
 import ViewListings from "./components/view-listings/ViewListings";
+import SavedListings from './components/view-saved-listings/savedListings';
 
 console.log(SignUp); // Should be a function
 console.log(ImageUpload); // Should be a function
 
 function App() {
-  return (
 
-      <Router>
-          <Routes>
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/signup" element={<SignUp />} />
-              <Route path="/login" element={<SignIn />} />
-              <Route path="/createlisting" element={<CreateListing />} />
-              <Route path="/approvelandlord" element={<ApproveLandlord />} />
-              <Route path="/viewlistings" element={<ViewListings />} />
-              <Route path="/updatelisting" element={<UpdateListing />} />
-          </Routes>
-      </Router>
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/login" element={<SignIn />} />
+        <Route path="/createlisting" element={<CreateListing />} />
+        <Route path="/approvelandlord" element={<ApproveLandlord />} />
+        <Route path="/viewlistings" element={<ViewListings />} />
+        <Route path="/my-listings" element={<MyListings />} />
+        <Route path="/saved-listings" element={<SavedListings />} />
+        <Route path="/updatelisting" element={<UpdateListing />} />
+      </Routes>
+    </Router>
   );
 }
 

@@ -6,24 +6,21 @@ import Navbar from '../navbar/Navbar';
 import Axios from 'axios';
 import StatusDialog from '../status-dialog/StatusDialog';
 import FilterModal from '../filter-modal/FilterModal';
-import { Box, Button, TextField, InputAdornment, IconButton, Typography } from '@mui/material';
+import { Box, Button, TextField, InputAdornment, IconButton,} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';  // Filter icon
 
-export default function Listing() {
-    // Use the custom hook to fetch listings
-    const { listings: fetchedListings, loading, error } = useListings();
 
-    // Maintain local state for active listings
+export default function MyListings({ landlordId }) {
     const [listings, setListings] = useState([]);
-    const [openDialog, setOpenDialog] = useState(false);
-    const [dialogMessage, setDialogMessage] = useState('');
-    const [dialogSeverity, setDialogSeverity] = useState('error');
-    const [filteredListings, setFilteredListings] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
+    const [filteredListings, setFilteredListings] = useState([]);
+    const [user, setUser] = useState(null);
 
-    // Populate local state when fetchedListings changes
+     // Populate local state when fetchedListings changes
     const [filters, setFilters] = useState({
         address: '',
         bedrooms: { min: '', max: '' },
@@ -47,15 +44,56 @@ export default function Listing() {
         propertyRating: { min: '', max: '' },
     });
 
+    const [openDialog, setOpenDialog] = useState(false);
+    const [dialogMessage, setDialogMessage] = useState('');
+    const [dialogSeverity, setDialogSeverity] = useState('error');
     const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
 
+
+
     useEffect(() => {
-        if (fetchedListings) {
-            const activeListings = fetchedListings.filter(listing => !listing.completed);
-            setListings(activeListings);
-            setFilteredListings(activeListings);
-        }
-    }, [fetchedListings]);
+        const fetchListings = async () => {
+            try {
+                // Get the current user from localStorage
+                const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+                
+                // Check if currentUser exists and has an id
+                if (!currentUser || !currentUser.id) {
+                    setError("No valid landlord ID found.");
+                    setLoading(false);
+                    return;
+                }
+    
+                const landlordId = currentUser.id; // Extract landlord ID from the current user
+                const response = await Axios.get(`http://localhost:8080/landlord/${landlordId}/listings`);
+                setListings(response.data);
+                setFilteredListings(response.data);
+                setLoading(false);
+            } catch (error) {
+                console.error("Error fetching listings:", error);
+                setError("Failed to fetch listings.");
+                setLoading(false);
+            }
+        };
+    
+        fetchListings();
+    }, []); // Dependency array is empty because the effect only needs to run once on mount
+    
+
+    useEffect(() => {
+        const lowercasedQuery = searchQuery.toLowerCase();
+        const filtered = listings.filter(listing =>
+            listing.title.toLowerCase().includes(lowercasedQuery) ||
+            listing.description.toLowerCase().includes(lowercasedQuery)
+        );
+        setFilteredListings(filtered);
+    }, [searchQuery, listings]);
+
+    const handleClear = () => setSearchQuery('');
+
+    const handleFilterChange = (newFilters) => {
+        setFilters(newFilters);
+    };
 
     // Update filtered listings when search or filters change
     useEffect(() => {
@@ -65,7 +103,7 @@ export default function Listing() {
             const matchesSearch =
                 listing.title.toLowerCase().includes(lowercasedQuery) ||
                 listing.description.toLowerCase().includes(lowercasedQuery);
-
+  
             // Filter Matching
             const matchesFilters = (
                 (filters.address ? listing.address.street.toLowerCase().includes(filters.address.toLowerCase()) : true) &&
@@ -92,46 +130,23 @@ export default function Listing() {
                 (filters.propertyRating.min ? listing.propertyRating >= filters.propertyRating.min : true) &&
                 (filters.propertyRating.max ? listing.propertyRating <= filters.propertyRating.max : true)
             );
-
+  
             return matchesSearch && matchesFilters;
         });
         setFilteredListings(filtered);
     }, [searchQuery, filters, listings]);
 
-    const handleFilterChange = (newFilters) => {
-        setFilters(newFilters);
-    };
-
-    const handleClear = () => {
-        setSearchQuery('');
-      };
-
-    const handleRentOut = async (listingId) => {
-        try {
-            const response = await Axios.put(`http://localhost:8080/listing/${listingId}/complete`);
-            if (response.status === 200) {
-                setDialogMessage('Your listing has been rented out. A notification has been sent to the landlord.');
-                setDialogSeverity('success');
-                setOpenDialog(true);
-            }
-
-            setListings(prevListings => prevListings.filter(listing => listing.id !== listingId));
-        } catch (error) {
-            console.error("Error renting out listing:", error);
-            setDialogMessage('An error occurred while renting out the listing. Please try again later.');
-            setDialogSeverity('error');
-            setOpenDialog(true);
-        }
-    };
-
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p>{error}</p>;
-
     return (
         <div className="dashboard">
             <Navbar />
             <header className="dashboard-header">
-                <h2>Listings</h2>
+                <h2>My Listings</h2>
+                <div className="actions">
+                    {/*<input
+                        type="text"
+                        className="search-bar"
+                        placeholder="Search"
+                <h2>My Listings</h2>
                 <div className="actions">
                     {/*<input
                         type="text"
@@ -183,12 +198,14 @@ export default function Listing() {
                 </div>
             </header>
             <div className="listing-grid">
-                {filteredListings.map(listing => (
-                    <ListingCard
-                        key={listing.id}
-                        listing={listing}
-                    />
-                ))}
+                {loading ? <p>Loading...</p> :
+                    filteredListings.length > 0 ? (
+                            filteredListings.map((listing) => (
+                                <ListingCard key={listing.id} listing={listing} />
+                            ))
+                    ) : <p>You currently have no listing</p>
+                }
+                {error && <p>{error}</p>}
             </div>
 
             {/* Status Dialog */}
@@ -198,6 +215,16 @@ export default function Listing() {
                 severity={dialogSeverity}
                 message={dialogMessage}
             />
+
+            {/* Filter Modal */}
+            {isFilterModalOpen && (
+                <FilterModal
+                    filters={filters}
+                    onChange={setFilters}
+                    onClose={() => setIsFilterModalOpen(false)}
+                    onApply={handleFilterChange}
+                />
+            )}
 
             {/* Filter Modal */}
             {isFilterModalOpen && (

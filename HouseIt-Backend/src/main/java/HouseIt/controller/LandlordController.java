@@ -9,6 +9,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.GetMapping; 
+import java.util.List; 
+import java.util.stream.Collectors; 
+import HouseIt.model.Listing; 
+import HouseIt.dto.ListingDTO; 
+import HouseIt.service.ListingService;
 
 import HouseIt.dto.users.LandlordDTO;
 import HouseIt.model.Landlord;
@@ -24,6 +30,9 @@ public class LandlordController {
     
     @Autowired
     LandlordService landlordService;
+
+    @Autowired
+    private ListingService listingService;
 
     @PostMapping(value = {"", "/"})
     public ResponseEntity<LandlordDTO> createLandlord(
@@ -52,5 +61,16 @@ public class LandlordController {
 
         return ResponseEntity.ok(updatedDto);
     }
+
+    @GetMapping("{landlordId}/listings")
+    public ResponseEntity<List<Listing>> getListingsByLandlordId(@PathVariable int landlordId) {
+        try {
+            List<Listing> listings = landlordService.getListingsByLandlordId(landlordId);
+            return ResponseEntity.ok(listings);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
+
     
 }
