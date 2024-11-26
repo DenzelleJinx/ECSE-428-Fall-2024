@@ -586,7 +586,7 @@ function ListingCard({ listing, onRentOut }) {
         >
           Additional Information
         </Button>
-        {isLandlord && (
+        {isLandlord && (document.URL.includes("my-listings")) && (
           <Button
             variant="contained"
             color="primary"
@@ -602,7 +602,7 @@ function ListingCard({ listing, onRentOut }) {
             Update
           </Button>
         )}
-        {isLandlord && (
+        {isLandlord && (document.URL.includes("my-listings")) && (
           <Button
             variant="contained"
             color="secondary"
