@@ -11,6 +11,7 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,9 @@ public class ResetPasswordStepDefinitions {
     private String username;
     private String newPassword;
     private String accountType;
+    
+    @Autowired
+    private BCryptPasswordEncoder encoder;
 
     @Given("the following user exists in the system:")
     public void theFollowingUserExistsInTheSystem(DataTable dataTable) {
@@ -98,12 +102,12 @@ public class ResetPasswordStepDefinitions {
                 Student student = studentService.existsByEmail(expectedEmail);
                 assertNotNull(student);
                 assertEquals(expectedUsername, student.getUsername());
-                assertEquals(expectedPassword, student.getPassword());
+                assertTrue(encoder.matches(expectedPassword, student.getPassword()));
             } else if ("landlord".equalsIgnoreCase(row.get("accountType"))) {
                 Landlord landlord = landlordService.existsByEmail(expectedEmail);
                 assertNotNull(landlord);
                 assertEquals(expectedUsername, landlord.getUsername());
-                assertEquals(expectedPassword, landlord.getPassword());
+                assertTrue(encoder.matches(expectedPassword, landlord.getPassword()));
             }
         }
     }

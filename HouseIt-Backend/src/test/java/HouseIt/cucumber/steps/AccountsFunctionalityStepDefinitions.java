@@ -48,7 +48,8 @@ public class AccountsFunctionalityStepDefinitions {
     String phone;
     String errorMessage;
 
-    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+    @Autowired
+    private BCryptPasswordEncoder encoder;
 
     @Before
     public void beforeScenario() {
@@ -58,6 +59,7 @@ public class AccountsFunctionalityStepDefinitions {
         phone = "";
         errorMessage = null;
         studentDAO.deleteAll();
+        landlordDAO.deleteAll();
     }
 
     @Given("the user is not logged in")

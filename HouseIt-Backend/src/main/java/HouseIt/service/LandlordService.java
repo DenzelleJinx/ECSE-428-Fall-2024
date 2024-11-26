@@ -88,7 +88,7 @@ public class LandlordService {
         }
 
         if (password != null && password.trim().length() >= 6) {
-            landlord.setPassword(password);
+            landlord.setPassword(passwordEncoder.encode(password));
         } else if (password != null) {
             throw new IllegalArgumentException("Password must be at least 6 characters long");
         }
@@ -123,7 +123,7 @@ public class LandlordService {
         }
 
         ValidationUtils.validatePassword(newPassword);
-        landlord.setPassword(newPassword); // Ideally hash the password
+        landlord.setPassword(passwordEncoder.encode(newPassword)); // Ideally hash the password
         landlordDAO.save(landlord);
     }
 
