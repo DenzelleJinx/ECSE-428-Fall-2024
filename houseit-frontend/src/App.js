@@ -15,7 +15,6 @@ console.log(SignUp); // Should be a function
 console.log(ImageUpload); // Should be a function
 
 function App() {
-  const currentUser = JSON.parse(localStorage.getItem('currentUser')); // Retrieve user info
 
   return (
     <Router>
@@ -26,8 +25,8 @@ function App() {
         <Route path="/createlisting" element={<CreateListing />} />
         <Route path="/approvelandlord" element={<ApproveLandlord />} />
         <Route path="/viewlistings" element={<ViewListings />} />
-        <Route path="/my-listings" element={<MyListings landlordId={currentUser.id} />} />
-        <Route path="/saved-listings" element={<SavedListings studentId={currentUser.id} />} />
+        <Route path="/my-listings" element={<MyListings />} />
+        <Route path="/saved-listings" element={<SavedListings />} />
         <Route path="/updatelisting" element={<UpdateListing />} />
       </Routes>
     </Router>
