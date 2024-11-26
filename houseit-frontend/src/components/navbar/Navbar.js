@@ -166,6 +166,14 @@ const Navbar = (props) => {
                         </ListItem>
                         <ListItem button onClick={handleAccountMenuOpen}>
                             <ListItemText primary="Account" />
+                            <Menu
+                            anchorEl={accountMenuAnchor}
+                            open={Boolean(accountMenuAnchor)}
+                            onClose={handleAccountMenuClose}
+                        >
+                            <MenuItem onClick={() => navigate('/update-account')}>Update Account</MenuItem>
+                            <MenuItem onClick={() => navigate('/view-account')}>View Account</MenuItem>
+                        </Menu>
                         </ListItem>
                         <ListItem>
                             <IconButton
