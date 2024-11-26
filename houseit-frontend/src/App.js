@@ -10,6 +10,7 @@ import UpdateListing from "./components/update-listing/UpdateListing";
 import MyListings  from './components/view-my-listings/MyListings';
 import ViewListings from "./components/view-listings/ViewListings";
 import SavedListings from './components/view-saved-listings/savedListings';
+import ResetPassword from './components/reset-password/ResetPassword';
 
 console.log(SignUp); // Should be a function
 console.log(ImageUpload); // Should be a function
@@ -28,6 +29,7 @@ function App() {
         <Route path="/my-listings" element={<MyListings />} />
         <Route path="/saved-listings" element={<SavedListings />} />
         <Route path="/updatelisting" element={<UpdateListing />} />
+        <Route path="/resetpassword" element={<ResetPassword />} />
       </Routes>
     </Router>
   );

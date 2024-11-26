@@ -221,6 +221,12 @@ return (
               Sign up
             </Link>
           </Typography>
+          <Typography sx={{ textAlign: 'center' }}>
+            Forgotten your Password?{' '}
+            <Link href="/resetpassword" variant="body2">
+              Reset Password
+            </Link>
+          </Typography>
         </Box>
       </Card>
     </SignUpContainer>
