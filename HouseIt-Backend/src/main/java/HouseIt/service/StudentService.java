@@ -100,7 +100,7 @@ public class StudentService {
         }
 
         if (password != null && password.trim().length() >= 6) {
-            student.setPassword(password);
+            student.setPassword(passwordEncoder.encode(password));
         } else if (password != null) {
             throw new IllegalArgumentException("Password must be at least 6 characters long");
         }
@@ -134,7 +134,7 @@ public class StudentService {
         }
 
         ValidationUtils.validatePassword(newPassword);
-        student.setPassword(newPassword); // Ideally hash the password here
+        student.setPassword(passwordEncoder.encode(newPassword)); // Ideally hash the password here
         return studentDAO.save(student);
     }
 
