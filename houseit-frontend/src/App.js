@@ -7,8 +7,8 @@ import LandingPage from "./components/landing-page/LandingPage";
 import CreateListing from "./components/create-listing/CreateListing";
 import ApproveLandlord from "./components/approve-landlord/ApproveLandlord";
 import UpdateListing from "./components/update-listing/UpdateListing";
-import ViewListings from "./components/view-listings/VIewListings";
-import MyListings from './components/view-my-listings/MyListings';
+import MyListings  from './components/view-my-listings/MyListings';
+import ViewListings from "./components/view-listings/ViewListings";
 import SavedListings from './components/view-saved-listings/savedListings';
 
 console.log(SignUp); // Should be a function
@@ -28,6 +28,7 @@ function App() {
         <Route path="/viewlistings" element={<ViewListings />} />
         <Route path="/my-listings" element={<MyListings landlordId={currentUser.id} />} />
         <Route path="/saved-listings" element={<SavedListings studentId={currentUser.id} />} />
+        <Route path="/updatelisting" element={<UpdateListing />} />
       </Routes>
     </Router>
   );

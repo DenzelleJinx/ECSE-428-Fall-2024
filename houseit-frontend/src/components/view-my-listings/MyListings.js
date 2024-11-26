@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import Axios from 'axios';
+import { useListings } from '../../hooks/useListings';
 import ListingCard from "../create-listing/ListingCard";
+import '../create-listing/Listing.css';
 import Navbar from '../navbar/Navbar';
-import { Box, TextField, InputAdornment, IconButton } from '@mui/material';
+import Axios from 'axios';
+import StatusDialog from '../status-dialog/StatusDialog';
+import FilterModal from '../filter-modal/FilterModal';
+import { Box, Button, TextField, InputAdornment, IconButton,} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';  // Filter icon
-import FilterModal from '../filter-modal/FilterModal';
+
 
 export default function MyListings({ landlordId }) {
     const [listings, setListings] = useState([]);
@@ -40,7 +44,12 @@ export default function MyListings({ landlordId }) {
         propertyRating: { min: '', max: '' },
     });
 
+    const [openDialog, setOpenDialog] = useState(false);
+    const [dialogMessage, setDialogMessage] = useState('');
+    const [dialogSeverity, setDialogSeverity] = useState('error');
     const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+
+
 
     useEffect(() => {
         const fetchListings = async () => {
@@ -58,7 +67,7 @@ export default function MyListings({ landlordId }) {
                 const landlordId = currentUser.id; // Extract landlord ID from the current user
                 const response = await Axios.get(`http://localhost:8080/landlord/${landlordId}/listings`);
                 setListings(response.data);
-                setFilteredListings(response.data); // Assuming no filters are initially applied
+                setFilteredListings(response.data);
                 setLoading(false);
             } catch (error) {
                 console.error("Error fetching listings:", error);
@@ -137,6 +146,12 @@ export default function MyListings({ landlordId }) {
                         type="text"
                         className="search-bar"
                         placeholder="Search"
+                <h2>My Listings</h2>
+                <div className="actions">
+                    {/*<input
+                        type="text"
+                        className="search-bar"
+                        placeholder="Search"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                     /> */}
@@ -192,6 +207,24 @@ export default function MyListings({ landlordId }) {
                 }
                 {error && <p>{error}</p>}
             </div>
+
+            {/* Status Dialog */}
+            <StatusDialog
+                open={openDialog}
+                onClose={() => setOpenDialog(false)}
+                severity={dialogSeverity}
+                message={dialogMessage}
+            />
+
+            {/* Filter Modal */}
+            {isFilterModalOpen && (
+                <FilterModal
+                    filters={filters}
+                    onChange={setFilters}
+                    onClose={() => setIsFilterModalOpen(false)}
+                    onApply={handleFilterChange}
+                />
+            )}
 
             {/* Filter Modal */}
             {isFilterModalOpen && (
