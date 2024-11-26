@@ -8,7 +8,7 @@ import CreateListing from "./components/create-listing/CreateListing";
 import ApproveLandlord from "./components/approve-landlord/ApproveLandlord";
 import UpdateListing from "./components/update-listing/UpdateListing";
 import ViewListings from "./components/view-listings/VIewListings";
-import MyListings  from './components/view-my-listings/MyListings';
+import MyListings from './components/view-my-listings/MyListings';
 import SavedListings from './components/view-saved-listings/savedListings';
 
 console.log(SignUp); // Should be a function
@@ -18,22 +18,18 @@ function App() {
   const currentUser = JSON.parse(localStorage.getItem('currentUser')); // Retrieve user info
 
   return (
-      <Router>
-          <Routes>
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/signup" element={<SignUp />} />
-              <Route path="/login" element={<SignIn />} />
-              <Route path="/createlisting" element={<CreateListing />} />
-              <Route path="/approvelandlord" element={<ApproveLandlord />} />
-              <Route path="/viewlistings" element={<ViewListings />} />
-              {currentUser?.accountType === 'landlord' && (
-                <Route path="/my-listings" element={<MyListings landlordId={currentUser.id} />} />
-              )}
-              {currentUser?.accountType === 'student' && (
-                <Route path="/saved-listings" element={<SavedListings studentId={currentUser.id} />} />
-              )}
-          </Routes>
-      </Router>
+    <Router>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/login" element={<SignIn />} />
+        <Route path="/createlisting" element={<CreateListing />} />
+        <Route path="/approvelandlord" element={<ApproveLandlord />} />
+        <Route path="/viewlistings" element={<ViewListings />} />
+        <Route path="/my-listings" element={<MyListings landlordId={currentUser.id} />} />
+        <Route path="/saved-listings" element={<SavedListings studentId={currentUser.id} />} />
+      </Routes>
+    </Router>
   );
 }
 

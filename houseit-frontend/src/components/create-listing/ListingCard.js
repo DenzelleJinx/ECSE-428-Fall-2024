@@ -19,7 +19,7 @@ import PropertyListing from "../view-listings/ImagePopup";
 
 function ListingCard({ listing, onRentOut }) {
     const [isHovered, setIsHovered] = useState(false);
-    const [isSaved, setIsSaved] = useState(false);
+    const [saved, setSaved] = useState(false);
 
     const cardStyles = {
         border: '1px solid #ddd',
@@ -94,6 +94,7 @@ function ListingCard({ listing, onRentOut }) {
     const [callString, setCallString] = useState('Number Unavailable');
     const [currentUserName, setCurrentUserName] = useState(null);
     const [landlordData, setLandLordData] = useState(null);
+    const [user, setUser] = useState(null);
 
     const [openDialog, setOpenDialog] = React.useState(false); // State for dialog visibility
     const [dialogMessage, setDialogMessage] = React.useState(''); // Message to display in the dialog
@@ -110,6 +111,7 @@ function ListingCard({ listing, onRentOut }) {
             setIsStudent(user && user.accountType === 'student');
             setIsAuthenticated(user != null);
             setCurrentUserName(user && user.username);
+            setUser(user);
 
             const landlordResponse = await Axios.get(`http://localhost:8080/users/id/${listing.landlordId}`);
             setLandLordData(landlordResponse.data);  // Extract landlord data
@@ -119,22 +121,55 @@ function ListingCard({ listing, onRentOut }) {
             }
         };
 
+        const isSaved = async () => {
+            if (user != null) {
+                const favorites = await Axios.get(`http://localhost:8080/student/${user.id}/favorites`);
+                const savedListings = favorites.data;
+
+                for (let i = 0; i < savedListings.length; i++) {
+                    if (savedListings[i].id === listing.id) {
+                        setSaved(true);
+                    }
+                }
+            }
+        };
+
         checkAuth();
-    }, []);
+        if (isStudent) {
+            isSaved();
+        }
+    }, [callString, listing.id, listing.landlordId, saved]);
 
     const handleToggle = () => {
         setShowPhoneNumber(!showPhoneNumber);
     };
+
     const handleSave = async () => {
         try {
-            const response = await Axios.post(
-                `http://localhost:8080/users/${currentUserName}/saved-listings`,
-                { listingId: listing.id }
+
+            const favorites = await Axios.get(`http://localhost:8080/student/${user.id}/favorites`);
+            const savedListings = favorites.data;
+
+            for (let i = 0; i < savedListings.length; i++) {
+                if (savedListings[i].id === listing.id) {
+                    setDialogMessage('Listing is already saved.');
+                    setDialogSeverity('error');
+                    setOpenDialog(true);
+                    return;
+                }
+            }
+
+            const response = await Axios.put(
+                `http://localhost:8080/student/${user.id}/favorites`, 
+                null,
+                { 
+                    params: {listingId: listing.id },
+                }
             );
-            if (response.status === 201) {
+            if (response.status === 200) {
                 setDialogMessage('Listing has been saved successfully.');
                 setDialogSeverity('success');
-                setIsSaved(true);
+                setSaved(true);
             }
         } catch (error) {
             console.error('Error saving listing:', error);
@@ -142,6 +177,26 @@ function ListingCard({ listing, onRentOut }) {
             setDialogSeverity('error');
         } finally {
             setOpenDialog(true);
+        }
+    };
+
+    const handleUnsave = async () => {
+        try {
+            const response = await Axios.delete(`http://localhost:8080/student/${user.id}/favorites`,
+                { params: { listingId: listing.id } }
+            );
+
+            console.log(response.status);
+            if (response.status === 200) {
+                setDialogMessage('Listing has been removed from saved listings.');
+                setDialogSeverity('success');
+                setOpenDialog(true);
+                setSaved(false);
+            }
+        } catch (error) {
+            console.error('Error removing listing:', error);
+            setDialogMessage('An error occurred while removing the listing. Please try again.');
+            setDialogSeverity('error');
         }
     };
 
@@ -445,7 +500,40 @@ function ListingCard({ listing, onRentOut }) {
                 >
                     Additional Information
                 </Button>
-
+                {/* Save Button */}
+                {isStudent && (
+                    !saved ? (
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        style={{
+                            margin: '10px 0',
+                            backgroundColor: '#007bff',
+                            color: 'white',
+                            textTransform: 'none',
+                        }}
+                        fullWidth
+                        onClick={handleSave}
+                    >
+                        Save Listing
+                    </Button>
+                ) : (
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        style={{
+                            margin: '10px 0',
+                            backgroundColor: '#FF0000',
+                            color: 'white',
+                            textTransform: 'none',
+                        }}
+                        fullWidth
+                        onClick={handleUnsave}
+                    >
+                        Unsave
+                    </Button>
+                )
+            )}
                 {/* Utilities Modal */}
                 <Modal open={showUtilitiesModal} onClose={closeUtilitiesModal}>
                     <Box sx={modalStyles}>
