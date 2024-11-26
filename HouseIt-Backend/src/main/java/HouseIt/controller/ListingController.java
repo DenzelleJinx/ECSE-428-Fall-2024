@@ -121,4 +121,14 @@ public class ListingController {
         }
     }
 
+    @PutMapping("/{id}/rate/{rating}")
+    public ResponseEntity<?> rateListing(@PathVariable int id, @PathVariable int rating) {
+        try {
+            ListingDTO dto = listingService.convertToDTO(listingService.rateListing(id, rating));
+            return ResponseEntity.ok(dto);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 }

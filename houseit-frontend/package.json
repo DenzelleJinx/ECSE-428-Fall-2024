@@ -15,6 +15,7 @@
     "axios": "^1.7.7",
     "cors": "^2.8.5",
     "houseit-frontend": "file:",
+    "lucide-react": "^0.461.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.27.0",

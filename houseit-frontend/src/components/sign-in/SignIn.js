@@ -84,7 +84,7 @@ export default function SignUp(props) {
 
     if (!password || !password.value || password.value.length < 6) {
       setPasswordError(true);
-      setPasswordErrorMessage('Password is required.');
+      setPasswordErrorMessage('Password needs to be at least 6 characters.');
       isValid = false;
     } else {
       setPasswordError(false);
@@ -130,7 +130,8 @@ export default function SignUp(props) {
       console.log('login successful:', response.data);
       setServerErrorMessage('');
       const userResponse = await axiosClient.get('/users/' + data.get('email'), payload);
-      const { password, ...userWithoutPassword } = userResponse.data;
+      let { password, ...userWithoutPassword } = userResponse.data;
+      userWithoutPassword['ratings'] = {};
       localStorage.setItem('currentUser', JSON.stringify(userWithoutPassword));
       navigate('/');
     } catch (error) {
