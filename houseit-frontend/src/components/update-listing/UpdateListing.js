@@ -77,6 +77,21 @@ export default function UpdateListing() {
     //if (!listing.address.apartmentNumber){
     //    formData.address.apartment = listing.address.streetNumber;
     //}
+    let waterCost = null;
+    try {
+        waterCost = listing.utilitiesCosts.waterCost;
+    }catch (error){}
+    let electricityCost = null;
+    try {
+        electricityCost = listing.utilitiesCosts.electricityCost;
+    }catch (error){}
+    let heatingCost = null;
+    try {
+        heatingCost = listing.utilitiesCosts.heatingCost;
+    }catch (error){}
+
+
+
     let img0 = "";
     try {
         img0 = listing.propertyImages[0].url;
@@ -143,9 +158,9 @@ export default function UpdateListing() {
             internetIncluded: listing.amenitiesOffered.internetIncluded,
         },
         utilities: {
-            waterCost: listing.utilitiesCosts.waterCost,
-            electricityCost: listing.utilitiesCosts.electricityCost,
-            heatingCost: listing.utilitiesCosts.heatingCost,
+            waterCost: waterCost,
+            electricityCost: electricityCost,
+            heatingCost: heatingCost,
         },
         images: [
             img0,
