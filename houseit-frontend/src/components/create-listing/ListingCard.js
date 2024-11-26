@@ -201,7 +201,6 @@ function ListingCard({ listing, onRentOut }) {
                 { params: { listingId: listing.id } }
             );
 
-            console.log(response.status);
             if (response.status === 200) {
                 setDialogMessage('Listing has been removed from saved listings.');
                 setDialogSeverity('success');
@@ -227,10 +226,10 @@ function ListingCard({ listing, onRentOut }) {
                 type: "CONTACT",
                 senderUsername: currentUserName
             };
-            console.log(body);
-            console.log(landlordData.username);
+            // console.log(body);
+            // console.log(landlordData.username);
             const response = await Axios.post(`http://localhost:8080/users/${landlordData.username}/notifications`, body);
-            console.log('Notification successful:', response.data);
+            // console.log('Notification successful:', response.data);
             if (response.status === 201) {
                 setDialogMessage('Your message has been sent to the landlord.');
                 setDialogSeverity('success');
@@ -290,13 +289,13 @@ function ListingCard({ listing, onRentOut }) {
         senderUsername: currentUserName,
       };
 
-      console.log(
-        "Sending notification to landlord:",
-        landlord.username,
-        notificationBody,
-        "by",
-        currentUserName
-      );
+      // console.log(
+      //   "Sending notification to landlord:",
+      //   landlord.username,
+      //   notificationBody,
+      //   "by",
+      //   currentUserName
+      // );
 
       // Make a GET request to fetch notifications
       const response = await Axios.post(
@@ -343,7 +342,7 @@ function ListingCard({ listing, onRentOut }) {
         const listingID = listingResponse.data.id;
 
         const response = await axiosClient.delete(`/listing/${listingID}`);
-        console.log("Listing deleted successfully:", response.data); // TODO: Remove this when done testing
+        // console.log("Listing deleted successfully:", response.data); // TODO: Remove this when done testing
         setServerSuccessMessage("Listing deleted successfully");
       }
     } catch (error) {
@@ -463,10 +462,10 @@ function ListingCard({ listing, onRentOut }) {
             {listing.address.postalCode}
           </p>
         </div>
-                {/* property rating */}
-                <div>
-                    <StarRating rating={listing.propertyRating} listingId={listing.id} />
-                </div>
+        {/* property rating */}
+        <div>
+            <StarRating rating={listing.propertyRating} listingId={listing.id} landlordId={listing.landlordId}/>
+        </div>
         <div
           style={{
             display: "flex",

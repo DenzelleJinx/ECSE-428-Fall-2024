@@ -112,7 +112,7 @@ const Navbar = (props) => {
         setIsAdmin(false);
         setLoggedInUsername('');
 
-        navigate('/login');
+        navigate('/');
     };
 
     // Function to generate a notification message based on its type

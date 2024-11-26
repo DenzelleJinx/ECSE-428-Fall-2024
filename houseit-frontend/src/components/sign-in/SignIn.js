@@ -131,7 +131,8 @@ export default function SignUp(props) {
       setServerErrorMessage('');
       const userResponse = await axiosClient.get('/users/' + data.get('email'), payload);
       let { password, ...userWithoutPassword } = userResponse.data;
-      userWithoutPassword['ratings'] = {};
+      userWithoutPassword['userRatings'] = {};
+      userWithoutPassword['listingRatings'] = {};
       localStorage.setItem('currentUser', JSON.stringify(userWithoutPassword));
       navigate('/');
     } catch (error) {
