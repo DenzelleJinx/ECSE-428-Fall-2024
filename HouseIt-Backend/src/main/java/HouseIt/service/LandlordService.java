@@ -2,6 +2,7 @@ package HouseIt.service;
 
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.stream.StreamSupport;
 import java.util.List; 
 
@@ -150,6 +151,37 @@ public class LandlordService {
         } else {
             throw new IllegalStateException("Failed to remove listing with ID: " + listingId);
         }
+    }
+
+    @Transactional
+    public Landlord getLandlord(int landlordId) {
+        Landlord landlord = landlordDAO.findLandlordById(landlordId);
+        if (landlord == null) {
+            throw new IllegalArgumentException("No landlord found with ID: " + landlordId);
+        }
+        return landlord;
+    }
+
+    @Transactional
+    public Landlord rateLandlord(int landlordId, float rating) {
+
+        Landlord landlord = landlordDAO.findLandlordById(landlordId);
+        if (landlord == null) {
+            throw new IllegalArgumentException("No such landlord with id: " + landlordId);
+        }
+
+        if (rating < 1 || rating > 5) {
+            throw new IllegalArgumentException("Rating must be between 1 and 5 inclusive.");
+        }
+
+        float avgRating = landlord.getRating();
+        int ratingCount = landlord.getRatingCount();
+        avgRating = (avgRating * ratingCount + rating) / (ratingCount + 1);
+        ratingCount++;
+
+        landlord.setRating(avgRating);
+        landlord.setRatingCount(ratingCount);
+        return landlordDAO.save(landlord);
     }
 
     public LandlordDTO convertToDTO(Landlord landlord) {

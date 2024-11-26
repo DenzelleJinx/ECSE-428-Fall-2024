@@ -46,6 +46,7 @@ public class User
   private String password;
   private AccountStatus status;
   private float rating;
+  private int ratingCount;
 
   @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Notification> notifications;
@@ -124,6 +125,14 @@ public class User
     return wasSet;
   }
 
+  public boolean setRatingCount(int aRatingCount)
+  {
+    boolean wasSet = false;
+    ratingCount = aRatingCount;
+    wasSet = true;
+    return wasSet;
+  }
+
   public boolean addNotification(Notification aNotification)
   {
     boolean wasAdded = false;
@@ -161,6 +170,10 @@ public class User
   public float getRating()
   {
     return rating;
+  }
+
+  public int getRatingCount() {
+    return ratingCount;
   }
 
   public List<Notification> getNotifications ()
