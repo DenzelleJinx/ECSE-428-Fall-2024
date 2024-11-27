@@ -43,7 +43,7 @@ public class ViewListingStepDefinitions {
     private LandlordDAO landlordDAO;
 
     @After
-    public void beforeScenario() {
+    public void afterScenario() {
         landlordDAO.deleteAll();
         listingDAO.deleteAll();
         addressDAO.deleteAll();
