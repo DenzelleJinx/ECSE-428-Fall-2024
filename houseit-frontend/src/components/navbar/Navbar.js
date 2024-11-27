@@ -123,7 +123,7 @@ const Navbar = (props) => {
         setIsAdmin(false);
         setLoggedInUsername('');
 
-        navigate('/login');
+        navigate('/');
     };
 
     // Function to generate a notification message based on its type
@@ -180,7 +180,7 @@ const Navbar = (props) => {
                             ))
                         )}
                     </Menu>
-                    <Button color="inherit" sx={{ color: secondaryColor }} onClick={() => navigate('/logout')}>
+                    <Button color="inherit" sx={{ color: secondaryColor }} onClick={() => handlelLogoutClick()}>
                         Log Out
                     </Button>
                 </>
@@ -252,7 +252,7 @@ const Navbar = (props) => {
                                 )}
                             </Menu>
                         </ListItem>
-                        <ListItem button onClick={() => navigate('/logout')}>
+                        <ListItem button onClick={() => handlelLogoutClick()}>
                             <ListItemText primary="Log Out" />
                         </ListItem>
                     </>
