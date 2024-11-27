@@ -18,6 +18,7 @@ import HouseIt.model.Listing;
 import HouseIt.service.LandlordService;
 import HouseIt.service.ListingService;
 import io.cucumber.java.After;
+import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -42,6 +43,7 @@ public class ViewListingStepDefinitions {
     @Autowired
     private LandlordDAO landlordDAO;
 
+    @Before
     @After
     public void beforeScenario() {
         landlordDAO.deleteAll();

@@ -123,6 +123,27 @@ public class RatingStepDefinitions {
 
     @Before
     public void beforeScenario() {
+        
+    }
+
+    @After
+    public void afterScenario() {
+        studentDAO.deleteAll();
+        listingDAO.deleteAll();
+        landlordDAO.deleteAll();
+        addressDAO.deleteAll();
+        amenitiesDAO.deleteAll();
+        imageDAO.deleteAll();
+        utilitiesDAO.deleteAll();
+    }
+
+    @Given("the user is a customer")
+    public void the_user_is_a_customer() {
+        // assume the user is a customer
+    }
+
+    @And("a listing transaction has been marked as closed by the landlord")
+    public void a_listing_transaction_has_been_marked_as_closed_by_the_landlord() {
         studentDAO.deleteAll();
         student = null;
         student = studentService.createStudent(studentUsername, password, studentEmail);
@@ -162,33 +183,7 @@ public class RatingStepDefinitions {
 
         listingDAO.deleteAll();
         listing = null;
-        listing = listingService.createListing(landlord.getId(), listingTitle, listingDescription, listingPrice, bedrooms, bathrooms, propertyType, 0, false, false, address, amenities, images, utilities);
-    }
-
-    @After
-    public void afterScenario() {
-        studentDAO.deleteAll();
-        listing.setLandlordId(-1);
-        listing.setAmenitiesOffered(null);
-        listing.setPropertyImages(null);
-        listing.setUtilitiesCosts(null);
-        listing.setAddress(null);
-        landlordDAO.deleteAll();
-        addressDAO.deleteAll();
-        amenitiesDAO.deleteAll();
-        imageDAO.deleteAll();
-        utilitiesDAO.deleteAll();
-        listingDAO.deleteAll();
-    }
-
-    @Given("the user is a customer")
-    public void the_user_is_a_customer() {
-        assertTrue(student instanceof Student);
-    }
-
-    @And("a listing transaction has been marked as closed by the landlord")
-    public void a_listing_transaction_has_been_marked_as_closed_by_the_landlord() {
-        // assume a listing transaction has been marked as closed by the landlord
+        listing = listingService.createListing(landlord.getId(), listingTitle, listingDescription, listingPrice, bedrooms, bathrooms, propertyType, squareFootage, wheelchairAccessible, smokingAllowed, address, amenities, images, utilities);
         listingService.completeListing(listing.getId());
         Listing updatedListing = listingDAO.findListingById(listing.getId());
         assertTrue(updatedListing.isCompleted());
