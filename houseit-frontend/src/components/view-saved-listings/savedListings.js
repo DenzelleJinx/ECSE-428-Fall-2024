@@ -6,10 +6,12 @@ import '../create-listing/Listing.css';
 import Navbar from '../navbar/Navbar';
 import StatusDialog from '../status-dialog/StatusDialog';
 import FilterModal from '../filter-modal/FilterModal';
-import { Box, Button, TextField, InputAdornment, IconButton, Typography } from '@mui/material';
+import {Box, Button, TextField, InputAdornment, IconButton, Typography, CssBaseline} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
-import FilterAltIcon from '@mui/icons-material/FilterAlt';  // Filter icon
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import ColorModeSelect from "../../shared-theme/ColorModeSelect";
+import AppTheme from "../../shared-theme/AppTheme";  // Filter icon
 
 export default function SavedListings({ studentId }) {
   const [loading, setLoading] = useState(true);
@@ -127,8 +129,10 @@ export default function SavedListings({ studentId }) {
   if (loading) return <p>Loading...</p>;
 
   return (
-    <div className="dashboard">
-      <Navbar />
+      <AppTheme >
+        <CssBaseline enableColorScheme />
+        <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' , marginTop: "4rem"}} />
+        <Navbar />
       <header className="dashboard-header">
         <h2>Listings</h2>
         <div className="actions">
@@ -203,6 +207,6 @@ export default function SavedListings({ studentId }) {
           onApply={handleFilterChange}
         />
       )}
-    </div>
+    </AppTheme>
   );
 }
