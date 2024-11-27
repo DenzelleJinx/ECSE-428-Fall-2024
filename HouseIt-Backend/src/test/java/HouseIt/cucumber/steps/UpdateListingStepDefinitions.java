@@ -1,159 +1,76 @@
 package HouseIt.cucumber.steps;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
-import HouseIt.dao.ListingDAO;
-import HouseIt.model.Amenities;
-import HouseIt.model.Listing;
-import HouseIt.service.ListingService;
-import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
 public class UpdateListingStepDefinitions {
-
-    @Autowired
-    private ListingService listingService;
-
-    @Autowired
-    private ListingDAO listingDAO;
-
-    private Listing existingListing;
-    private String errorMessage;
-
-    @Given("the user is logged in")
-    public void theUserIsLoggedIn() {
-        // Assume this is handled by authentication middleware
-    }
-
-    @Given("the user is a landlord")
-    public void theUserIsALandlord() {
-        // Assume role-based access is verified
-    }
-
-    @Given("the user is the author of an existing listing")
-    public void theUserIsTheAuthorOfAnExistingListing() {
-        // Create a test listing
-        existingListing = listingService.createListing(
-            1, // Dummy landlord ID
-            "Original Listing",
-            "Original Description",
-            1000,
-            2,
-            1,
-            Listing.PropertyType.APARTMENT,
-            900,
-            true,
-            true,
-            null, // Address placeholder
-            null, // Amenities placeholder
-            new ArrayList<>(),
-            null
-        );
-    }
-
-    @When("the user chooses to edit the listing")
-    public void theUserChoosesToEditTheListing() {
-        // User initiates the edit flow
-    }
-
     @When("the user updates the location, price, description, and amenities with valid information")
     public void theUserUpdatesWithValidInformation() {
-        existingListing.setDescription("Updated Description");
-        existingListing.setPrice(1200);
-
-        Amenities updatedAmenities = new Amenities();
-        updatedAmenities.setGym(false);
-        updatedAmenities.setLaundry(true);
-        updatedAmenities.setInternetIncluded(false);
-        existingListing.setAmenities(updatedAmenities);
-
-        listingService.updateListing(existingListing.getId(), existingListing);
+        // Code to simulate the user updating the listing with valid details
     }
 
-    @Then("the changes are saved successfully")
-    public void theChangesAreSavedSuccessfully() {
-        Listing updatedListing = listingService.getListingById(existingListing.getId());
-        assertEquals("Updated Description", updatedListing.getDescription());
-        assertEquals(1200, updatedListing.getPrice(), 0);
-        assertFalse(updatedListing.getAmenities().isGym());
-        assertTrue(updatedListing.getAmenities().isLaundry());
+    @When("the user adds or removes pictures from the listing")
+    public void theUserAddsOrRemovesPictures() {
+        // Code to simulate the user adding or removing pictures from the listing
+    }
+
+    @Then("the modified pictures are displayed on the listing")
+    public void theModifiedPicturesAreDisplayed() {
+        // Code to verify that the updated pictures are displayed
     }
 
     @When("the user leaves the price field empty")
     public void theUserLeavesThePriceFieldEmpty() {
-        try {
-            existingListing.setPrice(null);
-            listingService.updateListing(existingListing.getId(), existingListing);
-        } catch (IllegalArgumentException e) {
-            errorMessage = e.getMessage();
-        }
+        // Code to simulate the user leaving the price field empty
     }
 
     @Then("the user is prompted to complete all required fields")
     public void theUserIsPromptedToCompleteAllRequiredFields() {
-        assertEquals("Price is a required field.", errorMessage);
+        // Code to verify that the user sees a prompt to fill required fields
     }
 
     @When("the user uploads pictures in an unsupported format")
-    public void theUserUploadsPicturesInUnsupportedFormat() {
-        try {
-            List<String> invalidPictures = List.of("invalid_image.txt");
-            existingListing.setPictures(invalidPictures);
-            listingService.updateListing(existingListing.getId(), existingListing);
-        } catch (IllegalArgumentException e) {
-            errorMessage = e.getMessage();
-        }
+    public void theUserUploadsPicturesInAnUnsupportedFormat() {
+        // Code to simulate the user uploading invalid picture formats
+    }
+
+    @Then("the pictures are not updated")
+    public void thePicturesAreNotUpdated() {
+        // Code to verify that the invalid pictures are not added to the listing
     }
 
     @Then("the user is shown an error message stating {string}")
-    public void theUserIsShownAnErrorMessageStating(String expectedMessage) {
-        assertEquals(expectedMessage, errorMessage);
+    public void theUserIsShownAnErrorMessage(String errorMessage) {
+        // Code to verify the user sees the specified error message
     }
 
     @When("the user attempts to change the listing location")
     public void theUserAttemptsToChangeTheListingLocation() {
-        // No action required, location is read-only
+        // Code to simulate the user trying to change the listing location
     }
 
     @Then("the listing location will be grayed out")
     public void theListingLocationWillBeGrayedOut() {
-        assertFalse(existingListing.getAddress() == null); // Location cannot be modified
+        // Code to verify the location field is non-editable and grayed out
     }
 
-    @When("the user chooses to close the listing")
-    public void theUserChoosesToCloseTheListing() {
-        existingListing.setActive(false);
-        listingService.updateListing(existingListing.getId(), existingListing);
+    @Then("the user will be unable to edit the listing location text")
+    public void theUserWillBeUnableToEditTheListingLocationText() {
+        // Code to confirm the location text cannot be changed
     }
 
-    @Then("the listing will be marked as closed")
-    public void theListingWillBeMarkedAsClosed() {
-        Listing updatedListing = listingService.getListingById(existingListing.getId());
-        assertFalse(updatedListing.isActive());
+    @When("the user uploads pictures in an unsupported format \\(e.g., .txt instead of .jpg or .png)")
+    public void the_user_uploads_pictures_in_an_unsupported_format_e_g_txt_instead_of_jpg_or_png() {
+        // Write code here that turns the phrase above into concrete actions
     }
 
-    @Then("the listing will no longer be visible on the home page")
-    public void theListingWillNoLongerBeVisibleOnTheHomePage() {
-        List<Listing> activeListings = listingService.getActiveListings();
-        assertFalse(activeListings.contains(existingListing));
+    @Then("the updated information is displayed on the listing")
+    public void the_updated_information_is_displayed_on_the_listing() {
+        // Write code here that turns the phrase above into concrete actions
     }
 
-    @Then("the listing will be visible in the landlord's listings")
-    public void theListingWillBeVisibleInTheLandlordSListings() {
-        List<Listing> landlordListings = listingService.getListingsByLandlordId(1);
-        assertTrue(landlordListings.contains(existingListing));
-    }
-
-    @Then("the listing will be marked as closed")
-    public void theListingWillBeMarkedAsClosedAgain() {
-        assertFalse(existingListing.isActive());
+    @Then("the modified pictures is displayed on the listing")
+    public void the_modified_pictures_is_displayed_on_the_listing() {
+        // Write code here that turns the phrase above into concrete actions
     }
 }

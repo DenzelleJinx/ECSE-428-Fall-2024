@@ -16,7 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.List;
 import java.util.Map;
 
-public class ResetPasswordStepDefinitions {
+public class PasswordResetStepDefinitions {
 
     @Autowired
     private StudentService studentService;

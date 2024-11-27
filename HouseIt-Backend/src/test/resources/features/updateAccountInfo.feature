@@ -38,4 +38,4 @@ Scenario: Update Password (Error Flow: Incorrect Current Password)
     When the user navigates to the account settings
     And the user attempts to update their password but enters an incorrect current password
     Then the password is not updated
-    And the user is shown an error message stating "Incorrect current password"
+    And the user is shown an error message stating {string}

@@ -12,7 +12,7 @@ public class CreateListingStepDefinitions {
     }
 
     @Given("the user is a landlord")
-    public void thUserIsALandlord() {
+    public void theUserIsALandlord() {
         
     }
 
@@ -55,11 +55,6 @@ public class CreateListingStepDefinitions {
 
     @Then("the listing has a picture visible in the search results")
     public void theListingHasAPictureVisibleInTheSearchResults() {
-        
-    }
-
-    @Then("the user is prompted to complete all required fields")
-    public void theUserIsPromptedToCompleteAllRequiredFields() {
         
     }
 

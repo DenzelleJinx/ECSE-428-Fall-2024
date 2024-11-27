@@ -1,7 +1,5 @@
 package HouseIt.cucumber.steps;
 
-import static org.junit.Assert.*;
-
 import org.springframework.beans.factory.annotation.Autowired;
 
 import HouseIt.model.User;
@@ -78,23 +76,23 @@ public class AdminMenuStepDefinitions {
 
     }
 
-    @Then("the system should display an error message stating \"You are not authorized to deactivate other admin accounts\"")
-    public void theSystemShouldDisplayAnErrorMessageStating() {
-
-    }
-
     @Then("the account should remain active")
     public void theAccountShouldRemainActive() {
 
     }
 
     @Given("the user is on the {string} page")
-    public void the_user_is_on_the_page(String string) {
+    public void theUserIsOnThePage(String string) {
         
     }
 
     @When("the user selects the {string} option")
     public void theUserSelectsTheOption(String string) {
         
+    }
+
+    @Then("the system should display an error message stating {string}")
+    public void the_system_should_display_an_error_message_stating(String string) {
+        // Write code here that turns the phrase above into concrete actions
     }
 }
